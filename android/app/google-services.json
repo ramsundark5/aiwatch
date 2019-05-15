@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "119466713568",
+    "firebase_url": "https://aiwatch.firebaseio.com",
+    "project_id": "aiwatch",
+    "storage_bucket": "aiwatch.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119466713568:android:f0a34dee4ae31241",
+        "android_client_info": {
+          "package_name": "com.aiwatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119466713568-5gd7nf80pbgoil0cidlfkded6pkbrrti.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aiwatch",
+            "certificate_hash": "3528173167f24deb3902110d0cec6010a67429a1"
+          }
+        },
+        {
+          "client_id": "119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhTPqmWdy2CIEvM3MJJ5Q_-zRSilEeY4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

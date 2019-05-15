@@ -1,0 +1,150 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:4531654298763147475",
+      "lastPropertyId": "3:2617017062261545181",
+      "name": "Settings",
+      "properties": [
+        {
+          "id": "1:550682704114283409",
+          "name": "id"
+        },
+        {
+          "id": "2:4209931387317992744",
+          "name": "isGoogleAccountConnected"
+        },
+        {
+          "id": "3:2617017062261545181",
+          "name": "notificationEnabled"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:4322453221154582630",
+      "lastPropertyId": "16:6511550445904972997",
+      "name": "CameraConfig",
+      "properties": [
+        {
+          "id": "1:1655767688304849086",
+          "name": "id"
+        },
+        {
+          "id": "2:2966230826303379591",
+          "name": "name"
+        },
+        {
+          "id": "3:8826158675315639627",
+          "name": "brand"
+        },
+        {
+          "id": "4:5771793227558458235",
+          "name": "model"
+        },
+        {
+          "id": "5:8075939369448324452",
+          "name": "videoUrl"
+        },
+        {
+          "id": "6:7079567267402567325",
+          "name": "username"
+        },
+        {
+          "id": "7:3889489956764598937",
+          "name": "password"
+        },
+        {
+          "id": "8:644340502969944462",
+          "name": "videoCodec"
+        },
+        {
+          "id": "9:6106148814642707928",
+          "name": "recordingDuration"
+        },
+        {
+          "id": "10:3557998853520821988",
+          "name": "waitPeriodAfterDetection"
+        },
+        {
+          "id": "11:4524710192277281910",
+          "name": "notifyPersonDetect"
+        },
+        {
+          "id": "12:5871252871659222184",
+          "name": "notifyAnimalDetect"
+        },
+        {
+          "id": "13:1055642842739998587",
+          "name": "notifyVehicleDetect"
+        },
+        {
+          "id": "14:1388169573798911848",
+          "name": "recordPersonDetect"
+        },
+        {
+          "id": "15:2434287734104398408",
+          "name": "recordAnimalDetect"
+        },
+        {
+          "id": "16:6511550445904972997",
+          "name": "recordVehicleDetect"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:4286536874799404927",
+      "lastPropertyId": "8:9036506748593024553",
+      "name": "AlarmEvent",
+      "properties": [
+        {
+          "id": "1:7425290996457950521",
+          "name": "id"
+        },
+        {
+          "id": "2:100243463169522410",
+          "name": "cameraName"
+        },
+        {
+          "id": "3:6559523688790928054",
+          "name": "cameraId"
+        },
+        {
+          "id": "4:5936799448065740487",
+          "name": "videoPath"
+        },
+        {
+          "id": "5:7541243016638901561",
+          "name": "thumbnailPath"
+        },
+        {
+          "id": "6:5378251964332246128",
+          "name": "date"
+        },
+        {
+          "id": "7:2631981214291155221",
+          "name": "message"
+        },
+        {
+          "id": "8:9036506748593024553",
+          "name": "detectionConfidence"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:4286536874799404927",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

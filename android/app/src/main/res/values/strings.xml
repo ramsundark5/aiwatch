@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">aiwatch</string>
+    <string name="channel_id">E1</string>
+    <string name="channel_name">Events</string>
+    <string name="channel_description">Notify detection events</string>
+    <string name="local_service_started">1001</string>
+    <string name="local_service_stopped">1000</string>
+    <string name="local_service_label">aiwatch is monitoring</string>
 </resources>
