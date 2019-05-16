@@ -7,7 +7,6 @@ import Theme from '../common/Theme';
 import { loadCameras, deleteCamera } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import CameraControl from './CameraControl';
-import FullScreenVideoPlayer from '../common/FullScreenVideoPlayer';
 
 class CameraView extends Component {
 
@@ -37,7 +36,9 @@ class CameraView extends Component {
   }
 
   onPlayVideoFullScreen(videoUrl){
-    this.setState({ isFull: true, selectedVideoUrl: videoUrl});
+    this.props.navigation.navigate('FullScreenVideo', {
+      videoUrl: videoUrl
+    });
   }
 
   onCloseFullScreen(){
@@ -60,7 +61,6 @@ class CameraView extends Component {
             this.renderVideoPlayer(cameraConfig)
           ))}
         </ScrollView>
-        <FullScreenVideoPlayer isFull={isFull} videoUrl={selectedVideoUrl} onClose={()=> this.onCloseFullScreen()} />
         {this.renderAddCameraButton()}
       </View>
     );

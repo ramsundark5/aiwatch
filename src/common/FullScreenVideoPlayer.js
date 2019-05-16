@@ -2,55 +2,40 @@ import React, {PureComponent} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { IconButton, Colors } from 'react-native-paper';
 import RTSPVideoPlayer from '../cameras/RTSPVideoPlayer';
-import Modal from 'react-native-modal';
-import Orientation from 'react-native-orientation';
+
 export default class FullScreenVideoPlayer extends PureComponent{
 
-    /* componentDidUpdate(){
-        if(this.props.isFull){
-            Orientation.lockToLandscapeLeft();
-        }
-    }
-    componentWillUnmount() {
-        Orientation.lockToPortrait();
-    }
- */
+    static navigationOptions = {
+        header: null,
+        tabBarVisible: false,
+        animationEnabled: true
+    };
+      
     render(){
-        const { isFull, videoUrl, onClose } = this.props;
+        const videoUrl = this.props.navigation.getParam('videoUrl', '');
         return(
-            <Modal
-                style={styles.container}
-                isVisible={isFull}
-                onBackButtonPress={() => onClose()}
-                onSwipeComplete={() => onClose()}
-                swipeDirection='down'>
+            <View style={{flex: 1, backgroundColor: 'black'}}>
                 <IconButton icon='close' size={36} 
                     color={Colors.white}
                     style={styles.dismissButton}
-                    onPress={() => onClose()}/>
+                    onPress={() => this.props.navigation.goBack()}/>
                 <RTSPVideoPlayer
-                    Orientation={Orientation}
-                    showTop={false}
-                    fullVideoAspectRatio={""}
-                    videoAspectRatio={""}
-                    //autoplay={true} //don't enable this. video is not playing full screen
-                    showReload={false}
+                    initWithFull={true}
+                    showFullScreen={true}
+                    onLeftPress={() => this.props.navigation.goBack()}
+                    autoplay={false}
+                    showReload={true}
                     style={{flex: 1}}
-                    url={videoUrl}
-                    onLeftPress={() => onClose()}/>
-            </Modal>
+                    url={videoUrl}/>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        margin: 0
-    },
     dismissButton:{
-        top: 40,
-        right: 30,
+        top: 10,
+        right: 10,
         marginRight: 30,
         zIndex: 1,
         position: 'absolute',

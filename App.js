@@ -5,7 +5,7 @@ import EditCamera from './src/cameras/EditCamera';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import EventVideo from './src/events/EventVideo';
+import FullScreenVideoPlayer from './src/common/FullScreenVideoPlayer';
 import Settings from './src/settings/Settings'
 import Theme from './src/common/Theme';
 import { Provider } from 'react-redux';
@@ -14,44 +14,15 @@ import { useScreens } from 'react-native-screens';
 useScreens();
 
 const CameraStack = createStackNavigator({
-  CameraView: {
-    screen: CameraView,
-    navigationOptions: () => ({
-      header: null
-    }),
-  },
+  CameraView: CameraView,
   EditCamera: EditCamera,
+  FullScreenVideo: FullScreenVideoPlayer
 });
 
 const EventStack = createStackNavigator({
   Events: EventsView,
-  EventVideo: {
-    screen: EventVideo,
-    navigationOptions: {
-      header: null
-    }
-  }
-}, {
-  mode: 'modal',
-  headerMode: 'none',
+  EventVideo: FullScreenVideoPlayer
 });
-
-EventStack.navigationOptions = ({ navigation }) => {
-
-  let tabBarVisible = true;
-   let headerMode = 'none';
-  let routeName = navigation.state.routes[navigation.state.index].routeName
-
-  if ( routeName == 'EventVideo' ) {
-      tabBarVisible = false,
-      header = null
-  }
-
-  return {
-      headerMode,
-      tabBarVisible,
-  }
-}
 
 const SettingsStack = createStackNavigator({
   Settings: {

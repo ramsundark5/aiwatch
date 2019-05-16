@@ -66,3 +66,4 @@ aiwatchkeystore
 *.apk
 android/app/debug/output.json
 credentials.json
+android/app/src/main/assets/fonts
