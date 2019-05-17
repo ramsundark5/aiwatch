@@ -81,10 +81,11 @@ public class RecordingManager {
             String currentTime = dateFormat.format(System.currentTimeMillis());
             String fileName = frameEvent.getCameraConfig().getId() + currentTime + DEFAULT_EXTENSION;
             GDriveServiceHelper gDriveServiceHelper = GdriveManager.getGDriveServiceHelper(frameEvent.getContext());
-            DateFormat monthDateFormat = new SimpleDateFormat("yyyy-mm");
+            DateFormat monthDateFormat = new SimpleDateFormat("yyyy-MM");
             String currentMonth = monthDateFormat.format(System.currentTimeMillis());
-            gDriveServiceHelper.createFolder(currentMonth, null);
-            com.google.api.services.drive.model.File gdriveFile = gDriveServiceHelper.createFile(fileName).getResult();
+            String appFolderId = gDriveServiceHelper.createFolder(GDriveServiceHelper.APP_FOLDER_NAME, null, true);
+            String monthFolderId = gDriveServiceHelper.createFolder(currentMonth, appFolderId , false);
+            com.google.api.services.drive.model.File gdriveFile = gDriveServiceHelper.createFile(fileName, monthFolderId).getResult();
             com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(gdriveFile, videoPath).getResult();
             return uploadedFileMetadata.getId();
         }catch(Exception e){

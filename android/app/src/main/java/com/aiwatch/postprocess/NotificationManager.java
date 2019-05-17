@@ -14,13 +14,11 @@ import com.aiwatch.Logger;
 import com.aiwatch.R;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.FrameEvent;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.aiwatch.ai.Events;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.media.db.AlarmEvent;
 import com.aiwatch.media.db.CameraConfig;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class NotificationManager {
 
@@ -118,11 +116,6 @@ public class NotificationManager {
             Intent newAlarmIntent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
             newAlarmIntent.putExtra(AppConstants.NEW_DETECTION_EVENT, alarmEvent);
             localBroadcastManager.sendBroadcast(newAlarmIntent);
-
-            DeviceEventManagerModule.RCTDeviceEventEmitter deviceEventEmitter;
-            ReactApplicationContext reactApplicationContext = (ReactApplicationContext) context;
-            deviceEventEmitter = reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
-            deviceEventEmitter.emit("NEW_DETECTION_EVENT", alarmEvent);
         }catch(Exception e){
             LOGGER.e("error sending event to UI "+e.getMessage());
         }

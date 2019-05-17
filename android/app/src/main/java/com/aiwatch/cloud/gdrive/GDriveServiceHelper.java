@@ -31,6 +31,7 @@ import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.google.common.net.MediaType;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -57,7 +58,7 @@ public class GDriveServiceHelper {
     public static String TYPE_PHOTO = "application/vnd.google-apps.photo";
     public static String TYPE_UNKNOWN = "application/vnd.google-apps.unknown";
     public static String TYPE_VIDEO = "application/vnd.google-apps.video";
-
+    public static String APP_FOLDER_NAME = "aiwatch";
 
     public GDriveServiceHelper(Drive driveService) {
         mDriveService = driveService;
@@ -66,11 +67,11 @@ public class GDriveServiceHelper {
     /**
      * Creates a text file in the user's My Drive folder and returns its file ID.
      */
-    public Task<File> createFile(final String fileName) {
+    public Task<File> createFile(final String fileName, String parentFolderId) {
         return Tasks.call(mExecutor, () -> {
             File metadata = new File()
-                    .setParents(Collections.singletonList("root"))
-                    .setMimeType("text/plain")
+                    .setParents(Collections.singletonList(parentFolderId))
+                    .setMimeType(TYPE_VIDEO)
                     .setName(fileName);
 
             File googleFile = mDriveService.files().create(metadata).execute();
@@ -184,33 +185,49 @@ public class GDriveServiceHelper {
         });
     }
 
-
-    public Task<File> createFolder(String folderName, @Nullable String folderId) {
-        return Tasks.call(mExecutor, () -> {
-            List<String> root;
-            if (folderId == null) {
-                root = Collections.singletonList("root");
-            } else {
-
-                root = Collections.singletonList(folderId);
+    public String createFolder(String folderName, String parentFolderId, boolean isAppFolder) {
+        String folderId = getFolderIdIfExists(folderName);
+        if(folderId != null){
+            LOGGER.d("Found existing folder " + folderName);
+            return folderId;
+        }
+        List<String> parent;
+        if (parentFolderId == null) {
+            String parentFolderName = isAppFolder ? "root" : APP_FOLDER_NAME;
+            parent = Collections.singletonList(parentFolderName);
+        } else {
+            parent = Collections.singletonList(parentFolderId);
+        }
+        File metadata = new File()
+                .setParents(parent)
+                .setMimeType(TYPE_GOOGLE_DRIVE_FOLDER)
+                .setName(folderName);
+        try{
+            File googleFile = mDriveService.files().create(metadata).setFields("id, parents").execute();
+            if (googleFile == null) {
+                throw new IOException("Null result when requesting file creation.");
             }
-            File metadata = new File()
-                    .setParents(root)
-                    .setMimeType(TYPE_GOOGLE_DRIVE_FOLDER)
-                    .setName(folderName);
+            folderId = googleFile.getId();
+        }catch(IOException ioe){
+            //ignore exception if folder already exists
+            LOGGER.e("error creating folder "+ioe);
+        }
+        return folderId;
+    }
 
-            try{
-                File googleFile = mDriveService.files().create(metadata).execute();
-                if (googleFile == null) {
-                    throw new IOException("Null result when requesting file creation.");
-                }
-                return googleFile;
-            }catch(IOException ioe){
-                //ignore exception if folder already exists
-                LOGGER.e("error creating folder "+ioe);
+    public String getFolderIdIfExists(final String folderName) {
+        String folderId = null;
+        try{
+            FileList files = mDriveService.files().list().setQ("mimeType = '" + TYPE_GOOGLE_DRIVE_FOLDER +
+                    "' and title = '" + folderName + "' and trashed = false").execute();
+            if (files != null && !files.isEmpty() && files.getFiles().size() > 0) {
+                LOGGER.d("Google drive aiwatch folder found");
+                folderId = files.getFiles().get(0).getId();
             }
-            return null;
-        });
+        }catch(Exception e){
+            LOGGER.e("Exception getting folderId "+e.getMessage());
+        }
+        return folderId;
     }
 
     public Task<File> uploadFile(File googleDriveFile, String videoPath) {
