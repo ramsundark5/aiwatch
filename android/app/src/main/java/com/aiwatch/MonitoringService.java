@@ -33,28 +33,31 @@ public class MonitoringService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LOGGER.i("Received request to monitoring service", "Received start id " + startId + ": " + intent);
         String action = intent.getStringExtra(AppConstants.ACTION_EXTRA);
-        switch (action) {
-            case AppConstants.START_MONITORING:
+        if(action != null){
+            switch (action) {
+                case AppConstants.START_MONITORING:
                     startMonitoring();
                     break;
-            case AppConstants.STOP_MONITORING:
+                case AppConstants.STOP_MONITORING:
                     stopMonitoring();
                     break;
-            case AppConstants.SAVE_CAMERA:
+                case AppConstants.SAVE_CAMERA:
                     CameraConfig cameraConfig = (CameraConfig) intent.getSerializableExtra(AppConstants.CAMERA_CONFIG_EXTRA);
                     DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
                     break;
-            case AppConstants.REMOVE_CAMERA:
+                case AppConstants.REMOVE_CAMERA:
                     long cameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
                     DetectionController.INSTANCE().stopDetecting(cameraId);
                     break;
-            default:
-                LOGGER.i("unknown command sent to monitoring serivce "+ action);
+                default:
+                    LOGGER.i("unknown command sent to monitoring serivce "+ action);
+            }
         }
         return START_STICKY;
     }
 
     private void startMonitoring(){
+        LOGGER.i("starting monitoring service");
         CameraConfigDao cameraConfigDao = new CameraConfigDao();
         List<CameraConfig> cameraConfigList = cameraConfigDao.getAllCameras();
         if(cameraConfigList == null || cameraConfigList.isEmpty()){
@@ -93,24 +96,29 @@ public class MonitoringService extends Service {
      * Show a notification while this service is running.
      */
     private void showNotification() {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = getText(R.string.local_service_started);
+        try{
+            // In this sample, we'll use the same text for the ticker and the expanded notification
+            CharSequence text = getText(R.string.local_service_started);
 
-        // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+            // The PendingIntent to launch our activity if the user selects this notification
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                    new Intent(this, MainActivity.class), 0);
 
-        // Set the info for the views that show in the notification panel.
-        Notification notification = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)  // the status icon
-                .setTicker(text)  // the status text
-                .setWhen(System.currentTimeMillis())  // the time stamp
-                .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
-                .setContentText(text)  // the contents of the entry
-                .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
-                .build();
+            // Set the info for the views that show in the notification panel.
+            Notification notification = new Notification.Builder(this)
+                    .setSmallIcon(R.drawable.ic_launcher)  // the status icon
+                    .setTicker(text)  // the status text
+                    .setWhen(System.currentTimeMillis())  // the time stamp
+                    .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
+                    .setContentText(text)  // the contents of the entry
+                    .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+                    .build();
 
-        // Send the notification.
-        notificationManager.notify(NOTIFICATION, notification);
+            // Send the notification.
+            notificationManager.notify(NOTIFICATION, notification);
+        }catch(Exception e){
+           LOGGER.e("error showing notification that service started "+e.getMessage());
+        }
+
     }
 }

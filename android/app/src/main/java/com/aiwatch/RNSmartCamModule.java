@@ -1,11 +1,13 @@
 package com.aiwatch;
 
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.db.Settings;
@@ -174,13 +176,50 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void isMonitoringServiceRunning(final Promise promise){
+        boolean isRunning = false;
+        ActivityManager manager = (ActivityManager) reactContext.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (MonitoringService.class.getName().equals(service.service.getClassName())) {
+                LOGGER.i ("Monitoring service is running");
+                isRunning = true;
+                break;
+            }
+        }
+        LOGGER.i ("Monitoring service is NOT running");
+        promise.resolve(isRunning);
+    }
+
+    @ReactMethod
+    public void toggleMonitoringStatus(boolean enableMonitoring, final Promise promise){
+        Intent intent = new Intent(reactContext, MonitoringService.class);
+        if(enableMonitoring){
+            intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.START_MONITORING);
+            reactContext.startService(intent);
+        }else{
+            intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.STOP_MONITORING);
+            reactContext.startService(intent);
+        }
+    }
+
     public class LocalBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context applicationContext, Intent intent) {
-            ReactApplicationContext reactApplicationContext = (ReactApplicationContext) reactContext;
-            AlarmEvent alarmEvent = (AlarmEvent) intent.getSerializableExtra(AppConstants.NEW_DETECTION_EVENT);
-            reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit(AppConstants.NEW_DETECTION_JS_EVENT, alarmEvent);
+            try{
+                ReactApplicationContext reactApplicationContext = (ReactApplicationContext) reactContext;
+                AlarmEvent alarmEvent = (AlarmEvent) intent.getSerializableExtra(AppConstants.NEW_DETECTION_EVENT);
+                if(alarmEvent != null){
+                    String jsonString = gson.toJson(alarmEvent);
+                    JSONObject jsonObject = new JSONObject(jsonString);
+                    WritableMap alarmEventMap = ConversionUtil.convertJsonToMap(jsonObject);
+                    reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                            .emit(AppConstants.NEW_DETECTION_JS_EVENT, alarmEventMap);
+                }
+            }catch(Exception e){
+                LOGGER.e("Exception notifying UI about events "+e.getMessage());
+            }
+
         }
     }
 

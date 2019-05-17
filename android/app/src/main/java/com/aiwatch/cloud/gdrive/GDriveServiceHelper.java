@@ -67,20 +67,17 @@ public class GDriveServiceHelper {
     /**
      * Creates a text file in the user's My Drive folder and returns its file ID.
      */
-    public Task<File> createFile(final String fileName, String parentFolderId) {
-        return Tasks.call(mExecutor, () -> {
-            File metadata = new File()
-                    .setParents(Collections.singletonList(parentFolderId))
-                    .setMimeType(TYPE_VIDEO)
-                    .setName(fileName);
+    public File createFile(final String fileName, String parentFolderId) throws IOException {
+        File metadata = new File()
+                .setParents(Collections.singletonList(parentFolderId))
+                .setMimeType(TYPE_VIDEO)
+                .setName(fileName);
 
-            File googleFile = mDriveService.files().create(metadata).execute();
-            if (googleFile == null) {
-                throw new IOException("Null result when requesting file creation.");
-            }
-
-            return googleFile;
-        });
+        File googleFile = mDriveService.files().create(metadata).execute();
+        if (googleFile == null) {
+            throw new IOException("Null result when requesting file creation.");
+        }
+        return googleFile;
     }
 
     /**
@@ -230,8 +227,7 @@ public class GDriveServiceHelper {
         return folderId;
     }
 
-    public Task<File> uploadFile(File googleDriveFile, String videoPath) {
-        return Tasks.call(mExecutor, () -> {
+    public File uploadFile(File googleDriveFile, String videoPath) throws IOException {
             java.io.File mediaFile = new java.io.File(videoPath);
             InputStreamContent mediaContent =
                     new InputStreamContent(googleDriveFile.getMimeType(),
@@ -239,16 +235,13 @@ public class GDriveServiceHelper {
             mediaContent.setLength(mediaFile.length());
             File fileMeta = mDriveService.files().create(googleDriveFile, mediaContent).execute();
             return fileMeta;
-        });
     }
 
-    public Task<Void> deleteFolderFile(String fileId) {
-        return Tasks.call(mExecutor, () -> {
-            // Retrieve the metadata as a File object.
-            if (fileId != null) {
-                mDriveService.files().delete(fileId).execute();
-            }
-            return null;
-        });
+    public Task<Void> deleteFolderFile(String fileId) throws IOException {
+        // Retrieve the metadata as a File object.
+        if (fileId != null) {
+            mDriveService.files().delete(fileId).execute();
+        }
+        return null;
     }
 }

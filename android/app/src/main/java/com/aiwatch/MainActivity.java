@@ -2,9 +2,11 @@ package com.aiwatch;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.aiwatch.common.AppConstants;
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
@@ -15,6 +17,7 @@ public class MainActivity extends ReactActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
         createNotificationChannel();
+        startMonitoringService();
     }
 
     /**
@@ -44,5 +47,16 @@ public class MainActivity extends ReactActivity {
         }catch(Exception e){
             LOGGER.e("Exception creating notification channel "+e.getMessage());
         }
+    }
+
+    private void startMonitoringService(){
+        try{
+            Intent intent = new Intent(getApplicationContext(), MonitoringService.class);
+            intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.START_MONITORING);
+            getApplicationContext().startService(intent);
+        }catch(Exception e){
+            LOGGER.e("error starting monitoring service "+e.getMessage());
+        }
+
     }
 }

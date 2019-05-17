@@ -85,8 +85,8 @@ public class RecordingManager {
             String currentMonth = monthDateFormat.format(System.currentTimeMillis());
             String appFolderId = gDriveServiceHelper.createFolder(GDriveServiceHelper.APP_FOLDER_NAME, null, true);
             String monthFolderId = gDriveServiceHelper.createFolder(currentMonth, appFolderId , false);
-            com.google.api.services.drive.model.File gdriveFile = gDriveServiceHelper.createFile(fileName, monthFolderId).getResult();
-            com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(gdriveFile, videoPath).getResult();
+            com.google.api.services.drive.model.File gdriveFile = gDriveServiceHelper.createFile(fileName, monthFolderId);
+            com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(gdriveFile, videoPath);
             return uploadedFileMetadata.getId();
         }catch(Exception e){
             LOGGER.e("error recording to gdrive "+e);

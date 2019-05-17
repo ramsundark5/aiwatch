@@ -6,7 +6,8 @@ import { List, Switch } from 'react-native-paper';
 export default class Settings extends React.Component{
 
     state = {
-      settings: {}
+      settings: {},
+      isMonitoringOn: false
     };
 
     componentDidMount(){
@@ -20,7 +21,11 @@ export default class Settings extends React.Component{
 
     async loadSettings(){
       let settings = await RNSmartCam.getSettings();
-      this.setState({settings: settings});
+      let isMonitoringRunning = await RNSmartCam.isMonitoringServiceRunning();
+      this.setState({
+        settings: settings, 
+        isMonitoringOn: isMonitoringRunning
+      });
     }
 
     async onGoogleAccountSettingsChange(isConnected){
@@ -66,12 +71,20 @@ export default class Settings extends React.Component{
       RNSmartCam.putSettings(this.state.settings);
     }
 
+    async onToggleMonitoring(enableMonitoring){
+      this.setState({
+        isMonitoringOn: enableMonitoring
+      });
+      RNSmartCam.toggleMonitoringStatus(enableMonitoring);
+    }
+
     render(){
         return(
             <View>
               <List.Section title="Person Detected">
                 <List.Item title="Store in Google Drive" right={() => this.renderGoogleAccountConnected()} />
                 <List.Item title="Enable Notification" right={() => this.renderNotificationEnabled()} />
+                <List.Item title="Monitoring Service Running" right={() => this.renderMonitoringEnabled()} />
               </List.Section>
             </View>
         );
@@ -96,4 +109,15 @@ export default class Settings extends React.Component{
       />
     );
   }
+
+  renderMonitoringEnabled() {
+    const { isMonitoringOn } = this.state;
+    return (
+      <Switch
+        value={isMonitoringOn}
+        onValueChange={value => this.onToggleMonitoring(value)}
+      />
+    );
+  }
+
 }
