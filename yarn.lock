@@ -5367,7 +5367,7 @@ react-native-vector-icons@^6.4.2:
 
 react-native-yz-vlcplayer@ramsundark5/react-native-yz-vlcplayer#master:
   version "1.1.2"
-  resolved "https://codeload.github.com/ramsundark5/react-native-yz-vlcplayer/tar.gz/3fd693290800eabf10538ec36f416b8bed6fe25f"
+  resolved "https://codeload.github.com/ramsundark5/react-native-yz-vlcplayer/tar.gz/28e5631f68640e47bead3fe07599d13350f6f6b2"
 
 react-native@0.59.8:
   version "0.59.8"

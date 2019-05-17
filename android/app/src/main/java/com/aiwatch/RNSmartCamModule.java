@@ -38,13 +38,13 @@ import java.util.List;
 
 public class RNSmartCamModule extends ReactContextBaseJavaModule {
     private static final Logger LOGGER = new Logger();
-    private final Context context;
+    private final Context reactContext;
     private Gson gson;
     private LocalBroadcastReceiver  mLocalBroadcastReceiver;
 
     public RNSmartCamModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.context = reactContext;
+        this.reactContext = reactContext;
         gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))
                 .registerTypeAdapter(Date.class, (JsonSerializer<Date>) (date, type, jsonSerializationContext) -> new JsonPrimitive(date.getTime()))
@@ -79,10 +79,10 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             if(cameraConfig.getId() == 0){
                 throw new Exception("Error trying to save Camera Info. Please try again.");
             }
-            Intent intent = new Intent(context, MonitoringService.class);
+            Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.SAVE_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_EXTRA, cameraConfig);
-            context.startService(intent);
+            reactContext.startService(intent);
             promise.resolve(Long.valueOf(cameraConfig.getId()).intValue());
         } catch (Exception e) {
             promise.reject(e);
@@ -95,7 +95,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         try {
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             cameraConfigDao.deleteCamera(cameraId);
-            Intent intent = new Intent(context, MonitoringService.class);
+            Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.REMOVE_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraId);
             promise.resolve("camera deleted and object detection stopped");
@@ -176,8 +176,8 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
     public class LocalBroadcastReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            ReactApplicationContext reactApplicationContext = (ReactApplicationContext) context;
+        public void onReceive(Context applicationContext, Intent intent) {
+            ReactApplicationContext reactApplicationContext = (ReactApplicationContext) reactContext;
             AlarmEvent alarmEvent = (AlarmEvent) intent.getSerializableExtra(AppConstants.NEW_DETECTION_EVENT);
             reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(AppConstants.NEW_DETECTION_JS_EVENT, alarmEvent);

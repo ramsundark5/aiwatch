@@ -10,6 +10,10 @@ import CameraControl from './CameraControl';
 
 class CameraView extends Component {
 
+  static navigationOptions = {
+    header: null,
+  };
+
   state = {
     isFull: false,
     selectedVideoUrl: ''

@@ -8,7 +8,6 @@ export default class FullScreenVideoPlayer extends PureComponent{
     static navigationOptions = {
         header: null,
         tabBarVisible: false,
-        animationEnabled: true
     };
       
     render(){
