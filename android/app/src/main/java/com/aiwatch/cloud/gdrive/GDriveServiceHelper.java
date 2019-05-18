@@ -183,17 +183,19 @@ public class GDriveServiceHelper {
     }
 
     public String createFolder(String folderName, String parentFolderId, boolean isAppFolder) {
-        String folderId = getFolderIdIfExists(folderName);
-        if(folderId != null){
-            LOGGER.d("Found existing folder " + folderName);
-            return folderId;
-        }
         List<String> parent;
+        String folderId;
         if (parentFolderId == null) {
             String parentFolderName = isAppFolder ? "root" : APP_FOLDER_NAME;
             parent = Collections.singletonList(parentFolderName);
+            folderId = getFolderIdIfExists(folderName, parentFolderName);;
         } else {
             parent = Collections.singletonList(parentFolderId);
+            folderId = getFolderIdIfExists(folderName, parentFolderId);
+        }
+        if(folderId != null){
+            LOGGER.d("Found existing folder " + folderName);
+            return folderId;
         }
         File metadata = new File()
                 .setParents(parent)
@@ -212,11 +214,14 @@ public class GDriveServiceHelper {
         return folderId;
     }
 
-    public String getFolderIdIfExists(final String folderName) {
+    public String getFolderIdIfExists(final String folderName, final String parentFolderId) {
         String folderId = null;
         try{
-            FileList files = mDriveService.files().list().setQ("mimeType = '" + TYPE_GOOGLE_DRIVE_FOLDER +
-                    "' and title = '" + folderName + "' and trashed = false").execute();
+            String query = "mimeType = '" + TYPE_GOOGLE_DRIVE_FOLDER + "' and name = '" + folderName + "' and trashed = false";
+            if(parentFolderId != null && !parentFolderId.equals("root")){
+                query = query + " and '" + parentFolderId + "' in parents";
+            }
+            FileList files = mDriveService.files().list().setQ(query).execute();
             if (files != null && !files.isEmpty() && files.getFiles().size() > 0) {
                 LOGGER.d("Google drive aiwatch folder found");
                 folderId = files.getFiles().get(0).getId();
@@ -227,13 +232,18 @@ public class GDriveServiceHelper {
         return folderId;
     }
 
-    public File uploadFile(File googleDriveFile, String videoPath) throws IOException {
+    public File uploadFile(String fileName, String parentFolderId, String videoPath) throws IOException {
             java.io.File mediaFile = new java.io.File(videoPath);
+            File metadata = new File()
+                .setParents(Collections.singletonList(parentFolderId))
+                .setMimeType(MediaType.MP4_VIDEO.toString())
+                .setName(fileName);
+
             InputStreamContent mediaContent =
-                    new InputStreamContent(googleDriveFile.getMimeType(),
+                    new InputStreamContent(MediaType.MP4_VIDEO.toString(),
                             new BufferedInputStream(new FileInputStream(mediaFile)));
             mediaContent.setLength(mediaFile.length());
-            File fileMeta = mDriveService.files().create(googleDriveFile, mediaContent).execute();
+            File fileMeta = mDriveService.files().create(metadata, mediaContent).execute();
             return fileMeta;
     }
 

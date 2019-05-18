@@ -14,7 +14,7 @@ export default class MonitorInfo extends Component {
   };
 
   render() {
-    const { props, state } = this;
+    const { state } = this;
     return (
       <List.Accordion title='Motion Detection' expanded={state.expanded} onPress={this.toggleExpand}>
         <List.Section title='Person Detected'>
@@ -38,6 +38,11 @@ export default class MonitorInfo extends Component {
           <List.Item title='Wait Duration (mins)'  
                 right={() => this.renderPicker('waitPeriodAfterDetection', [0, 1, 5, 10, 15, 30])}/>
         </List.Section>
+
+        <List.Section title='Test Mode'>
+          <List.Item title='Enable Test Mode' right={() => this.renderSwitch('testModeEnabled')} />
+        </List.Section>
+
       </List.Accordion>
     );
   }

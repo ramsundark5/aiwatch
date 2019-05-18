@@ -24,6 +24,7 @@ public class CameraConfig implements Serializable {
     private boolean recordPersonDetect;
     private boolean recordAnimalDetect;
     private boolean recordVehicleDetect;
+    private boolean testModeEnabled;
 
     public long getId() {
         return id;
@@ -153,10 +154,19 @@ public class CameraConfig implements Serializable {
         this.waitPeriodAfterDetection = waitPeriodAfterDetection;
     }
 
+    public boolean isTestModeEnabled() {
+        return testModeEnabled;
+    }
+
+    public void setTestModeEnabled(boolean testModeEnabled) {
+        this.testModeEnabled = testModeEnabled;
+    }
+
     public boolean isMonitoringEnabled(){
         boolean monitoringEnabled = notifyPersonDetect || recordPersonDetect
                 || notifyAnimalDetect || recordAnimalDetect
-                || notifyVehicleDetect || recordVehicleDetect;
+                || notifyVehicleDetect || recordVehicleDetect
+                || testModeEnabled;
         return monitoringEnabled;
     }
 }

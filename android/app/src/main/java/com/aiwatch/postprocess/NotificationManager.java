@@ -33,6 +33,8 @@ public class NotificationManager {
             shouldNotify = true;
         }else if(Events.VEHICLE_DETECTED_EVENT.getName().equals(objectDetectionResult.getName()) && cameraConfig.isNotifyVehicleDetect()){
             shouldNotify = true;
+        }else if(cameraConfig.isTestModeEnabled()){
+            shouldNotify = true;
         }
         return shouldNotify;
     }

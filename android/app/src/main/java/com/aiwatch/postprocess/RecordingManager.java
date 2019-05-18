@@ -30,6 +30,8 @@ public class RecordingManager {
             shouldRecord = true;
         }else if(Events.ANIMAL_DETECTED_EVENT.getName().equals(objectDetectionResult.getName()) && cameraConfig.isRecordAnimalDetect()){
             shouldRecord = true;
+        }else if(cameraConfig.isTestModeEnabled()){
+            shouldRecord = true;
         }
         return shouldRecord;
     }
@@ -51,26 +53,30 @@ public class RecordingManager {
         return outputFile.getAbsolutePath();
     }
 
-    private static String recordToLocal(FrameEvent frameEvent){
-        String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
-        CameraConfig cameraConfig = frameEvent.getCameraConfig();
-        int recordingDuration = cameraConfig.getRecordingDuration();
-        if(recordingDuration <= 1){
-            recordingDuration = 15;
-        }
-        String videoUrl = cameraConfig.getVideoUrl();
-        String ffmpegRecordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration +" -codec copy "+ filePath;
-        FFmpeg.execute(ffmpegRecordCommand);
-        int rc = FFmpeg.getLastReturnCode();
-        String output = FFmpeg.getLastCommandOutput();
-        LOGGER.d("recording completed with status "+ rc);
-        if (rc == RETURN_CODE_SUCCESS) {
-            LOGGER.i("Video recording completed successfully.");
-            return filePath;
-        } else if (rc == RETURN_CODE_CANCEL) {
-            LOGGER.i("Video recording cancelled by user.");
-        } else {
-            LOGGER.e(String.format("Command execution failed with rc=%d and output=%s.", rc, output));
+    private synchronized static String recordToLocal(FrameEvent frameEvent){
+        try{
+            String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
+            CameraConfig cameraConfig = frameEvent.getCameraConfig();
+            int recordingDuration = cameraConfig.getRecordingDuration();
+            if(recordingDuration <= 1){
+                recordingDuration = 15;
+            }
+            String videoUrl = cameraConfig.getVideoUrl();
+            String ffmpegRecordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration +" -codec copy "+ filePath;
+            FFmpeg.execute(ffmpegRecordCommand);
+            int rc = FFmpeg.getLastReturnCode();
+            String output = FFmpeg.getLastCommandOutput();
+            LOGGER.d("recording completed with status "+ rc);
+            if (rc == RETURN_CODE_SUCCESS) {
+                LOGGER.i("Video recording completed successfully.");
+                return filePath;
+            } else if (rc == RETURN_CODE_CANCEL) {
+                LOGGER.i("Video recording cancelled by user.");
+            } else {
+                LOGGER.e(String.format("Command execution failed with rc=%d and output=%s.", rc, output));
+            }
+        }catch (Exception e){
+            LOGGER.e("Error recording video to local "+ e.getMessage());
         }
         return null;
     }
@@ -85,8 +91,7 @@ public class RecordingManager {
             String currentMonth = monthDateFormat.format(System.currentTimeMillis());
             String appFolderId = gDriveServiceHelper.createFolder(GDriveServiceHelper.APP_FOLDER_NAME, null, true);
             String monthFolderId = gDriveServiceHelper.createFolder(currentMonth, appFolderId , false);
-            com.google.api.services.drive.model.File gdriveFile = gDriveServiceHelper.createFile(fileName, monthFolderId);
-            com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(gdriveFile, videoPath);
+            com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(fileName, monthFolderId, videoPath);
             return uploadedFileMetadata.getId();
         }catch(Exception e){
             LOGGER.e("error recording to gdrive "+e);
