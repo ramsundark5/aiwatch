@@ -10,11 +10,7 @@ import com.aiwatch.media.db.CameraConfig;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
-import nl.bravobit.ffmpeg.FFmpeg;
-import nl.bravobit.ffmpeg.FFtask;
 
 public class RecordingManager {
 
@@ -38,7 +34,9 @@ public class RecordingManager {
 
     public static String recordVideo(FrameEvent frameEvent){
         String videoPath = recordToLocal(frameEvent);
-        recordToGdrive(frameEvent, videoPath);
+        if(videoPath != null && !videoPath.isEmpty()){
+            recordToGdrive(frameEvent, videoPath);
+        }
         return videoPath;
     }
 
@@ -53,40 +51,12 @@ public class RecordingManager {
         return outputFile.getAbsolutePath();
     }
 
-    private static String recordToLocal2(FrameEvent frameEvent){
-        try{
-            String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
-            CameraConfig cameraConfig = frameEvent.getCameraConfig();
-            int recordingDuration = cameraConfig.getRecordingDuration();
-            if(recordingDuration <= 1){
-                recordingDuration = 15;
-            }
-            String videoUrl = cameraConfig.getVideoUrl();
-            String ffmpegRecordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration +" -codec copy "+ filePath;
-            /*FFmpeg.execute(ffmpegRecordCommand);
-            int rc = FFmpeg.getLastReturnCode();
-            String output = FFmpeg.getLastCommandOutput();
-            LOGGER.d("recording completed with status "+ rc);
-            if (rc == RETURN_CODE_SUCCESS) {
-                LOGGER.i("Video recording completed successfully.");
-                return filePath;
-            } else if (rc == RETURN_CODE_CANCEL) {
-                LOGGER.i("Video recording cancelled by user.");
-            } else {
-                LOGGER.e(String.format("Command execution failed with rc=%d and output=%s.", rc, output));
-            }*/
-        }catch (Exception e){
-            LOGGER.e("Error recording video to local "+ e.getMessage());
-        }
-        return null;
-    }
-
     private synchronized static String recordToLocal(FrameEvent frameEvent){
         try{
             if (CustomFFmpeg.getInstance(frameEvent.getContext()).isSupported()) {
                 LOGGER.d("FFmpeg is supported");
             } else {
-                LOGGER.d("FFmpeg is not supported");
+                LOGGER.e("FFmpeg is not supported");
             }
             String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
