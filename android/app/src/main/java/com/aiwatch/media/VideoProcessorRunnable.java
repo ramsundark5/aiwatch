@@ -85,6 +85,7 @@ public class VideoProcessorRunnable implements Runnable {
             LOGGER.e("Exception grabbing frame" + e.getMessage());
             return null;
         }
+        LOGGER.d("just grabbed a frame for camera "+cameraConfig.getId());
         timings.addSplit("Frame grab time");
         if (frame != null) {
             if(!frame.keyFrame){
@@ -99,6 +100,8 @@ public class VideoProcessorRunnable implements Runnable {
             Pair<FrameEvent, ObjectDetectionResult> resultPair = Pair.create(frameEvent, objectDetectionResult);
             return resultPair;
         } else { // when frame == null then connection has been lost
+            LOGGER.i("no frame returned for camera "+cameraConfig.getId());
+            LOGGER.i("reconnecting to camera..");
             initGrabber(cameraConfig); // reconnect
         }
         return null;
@@ -114,7 +117,9 @@ public class VideoProcessorRunnable implements Runnable {
                 RTSPTimeOutOption.STIMEOUT.getKey(),
                 String.valueOf(TIMEOUT * 1000000)
         ); // In microseconds.
+        grabber.setOption("hwaccel", "h264_videotoolbox");
         grabber.start();
+        LOGGER.i("connected to camera "+cameraConfig.getId());
     }
 
     private void stopGrabber(){

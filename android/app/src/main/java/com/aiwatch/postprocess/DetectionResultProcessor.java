@@ -54,16 +54,20 @@ public class DetectionResultProcessor {
             FileOutputStream fos=new FileOutputStream(imageFilePath);
             Bitmap bitmapOutput = frameConverter.convert(frameEvent.getFrame());
             RectF location = objectDetectionResult.getLocation();
-            Bitmap croppedBitmap = Bitmap.createBitmap(
-                    bitmapOutput,
-                    ((int) location.left),
-                    ((int) location.top),
-                    ((int) location.width()),
-                    ((int) location.height()));
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(croppedBitmap, 128, 128, true);
-            //scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-            bitmapOutput.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-            fos.close();
+            if(location != null){
+                Bitmap croppedBitmap = Bitmap.createBitmap(
+                        bitmapOutput,
+                        ((int) location.left),
+                        ((int) location.top),
+                        ((int) location.width()),
+                        ((int) location.height()));
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(croppedBitmap, 128, 128, true);
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                fos.close();
+            }else{
+                bitmapOutput.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                fos.close();
+            }
             LOGGER.d("image filepath is "+imageFilePath);
             NotificationManager.sendImageNotification(frameEvent, objectDetectionResult.getName(), imageFilePath);
             return imageFilePath;
