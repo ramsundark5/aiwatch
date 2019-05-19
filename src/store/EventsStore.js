@@ -27,7 +27,7 @@ const eventsSlice = createSlice({
       addEvents(state, action) {
           const newEvents = action.payload;
           if(newEvents){
-            state.events.push(newEvents);
+            state.events.unshift(newEvents);
           }
       },
 

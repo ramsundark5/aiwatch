@@ -38,6 +38,7 @@ public class VideoProcessorRunnable implements Runnable {
     }
 
     public void stop() {
+        LOGGER.i("monitoring stop requested for camera "+cameraConfig.getId());
         running.set(false);
     }
 
@@ -57,6 +58,7 @@ public class VideoProcessorRunnable implements Runnable {
                                 long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
                                 waitTime = 20 * 1000; //20 secs
                                 Thread.sleep(waitTime);
+                                LOGGER.d("sleep is over and running flag is set to "+running.get());
                             }
                         }
                     }catch(Exception e){
@@ -129,7 +131,7 @@ public class VideoProcessorRunnable implements Runnable {
             }
             pauseFrameGrabbing = false;
             framesGrabbed = 0;
-            LOGGER.i("paused frame grabbing");
+            LOGGER.i("paused frame grabbing and running flag set to "+running.get());
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }finally{
