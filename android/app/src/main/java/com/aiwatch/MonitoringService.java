@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.aiwatch.common.AppConstants;
@@ -27,7 +28,7 @@ public class MonitoringService extends Service {
 
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
-    private int NOTIFICATION = R.string.local_service_started;
+    private int NOTIFICATION_ID = R.string.local_service_started;
     static volatile PowerManager.WakeLock _wakeLock;
     static volatile WifiManager.WifiLock _wifiLock;
     static boolean isNotifChannelCreated;
@@ -73,12 +74,13 @@ public class MonitoringService extends Service {
             return;
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForgroundNotification();
+        }
+
         for(CameraConfig cameraConfig : cameraConfigList){
             DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
         }
-        notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        // Display a notification about us starting.  We put an icon in the status bar.
-        showNotification();
     }
 
     private void stopMonitoring(){
@@ -97,7 +99,6 @@ public class MonitoringService extends Service {
                 _wifiLock = ((WifiManager) context.getSystemService(WIFI_SERVICE)).createWifiLock("MonitoringService_wifilock");
                 _wifiLock.acquire();
             }
-            createNotificationChannel(context);
         }
     }
 
@@ -117,11 +118,10 @@ public class MonitoringService extends Service {
     @Override
     public void onDestroy() {
         postStopCleanup();
-        // Cancel the persistent notification.
-        notificationManager.cancel(NOTIFICATION);
-
-        // Tell the user we stopped.
-        Toast.makeText(this, R.string.local_service_stopped, Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(true); //true will remove notification
+        }
+        Toast.makeText(this, "aiwatch monitoring is stopped", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -130,10 +130,37 @@ public class MonitoringService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private static void createNotificationChannel(Context context) {
-        if (isNotifChannelCreated) {
-            return;
+
+    /**
+     * Show a notification while this service is running.
+    */
+    public void startForgroundNotification(){
+        try {
+            if (!isNotifChannelCreated) {
+                createNotificationChannel(getApplicationContext());
+                isNotifChannelCreated = true;
+            }
+            // The PendingIntent to launch our activity if the user selects this notification
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                    new Intent(this, MainActivity.class), 0);
+            String NOTIFICATION_CHANNEL_ID = getApplicationContext().getString(R.string.channel_id);
+            // Set the info for the views that show in the notification panel.
+            Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_launcher)  // the status icon
+                    .setTicker("aiwatch monitoring started")  // the status text
+                    .setWhen(System.currentTimeMillis())  // the time stamp
+                    .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
+                    .setContentText("aiwatch monitoring is active and running")  // the contents of the entry
+                    .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+                    .build();
+            startForeground(NOTIFICATION_ID, notification);
+        }catch(Exception e){
+            LOGGER.e("Exception starting foregorund notification "+e.getMessage());
         }
+
+    }
+
+    private void createNotificationChannel(Context context) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         try{
@@ -153,35 +180,5 @@ public class MonitoringService extends Service {
         }catch(Exception e){
             LOGGER.e("Exception creating notification channel "+e.getMessage());
         }
-    }
-
-    /**
-     * Show a notification while this service is running.
-     */
-    private void showNotification() {
-        try{
-            // In this sample, we'll use the same text for the ticker and the expanded notification
-            CharSequence text = getText(R.string.local_service_started);
-
-            // The PendingIntent to launch our activity if the user selects this notification
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                    new Intent(this, MainActivity.class), 0);
-
-            // Set the info for the views that show in the notification panel.
-            Notification notification = new Notification.Builder(this)
-                    .setSmallIcon(R.drawable.ic_launcher)  // the status icon
-                    .setTicker(text)  // the status text
-                    .setWhen(System.currentTimeMillis())  // the time stamp
-                    .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
-                    .setContentText(text)  // the contents of the entry
-                    .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
-                    .build();
-
-            // Send the notification.
-            notificationManager.notify(NOTIFICATION, notification);
-        }catch(Exception e){
-           LOGGER.e("error showing notification that service started "+e.getMessage());
-        }
-
     }
 }

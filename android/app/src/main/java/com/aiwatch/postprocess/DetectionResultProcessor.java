@@ -2,6 +2,8 @@ package com.aiwatch.postprocess;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.util.TimingLogger;
+
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.media.FrameEvent;
@@ -52,7 +54,9 @@ public class DetectionResultProcessor {
         try {
             String imageFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".jpg");
             FileOutputStream fos=new FileOutputStream(imageFilePath);
+            TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "Frame converter performance");
             Bitmap bitmapOutput = frameConverter.convert(frameEvent.getFrame());
+            timings.dumpToLog();
             RectF location = objectDetectionResult.getLocation();
             if(location != null){
                 Bitmap croppedBitmap = Bitmap.createBitmap(

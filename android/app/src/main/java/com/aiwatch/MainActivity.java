@@ -1,10 +1,8 @@
 package com.aiwatch;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 
 import com.aiwatch.common.AppConstants;
 import com.facebook.react.ReactActivity;
@@ -32,10 +30,10 @@ public class MainActivity extends ReactActivity {
         try{
             Intent intent = new Intent(getApplicationContext(), MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.START_MONITORING);
-            getApplicationContext().startService(intent);
+            ContextCompat.startForegroundService(getApplicationContext(), intent);
+            LOGGER.d("started monitoring as foreground service");
         }catch(Exception e){
             LOGGER.e("error starting monitoring service "+e.getMessage());
         }
-
     }
 }
