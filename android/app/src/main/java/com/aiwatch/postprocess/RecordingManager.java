@@ -81,8 +81,13 @@ public class RecordingManager {
         return null;
     }
 
-    private static String recordToLocal(FrameEvent frameEvent){
+    private synchronized static String recordToLocal(FrameEvent frameEvent){
         try{
+            if (CustomFFmpeg.getInstance(frameEvent.getContext()).isSupported()) {
+                LOGGER.d("FFmpeg is supported");
+            } else {
+                LOGGER.d("FFmpeg is not supported");
+            }
             String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
             int recordingDuration = cameraConfig.getRecordingDuration();
@@ -90,10 +95,9 @@ public class RecordingManager {
                 recordingDuration = 15;
             }
             String videoUrl = cameraConfig.getVideoUrl();
-            String ffmpegRecordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration +" -codec copy "+ filePath;
-            String[] cmd = new String[] {ffmpegRecordCommand};
+            String[] command = {"-rtsp_transport", "tcp", "-i", videoUrl, "-t", String.valueOf(recordingDuration), "-codec", "copy", filePath};
             CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
-            String response = ffmpeg.execute(cmd);
+            String response = ffmpeg.execute(command);
             LOGGER.d("record to local returned "+ response);
             return filePath;
         }catch (Exception e){
