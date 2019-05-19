@@ -27,7 +27,6 @@ public class DetectionController {
                 }
             }
         }
-
         return sInstance;
     }
 

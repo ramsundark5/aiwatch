@@ -1,5 +1,5 @@
 import { NativeEventEmitter } from 'react-native';
-import store from '../store/Store';
+import { store } from '../store/Store';
 import { addEvents } from '../store/EventsStore';
 import RNSmartCam from '../native/RNSmartCam';
 
@@ -14,6 +14,7 @@ class BackgroundListener{
     }
 
     handleNewDetectionEvent = (event) => {
+        //addEvents(event);
         store.dispatch(addEvents(event));
         //store.dispatch(ThreadActions.setCurrentThread(threadForContact));
     }

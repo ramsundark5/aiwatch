@@ -2,19 +2,19 @@ package com.aiwatch.postprocess;
 
 import com.aiwatch.cloud.gdrive.GDriveServiceHelper;
 import com.aiwatch.cloud.gdrive.GdriveManager;
-import com.arthenica.mobileffmpeg.FFmpeg;
 import com.aiwatch.Logger;
 import com.aiwatch.ai.Events;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.media.FrameEvent;
 import com.aiwatch.media.db.CameraConfig;
-
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import static com.arthenica.mobileffmpeg.FFmpeg.RETURN_CODE_CANCEL;
-import static com.arthenica.mobileffmpeg.FFmpeg.RETURN_CODE_SUCCESS;
+import nl.bravobit.ffmpeg.CustomFFmpeg;
+import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
+import nl.bravobit.ffmpeg.FFmpeg;
+import nl.bravobit.ffmpeg.FFtask;
 
 public class RecordingManager {
 
@@ -53,7 +53,7 @@ public class RecordingManager {
         return outputFile.getAbsolutePath();
     }
 
-    private synchronized static String recordToLocal(FrameEvent frameEvent){
+    private static String recordToLocal2(FrameEvent frameEvent){
         try{
             String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
@@ -63,7 +63,7 @@ public class RecordingManager {
             }
             String videoUrl = cameraConfig.getVideoUrl();
             String ffmpegRecordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration +" -codec copy "+ filePath;
-            FFmpeg.execute(ffmpegRecordCommand);
+            /*FFmpeg.execute(ffmpegRecordCommand);
             int rc = FFmpeg.getLastReturnCode();
             String output = FFmpeg.getLastCommandOutput();
             LOGGER.d("recording completed with status "+ rc);
@@ -74,7 +74,28 @@ public class RecordingManager {
                 LOGGER.i("Video recording cancelled by user.");
             } else {
                 LOGGER.e(String.format("Command execution failed with rc=%d and output=%s.", rc, output));
+            }*/
+        }catch (Exception e){
+            LOGGER.e("Error recording video to local "+ e.getMessage());
+        }
+        return null;
+    }
+
+    private static String recordToLocal(FrameEvent frameEvent){
+        try{
+            String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
+            CameraConfig cameraConfig = frameEvent.getCameraConfig();
+            int recordingDuration = cameraConfig.getRecordingDuration();
+            if(recordingDuration <= 1){
+                recordingDuration = 15;
             }
+            String videoUrl = cameraConfig.getVideoUrl();
+            String ffmpegRecordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration +" -codec copy "+ filePath;
+            String[] cmd = new String[] {ffmpegRecordCommand};
+            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
+            String response = ffmpeg.execute(cmd);
+            LOGGER.d("record to local returned "+ response);
+            return filePath;
         }catch (Exception e){
             LOGGER.e("Error recording video to local "+ e.getMessage());
         }

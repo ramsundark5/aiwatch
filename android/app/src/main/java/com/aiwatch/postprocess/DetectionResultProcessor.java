@@ -26,10 +26,14 @@ public class DetectionResultProcessor {
     public boolean processObjectDetectionResult(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
         boolean shouldRecordVideo = RecordingManager.shouldStartRecording(objectDetectionResult, frameEvent.getCameraConfig());
         String videoPath = null;
+        boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
+        if(shouldNotify){
+            //first notify the event
+            NotificationManager.sendStringNotification(frameEvent, objectDetectionResult.getName());
+        }
         if(shouldRecordVideo){
             videoPath = RecordingManager.recordVideo(frameEvent);
         }
-        boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
         boolean isResultInteresting = shouldRecordVideo || shouldNotify;
         if(isResultInteresting){
             String thumbnailPath = saveImage(frameEvent, objectDetectionResult);
