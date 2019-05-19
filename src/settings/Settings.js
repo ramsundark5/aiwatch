@@ -5,6 +5,15 @@ import RNSmartCam from '../native/RNSmartCam';
 import { List, Switch } from 'react-native-paper';
 export default class Settings extends React.Component{
 
+    static navigationOptions = {
+      headerTitle: 'Settings',
+      headerTintColor: Theme.primary,
+      headerTitleStyle: {
+        fontSize: 16,
+        fontWeight: 'normal',
+      }
+    };
+
     state = {
       settings: {},
       isMonitoringOn: false

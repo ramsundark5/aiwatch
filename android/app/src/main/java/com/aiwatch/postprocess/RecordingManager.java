@@ -51,7 +51,7 @@ public class RecordingManager {
         return outputFile.getAbsolutePath();
     }
 
-    private synchronized static String recordToLocal(FrameEvent frameEvent){
+    private static String recordToLocal(FrameEvent frameEvent){
         try{
             if (CustomFFmpeg.getInstance(frameEvent.getContext()).isSupported()) {
                 LOGGER.d("FFmpeg is supported");

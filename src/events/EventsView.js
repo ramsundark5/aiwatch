@@ -11,6 +11,10 @@ import { loadEvents, deleteSelectedEvents, toggleEventSelection } from '../store
 import { connect } from 'react-redux';
 class EventsView extends React.Component {
 
+    static navigationOptions = {
+        header: null,
+    }
+
     state = {
         loading: false,
     }

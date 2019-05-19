@@ -97,6 +97,8 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         try {
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             cameraConfigDao.deleteCamera(cameraId);
+            AlarmEventDao alarmEventDao = new AlarmEventDao();
+            alarmEventDao.deleteEventsForCamera(cameraId);
             Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.REMOVE_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraId);

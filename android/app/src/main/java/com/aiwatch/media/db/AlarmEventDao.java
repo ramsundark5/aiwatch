@@ -31,4 +31,9 @@ public class AlarmEventDao {
         Box<AlarmEvent> alarmEventBox = ObjectBox.get().boxFor(AlarmEvent.class);
         alarmEventBox.remove(id);
     }
+
+    public void deleteEventsForCamera(long cameraId){
+        Box<AlarmEvent> alarmEventBox = ObjectBox.get().boxFor(AlarmEvent.class);
+        alarmEventBox.query().equal(AlarmEvent_.cameraId, cameraId).build().remove();
+    }
 }
