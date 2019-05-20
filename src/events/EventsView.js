@@ -24,8 +24,8 @@ class EventsView extends React.Component {
     }
     
     loadInitialEvents(){
-        let startDate = moment().subtract(30,'d');
-        let currentDate = moment();
+        let startDate = moment().local().subtract(30,'d');
+        let currentDate = moment().local();
         this.loadEventsForDateRange(startDate, currentDate);
     }
 
@@ -80,7 +80,7 @@ class EventsView extends React.Component {
         if(events && events.length > 0){
             groupedEvents = _.groupBy(events, function (event) {
                 //+ prefix in moment constructor used to avoid deprecation warning. https://stackoverflow.com/questions/39969570/deprecation-warning-in-moment-js
-                return moment(+event.date).startOf('day').format('YYYY-MM-DD');
+                return moment(+event.date).local().startOf('day').format('YYYY-MM-DD');
             });
         }
         return(

@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import com.aiwatch.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.Map;
 
-public class CustomFFmpeg implements CustomFFbinaryInterface {
+public class CustomFFmpeg implements FFbinaryInterface {
+    private static final Logger LOGGER = new Logger();
     private static final int VERSION = 17; // up this version when you add a new ffmpeg build
     private static final String KEY_PREF_VERSION = "ffmpeg_version";
 
@@ -137,21 +140,47 @@ public class CustomFFmpeg implements CustomFFbinaryInterface {
         return execute(null, cmd, ffmpegExecuteResponseHandler);
     }
 
-    @Override
-    public String execute(Map<String, String> environmentVars, String[] cmd) {
+    /**
+     * custom method to execute ffmpeg command in synchronous mode
+     * @param cmd
+     * @return result
+     */
+    public String executeSync(String[] cmd) {
         if (cmd.length != 0) {
             String[] ffmpegBinary = new String[]{FileUtils.getFFmpeg(context.provide()).getAbsolutePath()};
             String[] command = concatenate(ffmpegBinary, cmd);
-            FFcommandExecuteSynchronous synchronous = new FFcommandExecuteSynchronous(command, environmentVars, timeout);
-            return synchronous.execute();
+            FFcommandExecuteAsyncTask task = new FFcommandExecuteAsyncTask(command, null, timeout, new ExecuteBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {
+                    LOGGER.d("ffmpeg command started");
+                }
+
+                @Override
+                public void onProgress(String message) {
+                    LOGGER.d("ffmpeg command progressing "+ message);
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    LOGGER.e("ffmpeg command failed "+ message);
+                }
+
+                @Override
+                public void onSuccess(String message) {
+                    LOGGER.d("ffmpeg command completed successfully "+ message);
+                }
+            });
+            try {
+                CommandResult result = task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+                return result.output;
+            } catch (Exception e) {
+                LOGGER.e("exception running ffmpeg command "+e.getMessage());
+            }
         } else {
             throw new IllegalArgumentException("shell command cannot be empty");
         }
-    }
-
-    @Override
-    public String execute(String[] cmd) {
-        return execute(null, cmd);
+        return null;
     }
 
     @Override

@@ -7,7 +7,7 @@ export default class EventTime extends PureComponent{
         const { event } = this.props;
         let formattedTime = '';
         try{
-            formattedTime = moment(+event.date).format('hh:mm a');
+            formattedTime = moment(+event.date).local().format('hh:mm a');
         }catch(err){
             console.log('error formatting datetime');
         }

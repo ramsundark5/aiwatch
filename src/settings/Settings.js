@@ -3,7 +3,8 @@ import { ToastAndroid, View } from 'react-native';
 import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 import RNSmartCam from '../native/RNSmartCam';
 import { List, Switch } from 'react-native-paper';
-export default class Settings extends React.Component{
+import { withNavigation } from "react-navigation";
+class Settings extends Component{
 
     static navigationOptions = {
       headerTitle: 'Settings',
@@ -20,6 +21,7 @@ export default class Settings extends React.Component{
     };
 
     componentDidMount(){
+      const { navigation } = this.props;
       GoogleSignin.configure({
         scopes: ['https://www.googleapis.com/auth/drive.file'], // what API you want to access on behalf of the user, default is email and profile
         webClientId: '119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -134,5 +136,6 @@ export default class Settings extends React.Component{
       />
     );
   }
-
 }
+
+export default withNavigation(Settings);
