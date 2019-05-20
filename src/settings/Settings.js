@@ -26,6 +26,12 @@ export default class Settings extends React.Component{
         offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
       });
       this.loadSettings();
+      this.focusListener = navigation.addListener('didFocus', () => this.loadSettings());
+    }
+
+    componentWillUnmount() {
+      // Remove the event listener
+      this.focusListener.remove();
     }
 
     async loadSettings(){

@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;

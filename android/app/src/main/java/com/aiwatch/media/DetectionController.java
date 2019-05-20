@@ -30,10 +30,10 @@ public class DetectionController {
         return sInstance;
     }
 
-    public void startDetection(CameraConfig cameraConfig, final Context context) {
+    public synchronized void startDetection(CameraConfig cameraConfig, final Context context) {
         try {
             cameraConfig.setVideoCodec(avcodec.AV_CODEC_ID_H264);
-            stopCurrentVideoProcessor(cameraConfig.getId());
+            stopSelectedVideoProcessor(cameraConfig.getId());
             if(!cameraConfig.isMonitoringEnabled()){
                 return;
             }
@@ -47,7 +47,7 @@ public class DetectionController {
         }
     }
 
-    public void stopAllDetecting(){
+    public synchronized void stopAllDetecting(){
         if(cameraMap == null && cameraMap.isEmpty()){
             return;
         }
@@ -56,16 +56,16 @@ public class DetectionController {
         }
     }
 
-    public void stopDetecting(final long cameraId) {
+    public synchronized void stopDetecting(final long cameraId) {
         try {
-            stopCurrentVideoProcessor(cameraId);
+            stopSelectedVideoProcessor(cameraId);
             LOGGER.d("object detection stopped");
         } catch (Exception e) {
             LOGGER.e("Exception stopping detection "+e.getMessage());
         }
     }
 
-    private void stopCurrentVideoProcessor(long cameraId){
+    private synchronized void stopSelectedVideoProcessor(long cameraId){
         RunningThreadInfo runningThreadInfo = cameraMap.get(cameraId);
         if(runningThreadInfo != null){
             ExecutorService executorService = runningThreadInfo.getExecutorService();
@@ -77,7 +77,7 @@ public class DetectionController {
                 executorService.shutdown();
             }
             cameraMap.remove(cameraId);
-            LOGGER.d("Monitoring started for cameraId "+ runningThreadInfo.getCameraConfig().getName() + runningThreadInfo.getCameraConfig().getId());
+            LOGGER.d("Monitoring stopped for cameraId "+ runningThreadInfo.getCameraConfig().getName() + runningThreadInfo.getCameraConfig().getId());
         }
     }
 }

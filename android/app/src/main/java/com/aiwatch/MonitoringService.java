@@ -24,8 +24,6 @@ import java.util.List;
 public class MonitoringService extends Service {
 
     private static final Logger LOGGER = new Logger();
-    private NotificationManager notificationManager;
-
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
     private int NOTIFICATION_ID = R.string.local_service_started;
@@ -35,14 +33,15 @@ public class MonitoringService extends Service {
 
     @Override
     public void onCreate() {
+        LOGGER.i("Creating new monitoring service instance ");
         startMonitoring();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LOGGER.i("Received request to monitoring service", "Received start id " + startId + ": " + intent);
         preStart(this);
         String action = intent.getStringExtra(AppConstants.ACTION_EXTRA);
+        LOGGER.i("Received onStartCommand with action " + action);
         if(action != null){
             switch (action) {
                 case AppConstants.START_MONITORING:

@@ -23,8 +23,8 @@ import java.util.Set;
  * Wrapper for the platform log function, allows convenient message prefixing and log disabling.
  */
 public final class Logger {
-  public static final String DEFAULT_TAG = "aiwatch";
-  private static final int DEFAULT_MIN_LOG_LEVEL = Log.VERBOSE;
+  public static final String DEFAULT_TAG = "aiwatch_tag";
+  private static final int DEFAULT_MIN_LOG_LEVEL = Log.DEBUG;
 
   // Classes to be ignored when examining the stack trace
   private static final Set<String> IGNORED_CLASS_NAMES;
