@@ -11,6 +11,8 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import nl.bravobit.ffmpeg.CustomFFmpeg;
+import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
+import nl.bravobit.ffmpeg.FFtask;
 
 public class RecordingManager {
 
@@ -34,26 +36,14 @@ public class RecordingManager {
 
     public static String recordVideo(FrameEvent frameEvent){
         String videoPath = recordToLocal(frameEvent);
-        if(videoPath != null && !videoPath.isEmpty()){
-            recordToGdrive(frameEvent, videoPath);
-        }
         return videoPath;
     }
 
-    public static String getFilePathToRecord(FrameEvent frameEvent, String extension){
-        if(extension == null){
-            extension = DEFAULT_EXTENSION;
-        }
-        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmm");
-        String currentTime = dateFormat.format(System.currentTimeMillis());
-        String fileName = frameEvent.getCameraConfig().getId() + currentTime + extension;
-        File outputFile = new File(frameEvent.getContext().getFilesDir(), fileName);
-        return outputFile.getAbsolutePath();
-    }
 
     private synchronized static String recordToLocal(FrameEvent frameEvent){
         try{
-            if (CustomFFmpeg.getInstance(frameEvent.getContext()).isSupported()) {
+            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
+            if (ffmpeg.isSupported()) {
                 LOGGER.d("FFmpeg is supported");
             } else {
                 LOGGER.e("FFmpeg is not supported");
@@ -66,9 +56,8 @@ public class RecordingManager {
             }
             String videoUrl = cameraConfig.getVideoUrl();
             String[] command = {"-rtsp_transport", "tcp", "-i", videoUrl, "-t", String.valueOf(recordingDuration), "-codec", "copy", filePath};
-            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
-            String response = ffmpeg.executeSync(command);
-            LOGGER.d("record to local returned "+ response);
+            String response = ffmpeg.executeSync(null, command);
+            LOGGER.d("record to local returned ");
             return filePath;
         }catch (Exception e){
             LOGGER.e("Error recording video to local "+ e.getMessage());
@@ -93,5 +82,16 @@ public class RecordingManager {
             NotificationManager.sendStringNotification(frameEvent, "Cannot upload to Google Drive. Reconnect your account from settings screen.");
         }
         return null;
+    }
+
+    public static String getFilePathToRecord(FrameEvent frameEvent, String extension){
+        if(extension == null){
+            extension = DEFAULT_EXTENSION;
+        }
+        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmm");
+        String currentTime = dateFormat.format(System.currentTimeMillis());
+        String fileName = frameEvent.getCameraConfig().getId() + currentTime + extension;
+        File outputFile = new File(frameEvent.getContext().getFilesDir(), fileName);
+        return outputFile.getAbsolutePath();
     }
 }

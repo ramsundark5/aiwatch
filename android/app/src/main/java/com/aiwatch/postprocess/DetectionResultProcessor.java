@@ -43,9 +43,7 @@ public class DetectionResultProcessor {
             AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getName(), videoPath, thumbnailPath);
             alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
             alarmEventDao.putEvent(alarmEvent);
-            if(shouldNotify){
-                NotificationManager.sendNotification(frameEvent, alarmEvent);
-            }
+            NotificationManager.sendUINotification(frameEvent, alarmEvent);
         }
         return isResultInteresting;
     }

@@ -39,26 +39,17 @@ public class NotificationManager {
         return shouldNotify;
     }
 
-    public static void sendNotification(FrameEvent frameEvent, AlarmEvent alarmEvent){
+    public static void sendUINotification(FrameEvent frameEvent, AlarmEvent alarmEvent){
         try{
             Context context = frameEvent.getContext();
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle(alarmEvent.getMessage())
-                    //.setContentText(alarmEvent.getMessage())
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            // notificationId is a unique int for each notification that you must define
-            notificationManager.notify(frameEvent.hashCode(), builder.build());
-
             notifyEventToUI(context, alarmEvent);
+
             UiThreadUtil.runOnUiThread(() -> {
                 Toast.makeText(frameEvent.getContext(), alarmEvent.getMessage(), Toast.LENGTH_SHORT).show();
             });
         }catch(Exception e){
             LOGGER.e("Error sending local notification "+e);
         }
-
     }
 
     public static void sendStringNotification(FrameEvent frameEvent, String message){
