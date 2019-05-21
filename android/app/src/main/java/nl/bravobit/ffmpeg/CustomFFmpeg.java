@@ -145,14 +145,14 @@ public class CustomFFmpeg implements FFbinaryInterface {
      * @param cmd
      * @return result
      */
-    public String executeSync2(String[] cmd, FFcommandExecuteResponseHandler ffmpegExecuteResponseHandler) {
+    public String executeSync(String[] cmd, FFcommandExecuteResponseHandler ffmpegExecuteResponseHandler) {
         if (cmd.length != 0) {
             String[] ffmpegBinary = new String[]{FileUtils.getFFmpeg(context.provide()).getAbsolutePath()};
             String[] command = concatenate(ffmpegBinary, cmd);
             FFcommandExecuteAsyncTask task = new FFcommandExecuteAsyncTask(command, null, timeout, ffmpegExecuteResponseHandler);
             try {
-                //CommandResult result = task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
-                CommandResult result = task.execute().get();
+                CommandResult result = task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+                //CommandResult result = task.execute().get();
                 return result.output;
             } catch (Exception e) {
                 LOGGER.e("exception running ffmpeg command "+e.getMessage());
@@ -163,7 +163,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
         return null;
     }
 
-    public String executeSync(Map<String, String> environmentVars, String[] cmd) {
+    public String executeSync2(Map<String, String> environmentVars, String[] cmd) {
         if (cmd.length != 0) {
             String[] ffmpegBinary = new String[]{FileUtils.getFFmpeg(context.provide()).getAbsolutePath()};
             String[] command = concatenate(ffmpegBinary, cmd);

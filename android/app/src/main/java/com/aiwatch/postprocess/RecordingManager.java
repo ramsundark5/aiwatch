@@ -56,7 +56,7 @@ public class RecordingManager {
             }
             String videoUrl = cameraConfig.getVideoUrl();
             String[] command = {"-rtsp_transport", "tcp", "-i", videoUrl, "-t", String.valueOf(recordingDuration), "-codec", "copy", filePath};
-            String response = ffmpeg.executeSync(null, command);
+            String response = ffmpeg.executeSync(command, null);
             LOGGER.d("record to local returned ");
             return filePath;
         }catch (Exception e){

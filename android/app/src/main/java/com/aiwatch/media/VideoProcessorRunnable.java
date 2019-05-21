@@ -9,10 +9,17 @@ import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.common.RTSPTimeOutOption;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.postprocess.DetectionResultProcessor;
+import com.aiwatch.postprocess.RecordingManager;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
+
+import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import nl.bravobit.ffmpeg.CustomFFmpeg;
+import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
+import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
 
 public class VideoProcessorRunnable implements Runnable {
 
@@ -46,32 +53,74 @@ public class VideoProcessorRunnable implements Runnable {
     public void run() {
         try {
             running.set(true);
-            while (running.get()) {
-                if(!pauseFrameGrabbing){
-                    try{
-                        Pair<FrameEvent, ObjectDetectionResult> resultPair = grabFrameAndProcess();
-                        if(resultPair != null){
-                            pauseFrameGrabbing = detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
-                            if(pauseFrameGrabbing){
-                                stopGrabber();
-                                long waitTimeInMins = cameraConfig.getWaitPeriodAfterDetection();
-                                long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
-                                waitTime = 20 * 1000; //20 secs
-                                Thread.sleep(waitTime);
-                                LOGGER.d("sleep is over and running flag is set to "+running.get());
-                            }
-                        }
-                    }catch(Exception e){
-                        //swallow exception to continue processing
-                        LOGGER.e(e.getMessage());
-                    }
-                }
-            }
+            //monitor();
+            startFFMpegRecording();
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
         finally{
-            stopGrabber();
+            //stopGrabber();
+        }
+    }
+
+    private void startFFMpegRecording(){
+        CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
+        File outputFile = new File(context.getFilesDir(), "cam");
+        String videoPath = outputFile.getAbsolutePath();
+        //"ffmpeg -i rtsp://<user>:<password>@xxx.xxx.xxx.xxx:xxx/play1.sdp -c copy -map 0 -f segment -strftime 1 -segment_time 1800 -segment_format mp4 out-%d_%m_%Y-%H_%M_%S.mp4"
+        String command = "-rtsp_transport tcp -i " + cameraConfig.getVideoUrl() +" -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath+cameraConfig.getId()+"-%Y%m%d_%H:%M:%S.mp4";
+        String[] ffmpegCommand = command.split("\\s+");
+        ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
+            @Override
+            public void onStart() {
+                LOGGER.d("ffmpeg recording started");
+            }
+
+            @Override
+            public void onFinish() {
+                LOGGER.d("ffmpeg recording completed");
+            }
+
+            @Override
+            public void onSuccess(String message) {
+                LOGGER.d("ffmpeg recording success");
+            }
+
+            @Override
+            public void onProgress(String message) {
+                LOGGER.d("ffmpeg recording in progress");
+            }
+
+            @Override
+            public void onFailure(String message) {
+                LOGGER.e("ffmpeg recording failed "+message);
+            }
+        });
+        //String[] command = {"-rtsp_transport", "tcp", "-i", cameraConfig.getVideoUrl(), "-t", String.valueOf(recordingDuration), "-codec", "copy", filePath};
+        //ffmpeg.execute()
+    }
+
+    private void monitor(){
+        while (running.get()) {
+            if (!pauseFrameGrabbing) {
+                try {
+                    Pair<FrameEvent, ObjectDetectionResult> resultPair = grabFrameAndProcess();
+                    if (resultPair != null) {
+                        pauseFrameGrabbing = detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
+                        if (pauseFrameGrabbing) {
+                            stopGrabber();
+                            long waitTimeInMins = cameraConfig.getWaitPeriodAfterDetection();
+                            long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
+                            waitTime = 20 * 1000; //20 secs
+                            Thread.sleep(waitTime);
+                            LOGGER.d("sleep is over and running flag is set to " + running.get());
+                        }
+                    }
+                } catch (Exception e) {
+                    //swallow exception to continue processing
+                    LOGGER.e(e.getMessage());
+                }
+            }
         }
     }
 
