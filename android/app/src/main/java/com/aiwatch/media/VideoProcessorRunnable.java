@@ -54,7 +54,9 @@ public class VideoProcessorRunnable implements Runnable {
         try {
             running.set(true);
             //monitor();
-            startFFMpegRecording();
+            startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
+            startFFMpegRecording(3, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=1&subtype=0");
+            startFFMpegRecording(4, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=2&subtype=0");
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
@@ -63,12 +65,11 @@ public class VideoProcessorRunnable implements Runnable {
         }
     }
 
-    private void startFFMpegRecording(){
+    private void startFFMpegRecording(long cameraId, String videoUrl){
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         File outputFile = new File(context.getFilesDir(), "cam");
         String videoPath = outputFile.getAbsolutePath();
-        //"ffmpeg -i rtsp://<user>:<password>@xxx.xxx.xxx.xxx:xxx/play1.sdp -c copy -map 0 -f segment -strftime 1 -segment_time 1800 -segment_format mp4 out-%d_%m_%Y-%H_%M_%S.mp4"
-        String command = "-rtsp_transport tcp -i " + cameraConfig.getVideoUrl() +" -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath+cameraConfig.getId()+"-%Y%m%d_%H:%M:%S.mp4";
+        String command = "-rtsp_transport tcp -i " + videoUrl +" -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + cameraId +"-%Y%m%d_%H:%M:%S.mp4";
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
