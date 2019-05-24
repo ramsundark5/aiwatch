@@ -18,4 +18,8 @@ public class AppConstants {
     public static final String AIWATCH_EVENT_INTENT = "AIWATCH_EVENT_INTENT";
     public static final String NEW_DETECTION_EVENT = "NEW_DETECTION_EVENT";
     public static final String NEW_DETECTION_JS_EVENT = "NEW_DETECTION_JS_EVENT";
+    public static final String UNCOMPRESSED_VIDEO_FOLDER = "tempvideos";
+    public static final String COMPRESSED_VIDEO_FOLDER = "compressed";
+    public static final String MERGED_VIDEO_FOLDER = "videos";
+    public static final String IMAGES_FOLDER = "images";
 }

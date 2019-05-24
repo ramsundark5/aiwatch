@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.media.CompressionService;
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {

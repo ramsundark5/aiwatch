@@ -1,8 +1,6 @@
 package com.aiwatch.media;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.util.Pair;
 import android.util.TimingLogger;
 import com.aiwatch.Logger;
@@ -11,9 +9,7 @@ import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.common.RTSPTimeOutOption;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.postprocess.DetectionResultProcessor;
-import com.iceteck.silicompressorr.SiliCompressor;
 import com.otaliastudios.transcoder.MediaTranscoder;
-import com.otaliastudios.transcoder.strategy.DefaultVideoStrategies;
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy;
 import com.otaliastudios.transcoder.validator.WriteAlwaysValidator;
 
@@ -67,8 +63,6 @@ public class VideoProcessorRunnable implements Runnable {
             running.set(true);
             //monitor();
             startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
-            //startFFMpegRecording(3, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=1&subtype=0");
-            //startFFMpegRecording(4, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=2&subtype=0");
             //compressVideos(context.getFilesDir());
         } catch (Exception e) {
             LOGGER.e("compression exception " + e.getStackTrace());
@@ -77,6 +71,35 @@ public class VideoProcessorRunnable implements Runnable {
         finally{
             //stopGrabber();
         }
+    }
+
+
+    private void monitor(){
+        while (running.get()) {
+            if (!pauseFrameGrabbing) {
+                try {
+                    Pair<FrameEvent, ObjectDetectionResult> resultPair = grabFrameAndProcess();
+                    if (resultPair != null) {
+                        pauseFrameGrabbing = detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
+                        if (pauseFrameGrabbing) {
+                            stopGrabber();
+                            long waitTimeInMins = cameraConfig.getWaitPeriodAfterDetection();
+                            long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
+                            waitTime = 20 * 1000; //20 secs
+                            Thread.sleep(waitTime);
+                            LOGGER.d("sleep is over and running flag is set to " + running.get());
+                        }
+                    }
+                } catch (Exception e) {
+                    //swallow exception to continue processing
+                    LOGGER.e(e.getMessage());
+                }
+            }
+        }
+    }
+
+    private static void getOldFiles(){
+
     }
 
     private void compressVideos(File videoDir) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
@@ -114,12 +137,6 @@ public class VideoProcessorRunnable implements Runnable {
                         }
                     }).transcode();
             compressFuture.get();
-
-            /*String filePath = SiliCompressor.with(context).compressVideo(rawFile.getAbsolutePath(), compressedFolder.getAbsolutePath());
-            File compressedFile = new File(filePath);
-            if (compressedFile.exists()) {
-                compressedFile.renameTo(outputFile);
-            }*/
             long endTime = System.nanoTime();
             long time_ns = endTime - startTime;
             long time_s = TimeUnit.NANOSECONDS.toSeconds(time_ns);
@@ -128,26 +145,9 @@ public class VideoProcessorRunnable implements Runnable {
         }
     }
 
-    private void compressVideo2(File videoDir){
-        FilenameFilter filenameFilter = new FilenameFilter(){
-            public boolean accept(File dir, String name)
-            {
-                return ((name.endsWith(".mp4")));
-            }
-        };
-        File compressedFolder = new File(videoDir, "compressed");
-        if (!compressedFolder.exists()) {
-            compressedFolder.mkdirs();
-        }
-    }
-
-    private static void getOldFiles(){
-
-    }
-
     private void startFFMpegRecording(long cameraId, String videoUrl){
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
-        File videoFolder = new File(context.getFilesDir(), "rawvideos");
+        File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
         if (!videoFolder.exists()) {
             videoFolder.mkdirs();
         }
@@ -156,11 +156,11 @@ public class VideoProcessorRunnable implements Runnable {
         if (!imageFolder.exists()) {
             imageFolder.mkdirs();
         }
+        long timeout = 10 * 1000000; //10 seconds
         String imagePath = imageFolder.getAbsolutePath();
         String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 ";
-        String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I) -strftime 1 -vsync vfr " + imagePath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.png";
-        String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand + frameExtractCommand;
-               // " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 -vf select=eq(pict_type\\,PICT_TYPE_I) -vsync vfr " + imagePath + "/" + cameraId +".png";
+        String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I) -update 1 -vsync vfr " + imagePath + "/camera" + cameraId +".png";
+        String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand ;
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
@@ -186,34 +186,13 @@ public class VideoProcessorRunnable implements Runnable {
             @Override
             public void onFailure(String message) {
                 LOGGER.e("ffmpeg recording failed "+message);
+                //keep retrying
+                //startFFMpegRecording(cameraId, videoUrl);
             }
         });
-        //String[] command = {"-rtsp_transport", "tcp", "-i", cameraConfig.getVideoUrl(), "-t", String.valueOf(recordingDuration), "-codec", "copy", filePath};
-        //ffmpeg.execute()
-    }
 
-    private void monitor(){
-        while (running.get()) {
-            if (!pauseFrameGrabbing) {
-                try {
-                    Pair<FrameEvent, ObjectDetectionResult> resultPair = grabFrameAndProcess();
-                    if (resultPair != null) {
-                        pauseFrameGrabbing = detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
-                        if (pauseFrameGrabbing) {
-                            stopGrabber();
-                            long waitTimeInMins = cameraConfig.getWaitPeriodAfterDetection();
-                            long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
-                            waitTime = 20 * 1000; //20 secs
-                            Thread.sleep(waitTime);
-                            LOGGER.d("sleep is over and running flag is set to " + running.get());
-                        }
-                    }
-                } catch (Exception e) {
-                    //swallow exception to continue processing
-                    LOGGER.e(e.getMessage());
-                }
-            }
-        }
+        //BackgroundRecordService backgroundRecordService = new BackgroundRecordService(context, cameraConfig);
+        //backgroundRecordService.startFFMpegRecording();
     }
 
     private Pair<FrameEvent, ObjectDetectionResult> grabFrameAndProcess() throws Exception {
