@@ -1,6 +1,8 @@
 package com.aiwatch.media;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TimingLogger;
 import com.aiwatch.Logger;
@@ -9,16 +11,26 @@ import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.common.RTSPTimeOutOption;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.postprocess.DetectionResultProcessor;
-import com.aiwatch.postprocess.RecordingManager;
+import com.iceteck.silicompressorr.SiliCompressor;
+import com.otaliastudios.transcoder.MediaTranscoder;
+import com.otaliastudios.transcoder.strategy.DefaultVideoStrategies;
+import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy;
+import com.otaliastudios.transcoder.validator.WriteAlwaysValidator;
+
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
 import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
 
 public class VideoProcessorRunnable implements Runnable {
@@ -54,15 +66,84 @@ public class VideoProcessorRunnable implements Runnable {
         try {
             running.set(true);
             //monitor();
-            startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
-            startFFMpegRecording(3, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=1&subtype=0");
-            startFFMpegRecording(4, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=2&subtype=0");
+            //startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
+            //startFFMpegRecording(3, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=1&subtype=0");
+            //startFFMpegRecording(4, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=2&subtype=0");
+            compressVideos(context.getFilesDir());
         } catch (Exception e) {
-            LOGGER.e(e.getMessage());
+            LOGGER.e("compression exception " + e.getStackTrace());
+            e.printStackTrace();
         }
         finally{
             //stopGrabber();
         }
+    }
+
+    private void compressVideos(File videoDir) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
+        FilenameFilter filenameFilter = new FilenameFilter(){
+            public boolean accept(File dir, String name)
+            {
+                return ((name.endsWith(".mp4")));
+            }
+        };
+        File compressedFolder = new File(videoDir, "compressed");
+        if (!compressedFolder.exists()) {
+            compressedFolder.mkdirs();
+        }
+        for(File rawFile : videoDir.listFiles(filenameFilter)){
+
+            long startTime = System.nanoTime();
+            File outputFile = new File(compressedFolder, rawFile.getName());
+            DefaultVideoStrategy strategy = new DefaultVideoStrategy.Builder()
+                    .bitRate(2L * 1000 * 1000)
+                    .iFrameInterval(3F)
+                    .frameRate(20) // will be capped to the input frameRate
+                    .build();
+            DefaultVideoStrategy strategy2 = DefaultVideoStrategy.atMost(360, 640).frameRate(15).bitRate(450000).build();
+            Future compressFuture = MediaTranscoder.into(outputFile.getAbsolutePath())
+                    .setValidator(new WriteAlwaysValidator())
+                    .setDataSource(rawFile.getAbsolutePath())
+                    .setVideoOutputStrategy(strategy2)
+                    .setListener(new MediaTranscoder.Listener() {
+                        public void onTranscodeProgress(double progress) {}
+                        public void onTranscodeCompleted(int successCode) {
+                            LOGGER.d("compression completed");
+                        }
+                        public void onTranscodeCanceled() {}
+                        public void onTranscodeFailed(Throwable exception) {
+                            LOGGER.e("error "+exception.getMessage());
+                        }
+                    }).transcode();
+            compressFuture.get();
+
+            /*String filePath = SiliCompressor.with(context).compressVideo(rawFile.getAbsolutePath(), compressedFolder.getAbsolutePath());
+            File compressedFile = new File(filePath);
+            if (compressedFile.exists()) {
+                compressedFile.renameTo(outputFile);
+            }*/
+            long endTime = System.nanoTime();
+            long time_ns = endTime - startTime;
+            long time_s = TimeUnit.NANOSECONDS.toSeconds(time_ns);
+            LOGGER.d("time taken "+time_s);
+            LOGGER.d("compressed file created at path "+outputFile.getAbsolutePath());
+        }
+    }
+
+    private void compressVideo2(File videoDir){
+        FilenameFilter filenameFilter = new FilenameFilter(){
+            public boolean accept(File dir, String name)
+            {
+                return ((name.endsWith(".mp4")));
+            }
+        };
+        File compressedFolder = new File(videoDir, "compressed");
+        if (!compressedFolder.exists()) {
+            compressedFolder.mkdirs();
+        }
+    }
+
+    private static void getOldFiles(){
+
     }
 
     private void startFFMpegRecording(long cameraId, String videoUrl){
