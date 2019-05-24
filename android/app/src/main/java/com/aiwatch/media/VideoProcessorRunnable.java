@@ -66,10 +66,10 @@ public class VideoProcessorRunnable implements Runnable {
         try {
             running.set(true);
             //monitor();
-            //startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
+            startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
             //startFFMpegRecording(3, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=1&subtype=0");
             //startFFMpegRecording(4, "rtsp://admin:230982@192.168.29.244:554/cam/realmonitor?channel=2&subtype=0");
-            compressVideos(context.getFilesDir());
+            //compressVideos(context.getFilesDir());
         } catch (Exception e) {
             LOGGER.e("compression exception " + e.getStackTrace());
             e.printStackTrace();
@@ -94,12 +94,11 @@ public class VideoProcessorRunnable implements Runnable {
 
             long startTime = System.nanoTime();
             File outputFile = new File(compressedFolder, rawFile.getName());
-            DefaultVideoStrategy strategy = new DefaultVideoStrategy.Builder()
-                    .bitRate(2L * 1000 * 1000)
-                    .iFrameInterval(3F)
-                    .frameRate(20) // will be capped to the input frameRate
-                    .build();
-            DefaultVideoStrategy strategy2 = DefaultVideoStrategy.atMost(360, 640).frameRate(15).bitRate(450000).build();
+            DefaultVideoStrategy strategy2 = DefaultVideoStrategy.atMost(360, 480).
+                    frameRate(15).
+                    iFrameInterval(10F).
+                    build();
+            LOGGER.d("starting compression");
             Future compressFuture = MediaTranscoder.into(outputFile.getAbsolutePath())
                     .setValidator(new WriteAlwaysValidator())
                     .setDataSource(rawFile.getAbsolutePath())
@@ -150,7 +149,9 @@ public class VideoProcessorRunnable implements Runnable {
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         File outputFile = new File(context.getFilesDir(), "cam");
         String videoPath = outputFile.getAbsolutePath();
-        String command = "-rtsp_transport tcp -i " + videoUrl +" -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + cameraId +"-%Y%m%d_%H:%M:%S.mp4";
+        //-vf "select='eq(pict_type,PICT_TYPE_I)'" -vsync vfr thumb%04d.png
+        //-f tee -map 0:v "[f=segment:segment_atclocktime=1:segment_time=3600:strftime=1]/videos/raw_video/video_%Y%m%d-%H%M%S.mp4|[f=mpegts]udp://127.0.0.1:1234/"
+        String command = "-rtsp_transport tcp -i " + videoUrl +" -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + cameraId +"-%Y%m%d_%H:%M:%S.mp4  -vf fps=1 " + videoPath + cameraId +"%d.png";
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
