@@ -147,11 +147,17 @@ public class VideoProcessorRunnable implements Runnable {
 
     private void startFFMpegRecording(long cameraId, String videoUrl){
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
-        File outputFile = new File(context.getFilesDir(), "cam");
-        String videoPath = outputFile.getAbsolutePath();
-        //-vf "select='eq(pict_type,PICT_TYPE_I)'" -vsync vfr thumb%04d.png
-        //-f tee -map 0:v "[f=segment:segment_atclocktime=1:segment_time=3600:strftime=1]/videos/raw_video/video_%Y%m%d-%H%M%S.mp4|[f=mpegts]udp://127.0.0.1:1234/"
-        String command = "-rtsp_transport tcp -i " + videoUrl +" -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + cameraId +"-%Y%m%d_%H:%M:%S.mp4  -vf fps=1 " + videoPath + cameraId +"%d.png";
+        File videoFolder = new File(context.getFilesDir(), "rawvideos");
+        if (!videoFolder.exists()) {
+            videoFolder.mkdirs();
+        }
+        String videoPath = videoFolder.getAbsolutePath();
+        File imageFolder = new File(context.getFilesDir(), "images");
+        if (!imageFolder.exists()) {
+            imageFolder.mkdirs();
+        }
+        String iamgePath = imageFolder.getAbsolutePath();
+        String command = "-rtsp_transport tcp -i " + videoUrl +" -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 -vf select=eq(pict_type\\,PICT_TYPE_I) -strftime 1 -vsync vfr " + iamgePath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.png";
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
