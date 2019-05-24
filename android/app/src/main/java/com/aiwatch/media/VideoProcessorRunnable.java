@@ -156,8 +156,11 @@ public class VideoProcessorRunnable implements Runnable {
         if (!imageFolder.exists()) {
             imageFolder.mkdirs();
         }
-        String iamgePath = imageFolder.getAbsolutePath();
-        String command = "-rtsp_transport tcp -i " + videoUrl +" -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 -vf select=eq(pict_type\\,PICT_TYPE_I) -strftime 1 -vsync vfr " + iamgePath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.png";
+        String imagePath = imageFolder.getAbsolutePath();
+        String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 ";
+        String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I) -strftime 1 -vsync vfr " + imagePath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.png";
+        String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand + frameExtractCommand;
+               // " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 -vf select=eq(pict_type\\,PICT_TYPE_I) -vsync vfr " + imagePath + "/" + cameraId +".png";
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
