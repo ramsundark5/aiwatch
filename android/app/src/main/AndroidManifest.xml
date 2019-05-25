@@ -22,6 +22,12 @@
             android:exported="true">
         </service>
 
+        <service
+            android:name=".media.CompressionService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

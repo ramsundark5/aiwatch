@@ -11,12 +11,11 @@ import com.aiwatch.Logger;
 import com.aiwatch.common.AppConstants;
 import com.otaliastudios.transcoder.MediaTranscoder;
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy;
-import com.otaliastudios.transcoder.validator.WriteAlwaysValidator;
 import java.io.File;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class CompressionService  extends Service {
+public class CompressionService extends Service {
 
     private static final Logger LOGGER = new Logger();
     private FileObserver observer;
@@ -39,6 +38,7 @@ public class CompressionService  extends Service {
     public void compressVideos()  {
         File appFolder = getApplicationContext().getFilesDir();
         File uncompressedVideoFolder = new File (appFolder, AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
+        LOGGER.i("compression service started");
         observer = new FileObserver(uncompressedVideoFolder.getAbsolutePath(), FileObserver.CLOSE_WRITE) {
             @Override
             public void onEvent(int event, final String rawFile) {
@@ -51,14 +51,15 @@ public class CompressionService  extends Service {
         observer.startWatching();
     }
 
-    private void compressFile(String rawFilePath){
+    private synchronized void compressFile(String rawFileName){
         try{
             File appFolder = getApplicationContext().getFilesDir();
+            File uncompressedVideoFolder = new File (appFolder, AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
+            File rawFile = new File(uncompressedVideoFolder, rawFileName);
             File compressedFolder = new File(appFolder, AppConstants.COMPRESSED_VIDEO_FOLDER);
             if (!compressedFolder.exists()) {
                 compressedFolder.mkdirs();
             }
-            File rawFile = new File(rawFilePath);
             if(!rawFile.getName().endsWith(".mp4")){
                 //we don't care about non-media files. ignore and return
                 return;

@@ -29,9 +29,11 @@ public class MainActivity extends ReactActivity {
 
     private void startMonitoringService(){
         try{
-            Intent intent = new Intent(getApplicationContext(), MonitoringService.class);
-            //intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.START_MONITORING);
-            ContextCompat.startForegroundService(getApplicationContext(), intent);
+            Intent monitoringIntent = new Intent(getApplicationContext(), MonitoringService.class);
+            ContextCompat.startForegroundService(getApplicationContext(), monitoringIntent);
+
+            Intent compressionIntent = new Intent(getApplicationContext(), CompressionService.class);
+            ContextCompat.startForegroundService(getApplicationContext(), compressionIntent);
             LOGGER.d("Invoking monitoring from main activity");
         }catch(Exception e){
             LOGGER.e("error starting monitoring service "+e.getMessage());

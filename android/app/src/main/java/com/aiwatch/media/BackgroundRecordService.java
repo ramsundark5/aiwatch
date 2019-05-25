@@ -24,7 +24,9 @@ public class BackgroundRecordService {
         this.cameraConfig = cameraConfig;
     }
 
-    public void startFFMpegRecording(){
+    public void startFFMpegRecording() {
+        long cameraId = cameraConfig.getId();
+        String videoUrl = cameraConfig.getVideoUrl();
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
         if (!videoFolder.exists()) {
@@ -37,9 +39,9 @@ public class BackgroundRecordService {
         }
         long timeout = 10 * 1000000; //10 seconds
         String imagePath = imageFolder.getAbsolutePath();
-        String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraConfig.getId() +"-%Y%m%d_%H:%M:%S.mp4 ";
-        String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I) -update 1 -vsync vfr " + imagePath + "/camera" + cameraConfig.getId() +".png";
-        String command = "-rtsp_transport tcp -i " + cameraConfig.getVideoUrl() + recordCommand + frameExtractCommand;
+        String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId + "-%Y%m%d_%H:%M:%S.mp4 ";
+        String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I) -update 1 -vsync vfr " + imagePath + "/camera" + cameraId + ".png";
+        String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand;
         String[] ffmpegCommand = command.split("\\s+");
         recordingTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
@@ -64,7 +66,7 @@ public class BackgroundRecordService {
 
             @Override
             public void onFailure(String message) {
-                LOGGER.e("ffmpeg recording failed "+message);
+                LOGGER.e("ffmpeg recording failed " + message);
                 //keep retrying
                 //startFFMpegRecording(cameraId, videoUrl);
             }
