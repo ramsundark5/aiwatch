@@ -92,53 +92,8 @@ public class VideoProcessorRunnable implements Runnable {
     }
 
     private void startFFMpegRecording(long cameraId, String videoUrl){
-        CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
-        File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
-        if (!videoFolder.exists()) {
-            videoFolder.mkdirs();
-        }
-        String videoPath = videoFolder.getAbsolutePath();
-        File imageFolder = new File(context.getFilesDir(), "images");
-        if (!imageFolder.exists()) {
-            imageFolder.mkdirs();
-        }
-        long timeout = 10 * 1000000; //10 seconds
-        String imagePath = imageFolder.getAbsolutePath();
-        String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 ";
-        String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I) -update 1 -vsync vfr " + imagePath + "/camera" + cameraId +".png";
-        String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand ;
-        String[] ffmpegCommand = command.split("\\s+");
-        ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
-            @Override
-            public void onStart() {
-                LOGGER.d("ffmpeg recording started");
-            }
-
-            @Override
-            public void onFinish() {
-                LOGGER.d("ffmpeg recording completed");
-            }
-
-            @Override
-            public void onSuccess(String message) {
-                LOGGER.d("ffmpeg recording success");
-            }
-
-            @Override
-            public void onProgress(String message) {
-                LOGGER.d("ffmpeg recording in progress");
-            }
-
-            @Override
-            public void onFailure(String message) {
-                LOGGER.e("ffmpeg recording failed "+message);
-                //keep retrying
-                //startFFMpegRecording(cameraId, videoUrl);
-            }
-        });
-
-        //BackgroundRecordService backgroundRecordService = new BackgroundRecordService(context, cameraConfig);
-        //backgroundRecordService.startFFMpegRecording();
+        BackgroundRecordService backgroundRecordService = new BackgroundRecordService(context, cameraConfig);
+        backgroundRecordService.startFFMpegRecording();
     }
 
     private Pair<FrameEvent, ObjectDetectionResult> grabFrameAndProcess() throws Exception {
