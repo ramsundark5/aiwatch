@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.media.BackgroundServiceManager;
 import com.aiwatch.media.DetectionController;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
@@ -53,10 +54,12 @@ public class MonitoringService extends Service {
                 case AppConstants.SAVE_CAMERA:
                     CameraConfig cameraConfig = (CameraConfig) intent.getSerializableExtra(AppConstants.CAMERA_CONFIG_EXTRA);
                     DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
+                    //BackgroundServiceManager.INSTANCE().startMonitoring(cameraConfig, getApplicationContext());
                     break;
                 case AppConstants.REMOVE_CAMERA:
                     long cameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
                     DetectionController.INSTANCE().stopDetecting(cameraId);
+                    //BackgroundServiceManager.INSTANCE().stopMonitoring(cameraId);
                     break;
                 default:
                     LOGGER.i("unknown command sent to monitoring serivce "+ action);
@@ -79,11 +82,13 @@ public class MonitoringService extends Service {
 
         for(CameraConfig cameraConfig : cameraConfigList){
             DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
+            //BackgroundServiceManager.INSTANCE().startMonitoring(cameraConfig, getApplicationContext());
         }
     }
 
     private void stopMonitoring(){
         DetectionController.INSTANCE().stopAllDetecting();
+        //BackgroundServiceManager.INSTANCE().stopAllMonitoring();
         stopSelf();
     }
 
