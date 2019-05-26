@@ -37,7 +37,7 @@ public class ImageProcessor {
         final ObjectDetectionResult objectDetectionResult = objectDetectionService.detectObjects(croppedBitmap);
         timings.addSplit("Inference time");
         imagesProcessed++;
-        LOGGER.d("completed detection service "+ Thread.currentThread().getName());
+        LOGGER.d("completed detection service. Thread is "+ Thread.currentThread().getName());
         LOGGER.d("images processed "+ imagesProcessed);
         LOGGER.d("images skippped "+ imagesSkipped);
         timings.addSplit("Image processing time");

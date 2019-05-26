@@ -7,6 +7,7 @@ import com.aiwatch.common.AppConstants;
 import com.otaliastudios.transcoder.MediaTranscoder;
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy;
 import java.io.File;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Future;
@@ -28,7 +29,7 @@ public class CompressionRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            long waitTime = 30*1000; //30 seconds
+            long waitTime = 30 * 1000; //30 seconds
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -46,7 +47,9 @@ public class CompressionRunnable implements Runnable {
         LOGGER.i("compression service started");
 
         for(File rawFile: uncompressedVideoFolder.listFiles()){
-            if(rawFile.canWrite()){
+            long timeDiff = new Date().getTime() - rawFile.lastModified();
+            long secondsBefore = timeDiff / 1000;
+            if(secondsBefore > 31){
                 compressFile(rawFile);
             }
         }
@@ -65,18 +68,17 @@ public class CompressionRunnable implements Runnable {
             }
             long startTime = System.nanoTime();
             File outputFile = new File(compressedFolder, rawFile.getName());
-            LOGGER.d("starting compression");
+            LOGGER.d("starting compression for "+outputFile.getName() + " Thread is "+Thread.currentThread().getName());
             Future compressFuture = MediaTranscoder.into(outputFile.getAbsolutePath())
                     //.setValidator(new WriteAlwaysValidator())
                     .setDataSource(rawFile.getAbsolutePath())
                     .setVideoOutputStrategy(videoStrategy)
                     .setListener(new MediaTranscoder.Listener() {
                         public void onTranscodeProgress(double progress) {
-                            LOGGER.d("compression in progress "+ Thread.currentThread().getName());
+                            LOGGER.v("compression in progress. Thread is "+ Thread.currentThread().getName());
                         }
                         public void onTranscodeCompleted(int successCode) {
                             LOGGER.d("compression completed");
-                            compressVideos();
                         }
                         public void onTranscodeCanceled() {}
                         public void onTranscodeFailed(Throwable exception) {

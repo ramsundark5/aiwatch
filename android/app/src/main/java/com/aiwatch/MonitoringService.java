@@ -13,24 +13,20 @@ import java.util.List;
 public class MonitoringService extends AbstractForegroundService {
 
     private static final Logger LOGGER = new Logger();
-    static Thread compressionThread;
 
     @Override
     public void onCreate() {
-        LOGGER.i("Creating new monitoring service instance ");
+        LOGGER.i("Creating new monitoring service instance. Thread is "+Thread.currentThread().getName());
         startMonitoring();
         scheduleCompression();
     }
 
     public void scheduleCompression(){
         try {
-            boolean isCompressionThreadRunning = compressionThread != null
-                    && compressionThread.isAlive();
-            if(!isCompressionThreadRunning){
-                CompressionRunnable compressionRunnable = new CompressionRunnable(getApplicationContext());
-                compressionThread = new Thread(compressionRunnable);
-                compressionThread.start();
-            }
+            CompressionRunnable compressionRunnable = new CompressionRunnable(getApplicationContext());
+            Thread compressionThread = new Thread(compressionRunnable);
+            compressionThread.start();
+            LOGGER.i("compression thread name is "+compressionThread.getId());
         } catch (Exception e) {
             LOGGER.e(e, "compression exception " + e.getMessage());
         }

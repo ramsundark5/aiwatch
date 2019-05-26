@@ -49,7 +49,7 @@ public class BackgroundRecordService {
         recordingTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
             public void onStart() {
-                LOGGER.d("ffmpeg recording started");
+                LOGGER.d("ffmpeg recording started. Thread is "+ Thread.currentThread().getName());
             }
 
             @Override
@@ -64,7 +64,7 @@ public class BackgroundRecordService {
 
             @Override
             public void onProgress(String message) {
-                LOGGER.d("ffmpeg recording in progress "+ Thread.currentThread().getName());
+                LOGGER.v("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName());
             }
 
             @Override

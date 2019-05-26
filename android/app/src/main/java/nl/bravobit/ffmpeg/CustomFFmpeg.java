@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class CustomFFmpeg implements FFbinaryInterface {
     private static final Logger LOGGER = new Logger();
@@ -116,7 +117,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
             String[] ffmpegBinary = new String[]{FileUtils.getFFmpeg(context.provide()).getAbsolutePath()};
             String[] command = concatenate(ffmpegBinary, cmd);
             FFcommandExecuteAsyncTask task = new FFcommandExecuteAsyncTask(command, environvenmentVars, timeout, ffmpegExecuteResponseHandler);
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            task.executeOnExecutor(Executors.newSingleThreadExecutor());
             return task;
         } else {
             throw new IllegalArgumentException("shell command cannot be empty");

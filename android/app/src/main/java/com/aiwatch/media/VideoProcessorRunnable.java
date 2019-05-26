@@ -49,6 +49,7 @@ public class VideoProcessorRunnable implements Runnable {
     @Override
     public void run() {
         try {
+            LOGGER.i("Creating new VideoProcessor runable instance. Thread is "+Thread.currentThread().getName());
             running.set(true);
             //monitor();
             startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
@@ -116,7 +117,7 @@ public class VideoProcessorRunnable implements Runnable {
             }
             framesGrabbed++;
             FrameEvent frameEvent = new FrameEvent(frame, cameraConfig, context);
-            LOGGER.d("start processing next frame "+ Thread.currentThread().getName());
+            LOGGER.d("start processing next frame. Thread is "+ Thread.currentThread().getName());
             ObjectDetectionResult objectDetectionResult = imageProcessor.processImage(frameEvent);
             LOGGER.d("frames grabbed "+ framesGrabbed);
             timings.dumpToLog();
