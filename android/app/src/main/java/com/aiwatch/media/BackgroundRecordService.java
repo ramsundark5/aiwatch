@@ -44,7 +44,7 @@ public class BackgroundRecordService {
         String imagePath = imageFolder.getAbsolutePath();
         String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 ";
         String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I) -update 1 -vsync vfr " + imagePath + "/camera" + cameraId + ".png";
-        String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand ;
+        String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand + frameExtractCommand;
         String[] ffmpegCommand = command.split("\\s+");
         recordingTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
@@ -78,7 +78,7 @@ public class BackgroundRecordService {
 
     public void stopFFMpegRecording(){
         recordingTask.sendQuitSignal();
-        long waitTime = 2*1000; //2 seconds
+        long waitTime = 2 * 1000; //2 seconds
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {

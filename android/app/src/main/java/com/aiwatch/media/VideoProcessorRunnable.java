@@ -11,12 +11,7 @@ import com.aiwatch.common.AppConstants;
 import com.aiwatch.postprocess.DetectionResultProcessor;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
-
-import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
 
 public class VideoProcessorRunnable implements Runnable {
 
