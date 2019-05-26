@@ -29,6 +29,8 @@ public class BackgroundRecordService {
         long cameraId = cameraConfig.getId();
         String videoUrl = cameraConfig.getVideoUrl();
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
+        boolean isffmpegSupported = ffmpeg.isSupported();
+        LOGGER.i("ffmpeg supported "+isffmpegSupported);
         File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
         if (!videoFolder.exists()) {
             videoFolder.mkdirs();
@@ -62,7 +64,7 @@ public class BackgroundRecordService {
 
             @Override
             public void onProgress(String message) {
-                LOGGER.d("ffmpeg recording in progress");
+                LOGGER.d("ffmpeg recording in progress "+ Thread.currentThread().getName());
             }
 
             @Override

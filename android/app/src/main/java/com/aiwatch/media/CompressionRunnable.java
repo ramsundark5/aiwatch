@@ -1,61 +1,60 @@
 package com.aiwatch.media;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.FileObserver;
-import android.os.IBinder;
-
-import androidx.annotation.Nullable;
+import android.content.Context;
 
 import com.aiwatch.Logger;
 import com.aiwatch.common.AppConstants;
 import com.otaliastudios.transcoder.MediaTranscoder;
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy;
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class CompressionService extends Service {
+public class CompressionRunnable implements Runnable {
 
     private static final Logger LOGGER = new Logger();
-    private FileObserver observer;
+    private final Context context;
     private DefaultVideoStrategy videoStrategy = DefaultVideoStrategy.atMost(360, 480)
             .frameRate(15)
             .iFrameInterval(10F)
             .build();
 
-    @Override
-    public void onCreate() {
-        LOGGER.i("Creating new monitoring service instance ");
-        compressVideos();
+    public CompressionRunnable(Context context){
+        this.context = context;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
+    public void run() {
+        try {
+            long waitTime = 30*1000; //30 seconds
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    compressVideos();
+                }
+            }, 0, waitTime);
+        } catch (Exception e) {
+            LOGGER.e(e, "compression exception " + e.getMessage());
+        }
     }
 
     public void compressVideos()  {
-        File appFolder = getApplicationContext().getFilesDir();
+        File appFolder = context.getFilesDir();
         File uncompressedVideoFolder = new File (appFolder, AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
         LOGGER.i("compression service started");
-        observer = new FileObserver(uncompressedVideoFolder.getAbsolutePath(), FileObserver.CLOSE_WRITE) {
-            @Override
-            public void onEvent(int event, final String rawFile) {
-                if (event == FileObserver.CLOSE_WRITE  && !rawFile.equals(".probe")) { // check that it's not equal to .probe because thats created every time camera is launched
-                    LOGGER.i("FileObserver created for path "+uncompressedVideoFolder.getAbsolutePath());
-                    compressFile(rawFile);
-                }
+
+        for(File rawFile: uncompressedVideoFolder.listFiles()){
+            if(rawFile.canWrite()){
+                compressFile(rawFile);
             }
-        };
-        observer.startWatching();
+        }
     }
 
-    private synchronized void compressFile(String rawFileName){
+    private void compressFile(File rawFile){
         try{
-            File appFolder = getApplicationContext().getFilesDir();
-            File uncompressedVideoFolder = new File (appFolder, AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
-            File rawFile = new File(uncompressedVideoFolder, rawFileName);
+            File appFolder = context.getFilesDir();
             File compressedFolder = new File(appFolder, AppConstants.COMPRESSED_VIDEO_FOLDER);
             if (!compressedFolder.exists()) {
                 compressedFolder.mkdirs();
@@ -72,9 +71,12 @@ public class CompressionService extends Service {
                     .setDataSource(rawFile.getAbsolutePath())
                     .setVideoOutputStrategy(videoStrategy)
                     .setListener(new MediaTranscoder.Listener() {
-                        public void onTranscodeProgress(double progress) {}
+                        public void onTranscodeProgress(double progress) {
+                            LOGGER.d("compression in progress "+ Thread.currentThread().getName());
+                        }
                         public void onTranscodeCompleted(int successCode) {
                             LOGGER.d("compression completed");
+                            compressVideos();
                         }
                         public void onTranscodeCanceled() {}
                         public void onTranscodeFailed(Throwable exception) {
@@ -91,11 +93,5 @@ public class CompressionService extends Service {
         }catch(Exception e){
             LOGGER.e(e, "error compressing file "+ e.getMessage());
         }
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 }

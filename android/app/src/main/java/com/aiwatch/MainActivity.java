@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
-import com.aiwatch.common.AppConstants;
-import com.aiwatch.media.CompressionService;
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
@@ -31,9 +29,6 @@ public class MainActivity extends ReactActivity {
         try{
             Intent monitoringIntent = new Intent(getApplicationContext(), MonitoringService.class);
             ContextCompat.startForegroundService(getApplicationContext(), monitoringIntent);
-
-            Intent compressionIntent = new Intent(getApplicationContext(), CompressionService.class);
-            ContextCompat.startForegroundService(getApplicationContext(), compressionIntent);
             LOGGER.d("Invoking monitoring from main activity");
         }catch(Exception e){
             LOGGER.e("error starting monitoring service "+e.getMessage());

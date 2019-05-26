@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="ANDROID.PERMISSION.READ_EXTERNAL_STORAGE" />
@@ -18,12 +19,6 @@
         android:usesCleartextTraffic="true">
         <service
             android:name=".MonitoringService"
-            android:enabled="true"
-            android:exported="true">
-        </service>
-
-        <service
-            android:name=".media.CompressionService"
             android:enabled="true"
             android:exported="true">
         </service>
