@@ -10,10 +10,10 @@ import com.aiwatch.media.db.CameraConfig;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-//import nl.bravobit.ffmpeg.CustomFFmpeg;
-//import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
-//import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
-//import nl.bravobit.ffmpeg.FFtask;
+import nl.bravobit.ffmpeg.CustomFFmpeg;
+import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
+import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
+import nl.bravobit.ffmpeg.FFtask;
 
 public class RecordingManager {
 
@@ -43,12 +43,12 @@ public class RecordingManager {
 
     private synchronized static String recordToLocal(FrameEvent frameEvent){
         try{
-            /*CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
+            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
             if (ffmpeg.isSupported()) {
                 LOGGER.d("FFmpeg is supported");
             } else {
                 LOGGER.e("FFmpeg is not supported");
-            }*/
+            }
             String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
             int recordingDuration = cameraConfig.getRecordingDuration();
@@ -56,9 +56,8 @@ public class RecordingManager {
                 recordingDuration = 15;
             }
             String videoUrl = cameraConfig.getVideoUrl();
-            String recordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration + " -codec copy -flags +global_header movflags=+faststart "+filePath;
+            String recordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration + " -codec copy "+filePath;
             String[] ffmpegCommand = recordCommand.split("\\s+");
-/*
             String response = ffmpeg.executeSync(ffmpegCommand, new FFcommandExecuteResponseHandler() {
                 @Override
                 public void onStart() {
@@ -87,8 +86,7 @@ public class RecordingManager {
                     //startFFMpegRecording(cameraId, videoUrl);
                 }
             });
-*/
-            //LOGGER.d("record to local returned "+ response);
+            LOGGER.d("record to local returned "+ response);
             return filePath;
         }catch (Exception e){
             LOGGER.e("Error recording video to local "+ e.getMessage());
