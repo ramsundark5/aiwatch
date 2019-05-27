@@ -3,7 +3,6 @@ package com.aiwatch.media;
 import android.content.Context;
 import com.aiwatch.Logger;
 import com.aiwatch.media.db.CameraConfig;
-import org.bytedeco.javacpp.avcodec;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -32,7 +31,7 @@ public class DetectionController {
 
     public synchronized void startDetection(CameraConfig cameraConfig, final Context context) {
         try {
-            cameraConfig.setVideoCodec(avcodec.AV_CODEC_ID_H264);
+            //cameraConfig.setVideoCodec(AV_CODEC_ID_H264);
             stopSelectedVideoProcessor(cameraConfig.getId());
             if(!cameraConfig.isMonitoringEnabled()){
                 return;

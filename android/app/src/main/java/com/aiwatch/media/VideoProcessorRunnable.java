@@ -46,9 +46,8 @@ public class VideoProcessorRunnable implements Runnable {
         try {
             LOGGER.i("Creating new VideoProcessor runable instance. Thread is "+Thread.currentThread().getName());
             running.set(true);
-            //monitor();
-            startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
-            //compressVideos(context.getFilesDir());
+            monitor();
+            //startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
         } catch (Exception e) {
             LOGGER.e("compression exception " + e.getStackTrace());
             e.printStackTrace();
@@ -57,7 +56,6 @@ public class VideoProcessorRunnable implements Runnable {
             //stopGrabber();
         }
     }
-
 
     private void monitor(){
         while (running.get()) {
@@ -70,8 +68,9 @@ public class VideoProcessorRunnable implements Runnable {
                             stopGrabber();
                             long waitTimeInMins = cameraConfig.getWaitPeriodAfterDetection();
                             long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
-                            waitTime = 20 * 1000; //20 secs
+                            waitTime = 30 * 1000; //20 secs
                             Thread.sleep(waitTime);
+                            pauseFrameGrabbing = false;
                             LOGGER.d("sleep is over and running flag is set to " + running.get());
                         }
                     }
@@ -81,10 +80,6 @@ public class VideoProcessorRunnable implements Runnable {
                 }
             }
         }
-    }
-
-    private static void getOldFiles(){
-
     }
 
     private void startFFMpegRecording(long cameraId, String videoUrl){
@@ -146,7 +141,6 @@ public class VideoProcessorRunnable implements Runnable {
             if(grabber != null){
                 grabber.stop();
             }
-            pauseFrameGrabbing = false;
             framesGrabbed = 0;
             LOGGER.i("paused frame grabbing and running flag set to "+running.get());
         } catch (Exception e) {

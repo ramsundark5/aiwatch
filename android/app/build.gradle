@@ -173,15 +173,13 @@ dependencies {
     }
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
     implementation 'org.apache.commons:commons-collections4:4.3'
-    implementation 'nl.bravobit:android-ffmpeg:1.1.5'
-    implementation 'org.bytedeco:javacv:1.4.4'
+    //implementation 'nl.bravobit:android-ffmpeg:1.1.5'
+    implementation 'org.bytedeco:javacv:1.5'
     implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-arm'
     implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-x86'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
-    implementation 'com.iceteck.silicompressorr:silicompressor:2.2.1'
-    //implementation 'com.otaliastudios:transcoder:0.4.0'
     implementation project(':react-native-screens')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-yz-vlcplayer')

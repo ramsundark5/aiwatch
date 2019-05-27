@@ -18,7 +18,7 @@ public class MonitoringService extends AbstractForegroundService {
     public void onCreate() {
         LOGGER.i("Creating new monitoring service instance. Thread is "+Thread.currentThread().getName());
         startMonitoring();
-        scheduleCompression();
+        //scheduleCompression();
     }
 
     public void scheduleCompression(){
@@ -48,12 +48,10 @@ public class MonitoringService extends AbstractForegroundService {
                 case AppConstants.SAVE_CAMERA:
                     CameraConfig cameraConfig = (CameraConfig) intent.getSerializableExtra(AppConstants.CAMERA_CONFIG_EXTRA);
                     DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
-                    //BackgroundServiceManager.INSTANCE().startMonitoring(cameraConfig, getApplicationContext());
                     break;
                 case AppConstants.REMOVE_CAMERA:
                     long cameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
                     DetectionController.INSTANCE().stopDetecting(cameraId);
-                    //BackgroundServiceManager.INSTANCE().stopMonitoring(cameraId);
                     break;
                 default:
                     LOGGER.i("unknown command sent to monitoring serivce "+ action);
@@ -76,13 +74,11 @@ public class MonitoringService extends AbstractForegroundService {
 
         for(CameraConfig cameraConfig : cameraConfigList){
             DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
-            //BackgroundServiceManager.INSTANCE().startMonitoring(cameraConfig, getApplicationContext());
         }
     }
 
     private void stopMonitoring(){
         DetectionController.INSTANCE().stopAllDetecting();
-        //BackgroundServiceManager.INSTANCE().stopAllMonitoring();
         stopSelf();
     }
 }

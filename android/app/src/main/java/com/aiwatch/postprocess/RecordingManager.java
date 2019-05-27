@@ -10,9 +10,10 @@ import com.aiwatch.media.db.CameraConfig;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
-import nl.bravobit.ffmpeg.FFtask;
+//import nl.bravobit.ffmpeg.CustomFFmpeg;
+//import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
+//import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
+//import nl.bravobit.ffmpeg.FFtask;
 
 public class RecordingManager {
 
@@ -42,12 +43,12 @@ public class RecordingManager {
 
     private synchronized static String recordToLocal(FrameEvent frameEvent){
         try{
-            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
+            /*CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
             if (ffmpeg.isSupported()) {
                 LOGGER.d("FFmpeg is supported");
             } else {
                 LOGGER.e("FFmpeg is not supported");
-            }
+            }*/
             String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
             int recordingDuration = cameraConfig.getRecordingDuration();
@@ -55,9 +56,39 @@ public class RecordingManager {
                 recordingDuration = 15;
             }
             String videoUrl = cameraConfig.getVideoUrl();
-            String[] command = {"-rtsp_transport", "tcp", "-i", videoUrl, "-t", String.valueOf(recordingDuration), "-codec", "copy", filePath};
-            String response = ffmpeg.executeSync(command, null);
-            LOGGER.d("record to local returned ");
+            String recordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration + " -codec copy -flags +global_header movflags=+faststart "+filePath;
+            String[] ffmpegCommand = recordCommand.split("\\s+");
+/*
+            String response = ffmpeg.executeSync(ffmpegCommand, new FFcommandExecuteResponseHandler() {
+                @Override
+                public void onStart() {
+                    LOGGER.d("ffmpeg recording started. Thread is "+ Thread.currentThread().getName());
+                }
+
+                @Override
+                public void onFinish() {
+                    LOGGER.d("ffmpeg recording completed");
+                }
+
+                @Override
+                public void onSuccess(String message) {
+                    LOGGER.d("ffmpeg recording success");
+                }
+
+                @Override
+                public void onProgress(String message) {
+                    LOGGER.v("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName());
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    LOGGER.e("ffmpeg recording failed " + message);
+                    //keep retrying
+                    //startFFMpegRecording(cameraId, videoUrl);
+                }
+            });
+*/
+            //LOGGER.d("record to local returned "+ response);
             return filePath;
         }catch (Exception e){
             LOGGER.e("Error recording video to local "+ e.getMessage());
