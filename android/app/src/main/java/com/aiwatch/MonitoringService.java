@@ -21,17 +21,6 @@ public class MonitoringService extends AbstractForegroundService {
         //scheduleCompression();
     }
 
-    public void scheduleCompression(){
-        try {
-            CompressionRunnable compressionRunnable = new CompressionRunnable(getApplicationContext());
-            Thread compressionThread = new Thread(compressionRunnable);
-            compressionThread.start();
-            LOGGER.i("compression thread name is "+compressionThread.getId());
-        } catch (Exception e) {
-            LOGGER.e(e, "compression exception " + e.getMessage());
-        }
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         preStart(this);
@@ -80,5 +69,16 @@ public class MonitoringService extends AbstractForegroundService {
     private void stopMonitoring(){
         DetectionController.INSTANCE().stopAllDetecting();
         stopSelf();
+    }
+
+    private void scheduleCompression(){
+        try {
+            CompressionRunnable compressionRunnable = new CompressionRunnable(getApplicationContext());
+            Thread compressionThread = new Thread(compressionRunnable);
+            compressionThread.start();
+            LOGGER.i("compression thread name is "+compressionThread.getId());
+        } catch (Exception e) {
+            LOGGER.e(e, "compression exception " + e.getMessage());
+        }
     }
 }

@@ -9,15 +9,15 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//import nl.bravobit.ffmpeg.CustomFFmpeg;
-//import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
-//import nl.bravobit.ffmpeg.FFtask;
+import nl.bravobit.ffmpeg.CustomFFmpeg;
+import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
+import nl.bravobit.ffmpeg.FFtask;
 
 public class BackgroundRecordService {
 
     private static final Logger LOGGER = new Logger();
     private Context context;
-    //private FFtask recordingTask;
+    private FFtask recordingTask;
     private CameraConfig cameraConfig;
 
     public BackgroundRecordService(Context context, CameraConfig cameraConfig){
@@ -28,9 +28,9 @@ public class BackgroundRecordService {
     public void startFFMpegRecording() {
         long cameraId = cameraConfig.getId();
         String videoUrl = cameraConfig.getVideoUrl();
-        //CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
-        //boolean isffmpegSupported = ffmpeg.isSupported();
-        //LOGGER.i("ffmpeg supported "+isffmpegSupported);
+        CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
+        boolean isffmpegSupported = ffmpeg.isSupported();
+        LOGGER.i("ffmpeg supported "+isffmpegSupported);
         File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
         if (!videoFolder.exists()) {
             videoFolder.mkdirs();
@@ -46,7 +46,7 @@ public class BackgroundRecordService {
         String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I) -update 1 -vsync vfr " + imagePath + "/camera" + cameraId + ".png";
         String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand + frameExtractCommand;
         String[] ffmpegCommand = command.split("\\s+");
-        /*recordingTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
+        recordingTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
             public void onStart() {
                 LOGGER.d("ffmpeg recording started. Thread is "+ Thread.currentThread().getName());
@@ -73,10 +73,10 @@ public class BackgroundRecordService {
                 //keep retrying
                 //startFFMpegRecording(cameraId, videoUrl);
             }
-        });*/
+        });
     }
 
-  /*  public void stopFFMpegRecording(){
+    public void stopFFMpegRecording(){
         recordingTask.sendQuitSignal();
         long waitTime = 2 * 1000; //2 seconds
         new Timer().schedule(new TimerTask() {
@@ -93,5 +93,5 @@ public class BackgroundRecordService {
 
     public boolean killRecording(){
         return recordingTask.killRunningProcess();
-    }*/
+    }
 }
