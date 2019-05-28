@@ -31,21 +31,29 @@ public class DetectionResultProcessor {
     public boolean processObjectDetectionResult(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
         boolean shouldRecordVideo = RecordingManager.shouldStartRecording(objectDetectionResult, frameEvent.getCameraConfig());
         String videoPath = null;
+        String gdriveVideoPath = null;
         boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
         if(shouldNotify){
             //first notify the event
             NotificationManager.sendStringNotification(frameEvent, objectDetectionResult.getName());
         }
+        //now record
         if(shouldRecordVideo){
-            videoPath = RecordingManager.recordVideo(frameEvent);
+            videoPath = RecordingManager.recordToLocal(frameEvent);
+            gdriveVideoPath = RecordingManager.recordToGdrive(frameEvent, videoPath);
         }
         boolean isResultInteresting = shouldRecordVideo || shouldNotify;
+
         if(isResultInteresting){
             String thumbnailPath = saveImage(frameEvent, objectDetectionResult);
+            //store the results
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
             AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getName(), videoPath, thumbnailPath);
             alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
+            alarmEvent.setCloudVideoPath(gdriveVideoPath);
             alarmEventDao.putEvent(alarmEvent);
+
+            //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
         }
         return isResultInteresting;

@@ -7,6 +7,9 @@ import com.aiwatch.ai.Events;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.media.FrameEvent;
 import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.media.db.Settings;
+import com.aiwatch.media.db.SettingsDao;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,13 +36,7 @@ public class RecordingManager {
         return shouldRecord;
     }
 
-    public static String recordVideo(FrameEvent frameEvent){
-        String videoPath = recordToLocal(frameEvent);
-        return videoPath;
-    }
-
-
-    private synchronized static String recordToLocal(FrameEvent frameEvent){
+    public static String recordToLocal(FrameEvent frameEvent){
         try{
             CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
             if (ffmpeg.isSupported()) {
@@ -70,7 +67,6 @@ public class RecordingManager {
                 @Override
                 public void onSuccess(String message) {
                     LOGGER.d("ffmpeg recording success");
-                    recordToGdrive(frameEvent, filePath);
                 }
 
                 @Override
@@ -91,8 +87,13 @@ public class RecordingManager {
         return null;
     }
 
-    private static String recordToGdrive(FrameEvent frameEvent, String videoPath){
+    public static String recordToGdrive(FrameEvent frameEvent, String videoPath){
         try{
+            SettingsDao settingsDao = new SettingsDao();
+            Settings settings = settingsDao.getSettings();
+            if(!settings.isGoogleAccountConnected()){
+                return null;
+            }
             DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmm");
             String currentTime = dateFormat.format(System.currentTimeMillis());
             String fileName = frameEvent.getCameraConfig().getId() + currentTime + DEFAULT_EXTENSION;

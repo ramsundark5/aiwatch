@@ -14,6 +14,7 @@ public class AlarmEvent implements Serializable {
     private String cameraName;
     private long cameraId;
     private String videoPath;
+    private String cloudVideoPath;
     private String thumbnailPath;
     private Date date;
     private String message;
@@ -90,5 +91,13 @@ public class AlarmEvent implements Serializable {
 
     public void setDetectionConfidence(float detectionConfidence) {
         this.detectionConfidence = detectionConfidence;
+    }
+
+    public String getCloudVideoPath() {
+        return cloudVideoPath;
+    }
+
+    public void setCloudVideoPath(String cloudVideoPath) {
+        this.cloudVideoPath = cloudVideoPath;
     }
 }
