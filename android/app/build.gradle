@@ -68,6 +68,7 @@ android {
     }
     aaptOptions {
         noCompress "tflite"
+        ignoreAssetsPattern "!*ffprobe"
     }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->

@@ -11,9 +11,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
 import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
-import nl.bravobit.ffmpeg.FFtask;
 
 public class RecordingManager {
 
@@ -72,6 +70,7 @@ public class RecordingManager {
                 @Override
                 public void onSuccess(String message) {
                     LOGGER.d("ffmpeg recording success");
+                    recordToGdrive(frameEvent, filePath);
                 }
 
                 @Override
@@ -82,8 +81,6 @@ public class RecordingManager {
                 @Override
                 public void onFailure(String message) {
                     LOGGER.e("ffmpeg recording failed " + message);
-                    //keep retrying
-                    //startFFMpegRecording(cameraId, videoUrl);
                 }
             });
             LOGGER.d("record to local returned "+ response);

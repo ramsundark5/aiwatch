@@ -1,6 +1,9 @@
 package com.aiwatch.postprocess;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.TimingLogger;
 
@@ -57,14 +60,16 @@ public class DetectionResultProcessor {
             timings.dumpToLog();
             RectF location = objectDetectionResult.getLocation();
             if(location != null){
-                Bitmap croppedBitmap = Bitmap.createBitmap(
+                drawBoundingBox(bitmapOutput, location);
+                /*Bitmap croppedBitmap = Bitmap.createBitmap(
                         bitmapOutput,
                         ((int) location.left),
                         ((int) location.top),
                         ((int) location.width()),
                         ((int) location.height()));
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(croppedBitmap, 128, 128, true);
-                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);*/
+                bitmapOutput.compress(Bitmap.CompressFormat.JPEG, 90, fos);
                 fos.close();
             }else{
                 bitmapOutput.compress(Bitmap.CompressFormat.JPEG, 90, fos);
@@ -78,5 +83,14 @@ public class DetectionResultProcessor {
             LOGGER.e(e.getMessage());
         }
         return null;
+    }
+
+    private void drawBoundingBox(Bitmap bitmap, RectF location){
+        final Canvas canvas = new Canvas(bitmap);
+        final Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+        canvas.drawRect(location, paint);
     }
 }
