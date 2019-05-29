@@ -49,11 +49,11 @@ public class VideoProcessorRunnable implements Runnable {
             monitor();
             //startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
         } catch (Exception e) {
-            LOGGER.e("compression exception " + e.getStackTrace());
-            e.printStackTrace();
+            LOGGER.e(e, "monitoring exception ");
         }
         finally{
-            //stopGrabber();
+            stopGrabber();
+            LOGGER.i("stopping monitoring runnable ");
         }
     }
 
@@ -76,35 +76,29 @@ public class VideoProcessorRunnable implements Runnable {
                     }
                 } catch (Exception e) {
                     //swallow exception to continue processing
-                    LOGGER.e(e.getMessage());
+                    LOGGER.e(e, e.getMessage());
                 }
             }
         }
-    }
-
-    private void startFFMpegRecording(long cameraId, String videoUrl){
-        BackgroundRecordService backgroundRecordService = new BackgroundRecordService(context, cameraConfig);
-        backgroundRecordService.startFFMpegRecording();
     }
 
     private Pair<FrameEvent, ObjectDetectionResult> grabFrameAndProcess() throws Exception {
         if (grabber == null) {
             initGrabber(cameraConfig); // connect
         }
-        Frame frame;
+        Frame frame = null;
         TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "Framegrabber performance");
         try{
             frame = grabber.grabImage();
         }catch(Exception e){
-            LOGGER.e("Exception grabbing frame" + e.getMessage());
-            return null;
+            LOGGER.e(e, "Exception grabbing frame");
         }
-        LOGGER.d("just grabbed a frame for camera "+cameraConfig.getId());
         timings.addSplit("Frame grab time");
         if (frame != null) {
             if(!frame.keyFrame){
                 return null;
             }
+            LOGGER.d("just grabbed a frame for camera "+cameraConfig.getId());
             framesGrabbed++;
             FrameEvent frameEvent = new FrameEvent(frame, cameraConfig, context);
             LOGGER.d("start processing next frame. Thread is "+ Thread.currentThread().getName());
@@ -126,7 +120,7 @@ public class VideoProcessorRunnable implements Runnable {
         grabber = new FFmpegFrameGrabber(cameraConfig.getVideoUrl()); // rtsp url
         //rtsp_transport flag is important. Otherwise grabbed image will be distorted
         grabber.setOption("rtsp_transport", "tcp");
-        grabber.setVideoCodec(cameraConfig.getVideoCodec());
+        //grabber.setVideoCodec(cameraConfig.getVideoCodec());
         grabber.setOption(
                 RTSPTimeOutOption.STIMEOUT.getKey(),
                 String.valueOf(TIMEOUT * 1000000)
@@ -144,9 +138,14 @@ public class VideoProcessorRunnable implements Runnable {
             framesGrabbed = 0;
             LOGGER.i("paused frame grabbing and running flag set to "+running.get());
         } catch (Exception e) {
-            LOGGER.e(e.getMessage());
+            LOGGER.e(e, e.getMessage());
         }finally{
             grabber = null;
         }
+    }
+
+    private void startFFMpegRecording(long cameraId, String videoUrl){
+        BackgroundRecordService backgroundRecordService = new BackgroundRecordService(context, cameraConfig);
+        backgroundRecordService.startFFMpegRecording();
     }
 }
