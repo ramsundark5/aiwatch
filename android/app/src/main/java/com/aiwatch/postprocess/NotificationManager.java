@@ -48,7 +48,23 @@ public class NotificationManager {
                 Toast.makeText(frameEvent.getContext(), alarmEvent.getMessage(), Toast.LENGTH_SHORT).show();
             });
         }catch(Exception e){
-            LOGGER.e("Error sending local notification "+e);
+            LOGGER.e(e, "Error sending local notification "+e);
+        }
+    }
+
+    public static void sendUINotification(Context context, CameraConfig cameraConfig){
+        try{
+            notifyEventToUI(context, cameraConfig);
+
+            String connectedMessage = "Camera  "+cameraConfig.getName() + " connected.";
+            String disconnectedMessage = "Camera  "+cameraConfig.getName() + " disconnected.";
+            final String message = cameraConfig.isDisconnected() ? disconnectedMessage : connectedMessage;
+
+            UiThreadUtil.runOnUiThread(() -> {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            });
+        }catch(Exception e){
+            LOGGER.e(e, "Error sending local notification "+e);
         }
     }
 
@@ -69,9 +85,28 @@ public class NotificationManager {
                 Toast.makeText(frameEvent.getContext(), message, Toast.LENGTH_SHORT).show();
             });
         }catch(Exception e){
-            LOGGER.e("Error sending local notification "+e);
+            LOGGER.e(e, "Error sending local notification "+e);
         }
+    }
 
+    public static void sendStringNotification(Context context, String message){
+        try{
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentTitle(message)
+                    .setChannelId(context.getString(R.string.channel_id))
+                    //.setContentText(alarmEvent.getMessage())
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            // notificationId is a unique int for each notification that you must define
+            notificationManager.notify(message.hashCode(), builder.build());
+
+            UiThreadUtil.runOnUiThread(() -> {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            });
+        }catch(Exception e){
+            LOGGER.e(e, "Error sending local notification "+e);
+        }
     }
 
     public static void sendImageNotification(FrameEvent frameEvent, String message, String imagePath){
@@ -99,7 +134,7 @@ public class NotificationManager {
                 toast.show();
             });
         }catch(Exception e){
-            LOGGER.e("Error sending local notification "+e);
+            LOGGER.e(e, "Error sending local notification "+e);
         }
     }
 
@@ -110,8 +145,18 @@ public class NotificationManager {
             newAlarmIntent.putExtra(AppConstants.NEW_DETECTION_EVENT, alarmEvent);
             localBroadcastManager.sendBroadcast(newAlarmIntent);
         }catch(Exception e){
-            LOGGER.e("error sending event to UI "+e.getMessage());
+            LOGGER.e(e, "error sending event to UI "+e.getMessage());
         }
+    }
 
+    private static void notifyEventToUI(final Context context, final CameraConfig cameraConfig){
+        try{
+            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+            Intent newAlarmIntent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
+            newAlarmIntent.putExtra(AppConstants.STATUS_CHANGED_EVENT, cameraConfig);
+            localBroadcastManager.sendBroadcast(newAlarmIntent);
+        }catch(Exception e){
+            LOGGER.e(e, "error sending event to UI "+e.getMessage());
+        }
     }
 }

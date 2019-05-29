@@ -208,6 +208,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         public void onReceive(Context applicationContext, Intent intent) {
             try{
                 ReactApplicationContext reactApplicationContext = (ReactApplicationContext) reactContext;
+
                 AlarmEvent alarmEvent = (AlarmEvent) intent.getSerializableExtra(AppConstants.NEW_DETECTION_EVENT);
                 if(alarmEvent != null){
                     String jsonString = gson.toJson(alarmEvent);
@@ -215,11 +216,20 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                     WritableMap alarmEventMap = ConversionUtil.convertJsonToMap(jsonObject);
                     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                             .emit(AppConstants.NEW_DETECTION_JS_EVENT, alarmEventMap);
+                } else{
+                    CameraConfig cameraConfig = (CameraConfig) intent.getSerializableExtra(AppConstants.STATUS_CHANGED_EVENT);
+                    if(cameraConfig != null){
+                        String jsonString = gson.toJson(cameraConfig);
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        WritableMap camerConfigMap = ConversionUtil.convertJsonToMap(jsonObject);
+                        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                .emit(AppConstants.STATUS_CHANGED_EVENT_JS_EVENT, camerConfigMap);
+                    }
                 }
+
             }catch(Exception e){
                 LOGGER.e("Exception notifying UI about events "+e.getMessage());
             }
-
         }
     }
 

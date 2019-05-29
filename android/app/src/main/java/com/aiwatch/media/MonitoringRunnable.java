@@ -30,7 +30,7 @@ public class MonitoringRunnable implements Runnable {
             this.context = context;
             this.detectionResultProcessor = new DetectionResultProcessor();
             this.imageProcessor = new ImageProcessor(context.getAssets());
-            this.videoFrameExtractor = new VideoFrameExtractor(cameraConfig);
+            this.videoFrameExtractor = new VideoFrameExtractor(cameraConfig, context);
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }

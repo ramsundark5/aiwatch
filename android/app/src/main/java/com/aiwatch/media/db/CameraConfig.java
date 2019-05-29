@@ -25,6 +25,7 @@ public class CameraConfig implements Serializable {
     private boolean recordAnimalDetect;
     private boolean recordVehicleDetect;
     private boolean testModeEnabled;
+    private boolean disconnected;
 
     public long getId() {
         return id;
@@ -160,6 +161,14 @@ public class CameraConfig implements Serializable {
 
     public void setTestModeEnabled(boolean testModeEnabled) {
         this.testModeEnabled = testModeEnabled;
+    }
+
+    public boolean isDisconnected() {
+        return disconnected;
+    }
+
+    public void setDisconnected(boolean disconnected) {
+        this.disconnected = disconnected;
     }
 
     public boolean isMonitoringEnabled(){
