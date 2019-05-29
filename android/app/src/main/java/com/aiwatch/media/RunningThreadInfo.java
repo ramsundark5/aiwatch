@@ -7,20 +7,20 @@ public class RunningThreadInfo {
 
     private CameraConfig cameraConfig;
     private ExecutorService executorService;
-    private VideoProcessorRunnable videoProcessorRunnable;
+    private MonitoringRunnable monitoringRunnable;
 
-    public RunningThreadInfo(CameraConfig cameraConfig, ExecutorService executorService, VideoProcessorRunnable videoProcessorRunnable) {
+    public RunningThreadInfo(CameraConfig cameraConfig, ExecutorService executorService, MonitoringRunnable monitoringRunnable) {
         this.cameraConfig = cameraConfig;
         this.executorService = executorService;
-        this.videoProcessorRunnable = videoProcessorRunnable;
+        this.monitoringRunnable = monitoringRunnable;
     }
 
     public CameraConfig getCameraConfig() {
         return cameraConfig;
     }
 
-    public VideoProcessorRunnable getVideoProcessorRunnable() {
-        return videoProcessorRunnable;
+    public MonitoringRunnable getMonitoringRunnable() {
+        return monitoringRunnable;
     }
 
     public ExecutorService getExecutorService() {

@@ -6,31 +6,31 @@ import android.util.TimingLogger;
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.media.db.CameraConfig;
-import com.aiwatch.common.RTSPTimeOutOption;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.postprocess.DetectionResultProcessor;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
+
 import org.bytedeco.javacv.Frame;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class VideoProcessorRunnable implements Runnable {
+public class MonitoringRunnable implements Runnable {
 
     private static final Logger LOGGER = new Logger();
     private AtomicBoolean running = new AtomicBoolean(false);
     private CameraConfig cameraConfig;
-    private FFmpegFrameGrabber grabber;
     private DetectionResultProcessor detectionResultProcessor;
+    private VideoFrameExtractor videoFrameExtractor;
     private ImageProcessor imageProcessor;
     private Context context;
     private boolean pauseFrameGrabbing = false;
     private int framesGrabbed = 0;
 
-    public VideoProcessorRunnable(CameraConfig cameraConfig, Context context) {
+    public MonitoringRunnable(CameraConfig cameraConfig, Context context) {
         try {
             this.cameraConfig = cameraConfig;
             this.context = context;
             this.detectionResultProcessor = new DetectionResultProcessor();
             this.imageProcessor = new ImageProcessor(context.getAssets());
+            this.videoFrameExtractor = new VideoFrameExtractor(cameraConfig);
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
@@ -47,12 +47,12 @@ public class VideoProcessorRunnable implements Runnable {
             LOGGER.i("Creating new VideoProcessor runable instance. Thread is "+Thread.currentThread().getName());
             running.set(true);
             monitor();
-            //startFFMpegRecording(cameraConfig.getId(), cameraConfig.getVideoUrl());
         } catch (Exception e) {
             LOGGER.e(e, "monitoring exception ");
         }
         finally{
-            stopGrabber();
+            videoFrameExtractor.stopGrabber();
+            framesGrabbed = 0;
             LOGGER.i("stopping monitoring runnable ");
         }
     }
@@ -65,13 +65,7 @@ public class VideoProcessorRunnable implements Runnable {
                     if (resultPair != null) {
                         pauseFrameGrabbing = detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
                         if (pauseFrameGrabbing) {
-                            stopGrabber();
-                            long waitTimeInMins = cameraConfig.getWaitPeriodAfterDetection();
-                            long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
-                            waitTime = 30 * 1000; //20 secs
-                            Thread.sleep(waitTime);
-                            pauseFrameGrabbing = false;
-                            LOGGER.d("sleep is over and running flag is set to " + running.get());
+                            pauseFrameGrabbing();
                         }
                     }
                 } catch (Exception e) {
@@ -83,16 +77,9 @@ public class VideoProcessorRunnable implements Runnable {
     }
 
     private Pair<FrameEvent, ObjectDetectionResult> grabFrameAndProcess() throws Exception {
-        if (grabber == null) {
-            initGrabber(cameraConfig); // connect
-        }
-        Frame frame = null;
+        Frame frame;
         TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "Framegrabber performance");
-        try{
-            frame = grabber.grabImage();
-        }catch(Exception e){
-            LOGGER.e(e, "Exception grabbing frame");
-        }
+        frame = videoFrameExtractor.grabFrame();
         timings.addSplit("Frame grab time");
         if (frame != null) {
             if(!frame.keyFrame){
@@ -110,42 +97,22 @@ public class VideoProcessorRunnable implements Runnable {
         } else { // when frame == null then connection has been lost
             LOGGER.i("no frame returned for camera "+cameraConfig.getId());
             LOGGER.i("reconnecting to camera..");
-            initGrabber(cameraConfig); // reconnect
+            videoFrameExtractor.initGrabber(cameraConfig);
         }
         return null;
     }
 
-    private void initGrabber(CameraConfig cameraConfig) throws Exception {
-        int TIMEOUT = 10; //10 secs
-        grabber = new FFmpegFrameGrabber(cameraConfig.getVideoUrl()); // rtsp url
-        //rtsp_transport flag is important. Otherwise grabbed image will be distorted
-        grabber.setOption("rtsp_transport", "tcp");
-        //grabber.setVideoCodec(cameraConfig.getVideoCodec());
-        grabber.setOption(
-                RTSPTimeOutOption.STIMEOUT.getKey(),
-                String.valueOf(TIMEOUT * 1000000)
-        ); // In microseconds.
-        grabber.setOption("hwaccel", "h264_videotoolbox");
-        grabber.start();
-        LOGGER.i("connected to camera "+cameraConfig.getId());
-    }
+    private void pauseFrameGrabbing() throws InterruptedException {
+        long waitTimeInMins = cameraConfig.getWaitPeriodAfterDetection();
+        long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
+        waitTime = 30 * 1000; //20 secs
 
-    private void stopGrabber(){
-        try {
-            if(grabber != null){
-                grabber.stop();
-            }
-            framesGrabbed = 0;
-            LOGGER.i("paused frame grabbing and running flag set to "+running.get());
-        } catch (Exception e) {
-            LOGGER.e(e, e.getMessage());
-        }finally{
-            grabber = null;
-        }
-    }
-
-    private void startFFMpegRecording(long cameraId, String videoUrl){
-        BackgroundRecordService backgroundRecordService = new BackgroundRecordService(context, cameraConfig);
-        backgroundRecordService.startFFMpegRecording();
+        videoFrameExtractor.stopGrabber();
+        LOGGER.i("paused frame grabbing. sleep time " + waitTime + ". Running flag set to "+running.get());
+        LOGGER.i("paused frame grabbing and running flag set to "+running.get());
+        framesGrabbed = 0;
+        Thread.sleep(waitTime);
+        pauseFrameGrabbing = false;
+        LOGGER.d("sleep is over and running flag is set to " + running.get());
     }
 }
