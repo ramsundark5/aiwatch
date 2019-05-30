@@ -226,7 +226,6 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                                 .emit(AppConstants.STATUS_CHANGED_EVENT_JS_EVENT, camerConfigMap);
                     }
                 }
-
             }catch(Exception e){
                 LOGGER.e("Exception notifying UI about events "+e.getMessage());
             }

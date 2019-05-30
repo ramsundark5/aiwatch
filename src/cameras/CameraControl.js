@@ -35,17 +35,24 @@ export default class CameraControl extends Component {
         deleteCamera(cameraConfig.id);
         ToastAndroid.showWithGravity('Camera deleted', ToastAndroid.SHORT, ToastAndroid.CENTER);
     }
-      
+    
+    async toggleMonitoring(){
+        const { cameraConfig } = this.props;
+        cameraConfig.disconnected = !cameraConfig.disconnected;
+        await RNSmartCam.putCamera(cameraConfig);
+    }
+
     render(){
-        const { isFull } = this.props;
+        const { cameraConfig, isFull } = this.props;
         if(isFull){
             return null;
         }
+        const monitoringIcon = cameraConfig.disconnected ? 'visibility-off' : 'visibility';
         return(
             <View>
                <Appbar style={styles.appBar}>
                 <Appbar.Action icon='settings' color={Theme.primary} onPress={() => this.editCamera()} />
-                <Appbar.Action icon='visibility' color={Theme.primary} onPress={() => console.log('Pressed monitor')} />
+                <Appbar.Action icon={monitoringIcon} color={Theme.primary} onPress={() => this.toggleMonitoring()} />
                 <Appbar.Action icon='delete' color={Theme.primary} onPress={() => this.onPressDeleteButton()} />
               </Appbar>
               <View style={styles.divider} />

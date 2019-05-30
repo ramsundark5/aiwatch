@@ -53,7 +53,7 @@ public class MonitoringRunnable implements Runnable {
         finally{
             videoFrameExtractor.stopGrabber();
             framesGrabbed = 0;
-            LOGGER.i("stopping monitoring runnable ");
+            LOGGER.i("stopping monitoring runnable for camera "+cameraConfig.getId());
         }
     }
 

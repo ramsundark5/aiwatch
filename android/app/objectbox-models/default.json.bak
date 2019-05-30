@@ -101,7 +101,7 @@
     },
     {
       "id": "3:4286536874799404927",
-      "lastPropertyId": "8:9036506748593024553",
+      "lastPropertyId": "9:1086820665270220707",
       "name": "AlarmEvent",
       "properties": [
         {
@@ -135,6 +135,10 @@
         {
           "id": "8:9036506748593024553",
           "name": "detectionConfidence"
+        },
+        {
+          "id": "9:1086820665270220707",
+          "name": "cloudVideoPath"
         }
       ],
       "relations": []

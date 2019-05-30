@@ -53,10 +53,11 @@ public class VideoFrameExtractor {
             ); // In microseconds.
             grabber.setOption("hwaccel", "h264_videotoolbox");
             grabber.start();
+            notifyAndUpdateCameraStatus(false);
             LOGGER.i("connected to camera "+cameraConfig.getId());
         }catch(Exception e){
             LOGGER.e(e, "Error connecting to camera " + cameraConfig.getId());
-            notifyAndUpdateCameraStatus();
+            notifyAndUpdateCameraStatus(true);
         }
     }
 
@@ -72,15 +73,21 @@ public class VideoFrameExtractor {
         }
     }
 
-    private void notifyAndUpdateCameraStatus(){
+    private void notifyAndUpdateCameraStatus(boolean disconnected){
         try{
-            NotificationManager.sendStringNotification(context, "Camera "+ cameraConfig.getName() + " disconnected.");
+            if(cameraConfig.isDisconnected() == disconnected){
+                //nothing new to notify
+                return;
+            }
+            String status = disconnected ? "disconnected" : "connected";
+            cameraConfig.setDisconnected(disconnected);
+            NotificationManager.sendStringNotification(context, "Camera "+ cameraConfig.getName() + " "+ status);
             NotificationManager.sendUINotification(context, cameraConfig);
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
-            cameraConfig.setDisconnected(true);
-            cameraConfigDao.putCamera(cameraConfig);
+            cameraConfigDao.updateCameraStatus(cameraConfig.getId(), disconnected);
         }catch (Exception e){
             LOGGER.e(e, "error notifying camera status ");
         }
     }
+
 }
