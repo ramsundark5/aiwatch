@@ -45,7 +45,7 @@ public class MonitoringRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            LOGGER.i("Creating new VideoProcessor runable instance. Thread is "+Thread.currentThread().getName());
+            LOGGER.i("Creating new VideoProcessor runnable instance. Thread is "+Thread.currentThread().getName());
             running.set(true);
             monitor();
         } catch (Exception e) {

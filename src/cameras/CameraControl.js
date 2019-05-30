@@ -38,8 +38,9 @@ export default class CameraControl extends Component {
     
     async toggleMonitoring(){
         const { cameraConfig } = this.props;
-        cameraConfig.disconnected = !cameraConfig.disconnected;
-        await RNSmartCam.putCamera(cameraConfig);
+        let camerConfigUpdate = Object.assign({}, cameraConfig);
+        camerConfigUpdate.disconnected = !cameraConfig.disconnected;
+        await RNSmartCam.togglCameraMonitoring(camerConfigUpdate);
     }
 
     render(){
