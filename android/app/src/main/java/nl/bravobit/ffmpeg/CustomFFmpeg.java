@@ -152,7 +152,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
             String[] command = concatenate(ffmpegBinary, cmd);
             FFcommandExecuteAsyncTask task = new FFcommandExecuteAsyncTask(command, null, timeout, fFcommandExecuteResponseHandler);
             try {
-                CommandResult result = task.executeOnExecutor(Executors.newSingleThreadExecutor()).get();
+                CommandResult result = task.executeOnExecutor(Executors.newFixedThreadPool(3)).get();
                 killRunningProcesses(task);
                 return result.output;
             } catch (Exception e) {

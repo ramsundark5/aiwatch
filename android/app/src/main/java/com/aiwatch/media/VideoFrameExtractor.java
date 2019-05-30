@@ -51,7 +51,7 @@ public class VideoFrameExtractor {
                     RTSPTimeOutOption.STIMEOUT.getKey(),
                     String.valueOf(TIMEOUT * 1000000)
             ); // In microseconds.
-            grabber.setOption("hwaccel", "h264_videotoolbox");
+            //grabber.setOption("hwaccel", "h264_videotoolbox");
             grabber.start();
             notifyAndUpdateCameraStatus(false);
             LOGGER.i("connected to camera "+cameraConfig.getId());
@@ -66,6 +66,7 @@ public class VideoFrameExtractor {
             if(grabber != null){
                 grabber.stop();
             }
+            notifyAndUpdateCameraStatus(true);
         } catch (Exception e) {
             LOGGER.e(e, e.getMessage());
         }finally{

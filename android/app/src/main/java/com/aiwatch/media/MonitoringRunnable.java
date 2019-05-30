@@ -39,6 +39,7 @@ public class MonitoringRunnable implements Runnable {
     public void stop() {
         LOGGER.i("monitoring stop requested for camera "+cameraConfig.getId());
         running.set(false);
+        videoFrameExtractor.stopGrabber();
     }
 
     @Override

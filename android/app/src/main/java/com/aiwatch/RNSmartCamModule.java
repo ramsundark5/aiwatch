@@ -203,6 +203,27 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void togglCameraMonitoring(final ReadableMap readableMap, final Promise promise){
+        try{
+            JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
+            CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
+            Intent intent = new Intent(reactContext, MonitoringService.class);
+            if(cameraConfig.isDisconnected()){
+                intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.DISCONNECT_CAMERA);
+                intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraConfig.getId());
+                reactContext.startService(intent);
+            }else{
+                intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.CONNECT_CAMERA);
+                intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraConfig.getId());
+                reactContext.startService(intent);
+            }
+        }catch(Exception e){
+            LOGGER.e(e, "error updating camera monitoring");
+        }
+
+    }
+
     public class LocalBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context applicationContext, Intent intent) {

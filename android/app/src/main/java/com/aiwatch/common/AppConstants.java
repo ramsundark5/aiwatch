@@ -10,6 +10,8 @@ public class AppConstants {
     public static final long WAIT_TIME_AFTER_DETECT = 60*1000; //60 seconds
     public static final String START_MONITORING = "start_monitoring";
     public static final String STOP_MONITORING = "stop_monitoring";
+    public static final String CONNECT_CAMERA = "CONNECT_CAMERA";
+    public static final String DISCONNECT_CAMERA = "DISCONNECT_CAMERA";
     public static final String SAVE_CAMERA = "save_camera";
     public static final String REMOVE_CAMERA = "remove_camera";
     public static final String CAMERA_CONFIG_EXTRA = "camera_config_extra";
