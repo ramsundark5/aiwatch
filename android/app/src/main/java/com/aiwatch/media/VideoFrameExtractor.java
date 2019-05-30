@@ -1,5 +1,6 @@
 package com.aiwatch.media;
 import android.content.Context;
+import android.util.TimingLogger;
 
 import com.aiwatch.Logger;
 import com.aiwatch.common.RTSPTimeOutOption;
@@ -9,6 +10,8 @@ import com.aiwatch.postprocess.NotificationManager;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
+
+import static org.bytedeco.javacpp.avutil.AV_PIX_FMT_RGBA;
 
 public class VideoFrameExtractor {
 
@@ -28,17 +31,24 @@ public class VideoFrameExtractor {
 
     public Frame grabFrame(){
         Frame frame = null;
+        TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "Framegrabber performance");
         try{
             if (grabber == null) {
                 initGrabber(cameraConfig); // connect
+                timings.addSplit("ffmpeg connect time for camera "+cameraConfig.getId());
             }
             frame = grabber.grabImage();
+            if(frame.keyFrame){
+                timings.addSplit("KeyFrame grab time for camera "+cameraConfig.getId());
+            }else{
+                timings.addSplit("NokeyFrame grab time for camera "+cameraConfig.getId());
+            }
+            timings.dumpToLog();
         }catch(Exception e){
             LOGGER.e(e, "Exception grabbing frame");
         }
         return frame;
     }
-
 
     public void initGrabber(CameraConfig cameraConfig) {
         int TIMEOUT = 10; //10 secs
@@ -46,12 +56,14 @@ public class VideoFrameExtractor {
             grabber = new FFmpegFrameGrabber(cameraConfig.getVideoUrl()); // rtsp url
             //rtsp_transport flag is important. Otherwise grabbed image will be distorted
             grabber.setOption("rtsp_transport", "tcp");
-            //grabber.setVideoCodec(cameraConfig.getVideoCodec());
             grabber.setOption(
                     RTSPTimeOutOption.STIMEOUT.getKey(),
                     String.valueOf(TIMEOUT * 1000000)
             ); // In microseconds.
-            //grabber.setOption("hwaccel", "h264_videotoolbox");
+            grabber.setPixelFormat(AV_PIX_FMT_RGBA);
+            //grabber.setVideoOption("threads", "4");
+            //grabber.setAudioOption("threads", "8");
+            grabber.setOption("hwaccel", "auto");
             grabber.start();
             notifyAndUpdateCameraStatus(false);
             LOGGER.i("connected to camera "+cameraConfig.getId());
