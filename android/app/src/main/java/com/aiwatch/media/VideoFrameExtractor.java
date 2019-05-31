@@ -1,5 +1,7 @@
 package com.aiwatch.media;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.TimingLogger;
 
 import com.aiwatch.Logger;
@@ -8,8 +10,12 @@ import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
 
+import org.bytedeco.javacpp.avcodec;
+import org.bytedeco.javacv.AndroidFrameConverter;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
+
+import java.io.ByteArrayOutputStream;
 
 import static org.bytedeco.javacpp.avutil.AV_PIX_FMT_RGBA;
 
@@ -50,6 +56,36 @@ public class VideoFrameExtractor {
         return frame;
     }
 
+    public String getImageFromCamera(){
+        String base64image = null;
+        AndroidFrameConverter frameConverter = new AndroidFrameConverter();
+        try{
+            Frame frame = grabFrame();
+            if(frame != null){
+                Bitmap bitmap = frameConverter.convert(frame);
+                 base64image = imageToBase64(bitmap);
+            }
+        }catch(Exception e){
+            LOGGER.e(e, "error getting test image");
+        }finally{
+            stopGrabber();
+        }
+        return base64image;
+    }
+
+    private String imageToBase64(Bitmap bitmap)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+        byte[] imageBytes = baos.toByteArray();
+
+        String base64String = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+
+        return base64String;
+    }
+
     public void initGrabber(CameraConfig cameraConfig) {
         int TIMEOUT = 10; //10 secs
         try{
@@ -61,9 +97,9 @@ public class VideoFrameExtractor {
                     String.valueOf(TIMEOUT * 1000000)
             ); // In microseconds.
             grabber.setPixelFormat(AV_PIX_FMT_RGBA);
-            //grabber.setVideoOption("threads", "4");
-            //grabber.setAudioOption("threads", "8");
-            grabber.setOption("hwaccel", "auto");
+            //grabber.setVideoOption("threads", "8");
+            //grabber.setAudioOption("threads", "4");
+            //grabber.setOption("hwaccel", "auto");
             grabber.start();
             notifyAndUpdateCameraStatus(false);
             LOGGER.i("connected to camera "+cameraConfig.getId());

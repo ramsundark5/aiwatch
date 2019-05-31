@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.media.VideoFrameExtractor;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.facebook.react.bridge.Promise;
@@ -222,6 +223,19 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             LOGGER.e(e, "error updating camera monitoring");
         }
 
+    }
+
+    @ReactMethod
+    public void testCameraConnection(final String videoUrl, final Promise promise){
+        CameraConfig cameraConfig = new CameraConfig();
+        cameraConfig.setVideoUrl(videoUrl);
+        VideoFrameExtractor videoFrameExtractor = new VideoFrameExtractor(cameraConfig, reactContext);
+        String base64Image = videoFrameExtractor.getImageFromCamera();
+        if(base64Image != null){
+            promise.resolve(base64Image);
+        }else{
+            promise.reject("BAD_URL", "Unable to connect to camera. Check your video url and wifi connection.");
+        }
     }
 
     public class LocalBroadcastReceiver extends BroadcastReceiver {
