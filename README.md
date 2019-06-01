@@ -8,8 +8,11 @@ Todo
 - [ ] Firebase integration and sync
 - [x] Styling cleanup
 - [x] Background service
-- [ ] Reconnect logic
-- [ ] UI add camera -> test connection
+- [x] Reconnect logic
+- [x] UI add camera -> test connection
+- [ ] Crash reporting and logging
+- [ ] Ads and payment
+- [ ] code obfuscation
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
 
