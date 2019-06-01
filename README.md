@@ -12,7 +12,7 @@ Todo
 - [x] UI add camera -> test connection
 - [ ] Crash reporting and logging
 - [ ] Ads and payment
-- [ ] code obfuscation
+- [x] code obfuscation
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
 

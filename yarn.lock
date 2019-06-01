@@ -5248,14 +5248,6 @@ react-native-calendars@^1.141.0:
     prop-types "^15.5.10"
     xdate "^0.8.0"
 
-react-native-dash@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/react-native-dash/-/react-native-dash-0.0.9.tgz#a07eb06a360530e42980e9cf90fd7f862705e2f2"
-  integrity sha1-oH6wajYFMOQpgOnPkP1/hicF4vI=
-  dependencies:
-    prop-types "^15.5.10"
-    react-native-measureme "0.0.1"
-
 react-native-gesture-handler@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.2.1.tgz#9c48fb1ab13d29cece24bbb77b1e847eebf27a2b"
@@ -5283,11 +5275,6 @@ react-native-loading-spinner-overlay@^1.0.1:
   integrity sha512-njZZWs+cgyq6Ni7tkYEowMmuAuHVljuH4CqTWA0plNOfSzZhEcrW209y7WcgHjRWz0RvvEYF5oWGT8DWtTq8bA==
   dependencies:
     prop-types "^15.6.2"
-
-react-native-measureme@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-measureme/-/react-native-measureme-0.0.1.tgz#8b1c5595cdbb1cfdf85bff98fe36d33e98b6162c"
-  integrity sha1-ixxVlc27HP34W/+Y/jbTPpi2Fiw=
 
 react-native-modal@^11.0.0:
   version "11.0.1"
