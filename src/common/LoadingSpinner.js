@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 
 const withSpinner = Comp => ({ isLoading, children, ...props }) => {
   if (isLoading) {

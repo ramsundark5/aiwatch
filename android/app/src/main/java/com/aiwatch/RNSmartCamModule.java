@@ -163,10 +163,12 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getSettings(final Promise promise) {
-
         try {
             SettingsDao settingsDao = new SettingsDao();
             Settings settings = settingsDao.getSettings();
+            if(settings == null){
+                settings = new Settings();
+            }
             String jsonString = gson.toJson(settings);
             JSONObject jsonObject = new JSONObject(jsonString);
             WritableMap settingsMap = ConversionUtil.convertJsonToMap(jsonObject);

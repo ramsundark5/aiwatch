@@ -46,23 +46,27 @@ class Settings extends Component{
     }
 
     async onGoogleAccountSettingsChange(isConnected){
-      const { settings } = this.state;
-      if(isConnected){
-        await this.connectGoogleAccount();
-      }else{
-        await this.disconnectGoogleAccount();
-      }
-      this.setState({
-        settings: Object.assign({}, settings, { isGoogleAccountConnected: isConnected })
+      requestAnimationFrame(async () => {
+        if(isConnected){
+          await this.connectGoogleAccount();
+        }else{
+          await this.disconnectGoogleAccount();
+        }
+        RNSmartCam.putSettings(this.state.settings);
       });
-      RNSmartCam.putSettings(this.state.settings);
     }
 
     async connectGoogleAccount(){
+        const { settings } = this.state;
         try {
-            const userInfo = await GoogleSignin.signIn();
-            console.log(userInfo);
+            await GoogleSignin.signIn();
+            this.setState({
+              settings: Object.assign({}, settings, { isGoogleAccountConnected: true })
+            });
         }catch (error) {
+            this.setState({
+              settings: Object.assign({}, settings, { isGoogleAccountConnected: false })
+            });
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
               // user cancelled the login flow
             } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -77,7 +81,15 @@ class Settings extends Component{
     }
 
     async disconnectGoogleAccount(){
-      await GoogleSignin.revokeAccess();
+      const { settings } = this.state;
+      try{
+        await GoogleSignin.revokeAccess();
+      }catch(err){
+
+      }
+      this.setState({
+        settings: Object.assign({}, settings, { isGoogleAccountConnected: false })
+      });
     }
 
     async onNotificationEnabledChange(value){

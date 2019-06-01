@@ -51,6 +51,7 @@ class EditCamera extends Component {
         cameraConfig: updatedCameraConfig
       });
       editCamera(updatedCameraConfig);
+      this.props.navigation.goBack();
       ToastAndroid.showWithGravity("Changes saved successfully", ToastAndroid.SHORT, ToastAndroid.CENTER);
     }catch(err){
       ToastAndroid.showWithGravity("Error saving you changes. Try again", ToastAndroid.SHORT, ToastAndroid.CENTER);
