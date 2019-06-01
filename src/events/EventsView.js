@@ -6,9 +6,9 @@ import RNSmartCam from '../native/RNSmartCam';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import moment from 'moment';
 import _ from 'lodash';
-import withSpinner from '../common/LoadingSpinner';
 import { loadEvents, deleteSelectedEvents, toggleEventSelection } from '../store/EventsStore';
 import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 class EventsView extends React.Component {
 
     static navigationOptions = {
@@ -63,19 +63,13 @@ class EventsView extends React.Component {
             deleteSelectedEvents();
         }catch(err){
         }finally{
-            this.setState({
-                loading: false
-            });
+            this.setState({loading: false});
         }
     }
 
     render(){
         const { loading } = this.state;
         const { events } = this.props;
-        if(loading){
-            return <ActivityIndicator animating={true} size={36} 
-                style={{flex: 1, justifyContent: 'center'}} />
-        } 
         let groupedEvents = {};
         if(events && events.length > 0){
             groupedEvents = _.groupBy(events, function (event) {
@@ -85,6 +79,9 @@ class EventsView extends React.Component {
         }
         return(
             <View style={{flex: 1, backgroundColor: 'white'}}>
+                <Spinner
+                    visible={loading}
+                    textContent={'Loading...'} />
                 <Agenda items={groupedEvents}
                     renderItem={(event, firstEventInDay) => this.renderEventCard(event, firstEventInDay)}
                     // specify how each date should be rendered. day can be undefined if the item is not first in that day.
