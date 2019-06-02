@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.media.VideoFrameExtractor;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.facebook.react.bridge.Promise;
@@ -40,7 +41,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     private static final Logger LOGGER = new Logger();
     private final Context reactContext;
     private Gson gson;
-    private LocalBroadcastReceiver  mLocalBroadcastReceiver;
+    private LocalBroadcastReceiver mLocalBroadcastReceiver;
 
     public RNSmartCamModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -76,7 +77,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             cameraConfigDao.putCamera(cameraConfig);
-            if(cameraConfig.getId() == 0){
+            if (cameraConfig.getId() == 0) {
                 throw new Exception("Error trying to save Camera Info. Please try again.");
             }
             Intent intent = new Intent(reactContext, MonitoringService.class);
@@ -126,14 +127,14 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void deleteEvents(ReadableArray eventIdJsArray, final Promise promise) {
-        if(eventIdJsArray == null || eventIdJsArray.size() <= 0){
+        if (eventIdJsArray == null || eventIdJsArray.size() <= 0) {
             promise.resolve("nothing to delete");
         }
         try {
             AlarmEventDao alarmEventDao = new AlarmEventDao();
             List<Object> eventIdList = eventIdJsArray.toArrayList();
-            for(Object eventId : eventIdList){
-                alarmEventDao.deleteEvent(((Double)(eventId)).longValue());
+            for (Object eventId : eventIdList) {
+                alarmEventDao.deleteEvent(((Double) (eventId)).longValue());
             }
             LOGGER.d("Events deleted");
             promise.resolve("Events deleted");
@@ -150,7 +151,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             Settings settings = gson.fromJson(jsonObject.toString(), Settings.class);
             SettingsDao settingsDao = new SettingsDao();
             settingsDao.putSettings(settings);
-            if(settings.getId() == 0){
+            if (settings.getId() == 0) {
                 throw new Exception("Error trying to save settings. Please try again.");
             }
             promise.resolve(Long.valueOf(settings.getId()).intValue());
@@ -162,10 +163,12 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getSettings(final Promise promise) {
-
         try {
             SettingsDao settingsDao = new SettingsDao();
             Settings settings = settingsDao.getSettings();
+            if(settings == null){
+                settings = new Settings();
+            }
             String jsonString = gson.toJson(settings);
             JSONObject jsonObject = new JSONObject(jsonString);
             WritableMap settingsMap = ConversionUtil.convertJsonToMap(jsonObject);
@@ -177,49 +180,96 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void isMonitoringServiceRunning(final Promise promise){
+    public void isMonitoringServiceRunning(final Promise promise) {
         boolean isRunning = false;
         ActivityManager manager = (ActivityManager) reactContext.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (MonitoringService.class.getName().equals(service.service.getClassName())) {
-                LOGGER.i ("Monitoring service is running");
+                LOGGER.i("Monitoring service is running");
                 isRunning = true;
                 break;
             }
         }
-        LOGGER.i ("Monitoring service is NOT running");
+        LOGGER.i("Monitoring service is NOT running");
         promise.resolve(isRunning);
     }
 
     @ReactMethod
-    public void toggleMonitoringStatus(boolean enableMonitoring, final Promise promise){
+    public void toggleMonitoringStatus(boolean enableMonitoring, final Promise promise) {
         Intent intent = new Intent(reactContext, MonitoringService.class);
-        if(enableMonitoring){
+        if (enableMonitoring) {
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.START_MONITORING);
             reactContext.startService(intent);
-        }else{
+        } else {
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.STOP_MONITORING);
             reactContext.startService(intent);
+        }
+    }
+
+    @ReactMethod
+    public void togglCameraMonitoring(final ReadableMap readableMap, final Promise promise) {
+        try {
+            JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
+            CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
+            Intent intent = new Intent(reactContext, MonitoringService.class);
+            if (cameraConfig.isDisconnected()) {
+                intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.DISCONNECT_CAMERA);
+                intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraConfig.getId());
+                reactContext.startService(intent);
+            } else {
+                intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.CONNECT_CAMERA);
+                intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraConfig.getId());
+                reactContext.startService(intent);
+            }
+        } catch (Exception e) {
+            LOGGER.e(e, "error updating camera monitoring");
+        }
+    }
+
+    @ReactMethod
+    public void testCameraConnection(final String videoUrl, final Promise promise) {
+        CameraConfig cameraConfig = new CameraConfig();
+        cameraConfig.setVideoUrl(videoUrl);
+        String base64Image = null;
+        try {
+            VideoFrameExtractor videoFrameExtractor = new VideoFrameExtractor(cameraConfig, reactContext);
+            base64Image = videoFrameExtractor.getImageFromCamera();
+        } catch (Exception e) {
+            LOGGER.e(e, "error getting base64 image");
+        }
+        if (base64Image != null) {
+            promise.resolve(base64Image);
+        } else {
+            promise.reject("BAD_URL", "Unable to connect to camera. Check your video url and wifi connection.");
         }
     }
 
     public class LocalBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context applicationContext, Intent intent) {
-            try{
+            try {
                 ReactApplicationContext reactApplicationContext = (ReactApplicationContext) reactContext;
+
                 AlarmEvent alarmEvent = (AlarmEvent) intent.getSerializableExtra(AppConstants.NEW_DETECTION_EVENT);
-                if(alarmEvent != null){
+                if (alarmEvent != null) {
                     String jsonString = gson.toJson(alarmEvent);
                     JSONObject jsonObject = new JSONObject(jsonString);
                     WritableMap alarmEventMap = ConversionUtil.convertJsonToMap(jsonObject);
                     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                             .emit(AppConstants.NEW_DETECTION_JS_EVENT, alarmEventMap);
+                } else {
+                    CameraConfig cameraConfig = (CameraConfig) intent.getSerializableExtra(AppConstants.STATUS_CHANGED_EVENT);
+                    if (cameraConfig != null) {
+                        String jsonString = gson.toJson(cameraConfig);
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        WritableMap camerConfigMap = ConversionUtil.convertJsonToMap(jsonObject);
+                        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                .emit(AppConstants.STATUS_CHANGED_EVENT_JS_EVENT, camerConfigMap);
+                    }
                 }
-            }catch(Exception e){
-                LOGGER.e("Exception notifying UI about events "+e.getMessage());
+            } catch (Exception e) {
+                LOGGER.e("Exception notifying UI about events " + e.getMessage());
             }
-
         }
     }
 

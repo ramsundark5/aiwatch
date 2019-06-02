@@ -40,11 +40,11 @@ public class BackgroundRecordService {
         if (!imageFolder.exists()) {
             imageFolder.mkdirs();
         }
-        long timeout = 10 * 1000000; //10 seconds
+        //long timeout = 10 * 1000000; //10 seconds
         String imagePath = imageFolder.getAbsolutePath();
-        String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 ";
+        //String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 ";
         String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I) -update 1 -vsync vfr " + imagePath + "/camera" + cameraId + ".png";
-        String command = "-rtsp_transport tcp -i " + videoUrl + recordCommand + frameExtractCommand;
+        String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand;
         String[] ffmpegCommand = command.split("\\s+");
         recordingTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
@@ -64,7 +64,7 @@ public class BackgroundRecordService {
 
             @Override
             public void onProgress(String message) {
-                LOGGER.v("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName());
+                LOGGER.v("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName()+ " camera is "+cameraConfig.getId());
             }
 
             @Override

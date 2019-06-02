@@ -36,10 +36,10 @@ public class DetectionController {
             if(!cameraConfig.isMonitoringEnabled()){
                 return;
             }
-            VideoProcessorRunnable videoProcessorRunnable = new VideoProcessorRunnable(cameraConfig, context);
+            MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);
             ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(videoProcessorRunnable);
-            cameraMap.put(cameraConfig.getId(), new RunningThreadInfo(cameraConfig, executorService, videoProcessorRunnable));
+            executorService.submit(monitoringRunnable);
+            cameraMap.put(cameraConfig.getId(), new RunningThreadInfo(cameraConfig, executorService, monitoringRunnable));
             LOGGER.d("Monitoring started for camera "+ cameraConfig.getName() + cameraConfig.getId());
         } catch (Exception e) {
             LOGGER.e("Exception starting detection "+e.getMessage());
@@ -68,9 +68,9 @@ public class DetectionController {
         RunningThreadInfo runningThreadInfo = cameraMap.get(cameraId);
         if(runningThreadInfo != null){
             ExecutorService executorService = runningThreadInfo.getExecutorService();
-            VideoProcessorRunnable videoProcessorRunnable = runningThreadInfo.getVideoProcessorRunnable();
-            if(videoProcessorRunnable != null){
-                videoProcessorRunnable.stop();
+            MonitoringRunnable monitoringRunnable = runningThreadInfo.getMonitoringRunnable();
+            if(monitoringRunnable != null){
+                monitoringRunnable.stop();
             }
             if(executorService != null && !executorService.isShutdown()){
                 executorService.shutdown();

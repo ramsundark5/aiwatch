@@ -8,7 +8,7 @@ import RNSmartCam from '../native/RNSmartCam';
 import Theme from '../common/Theme';
 import { editCamera } from '../store/CamerasStore';
 import { connect } from 'react-redux';
-
+import Logger from '../common/Logger';
 class EditCamera extends Component {
 
   static navigationOptions = {
@@ -51,9 +51,11 @@ class EditCamera extends Component {
         cameraConfig: updatedCameraConfig
       });
       editCamera(updatedCameraConfig);
+      this.props.navigation.goBack();
       ToastAndroid.showWithGravity("Changes saved successfully", ToastAndroid.SHORT, ToastAndroid.CENTER);
     }catch(err){
       ToastAndroid.showWithGravity("Error saving you changes. Try again", ToastAndroid.SHORT, ToastAndroid.CENTER);
+      Logger.error(err);
     }
   }
 

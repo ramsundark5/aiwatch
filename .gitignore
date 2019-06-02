@@ -63,6 +63,7 @@ app/build/
 .history/
 android/app/src/main/assets/index.android.bundle
 aiwatchkeystore
+aiwatchprodkeystore
 *.apk
 android/app/debug/output.json
 credentials.json

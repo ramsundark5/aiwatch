@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import moment from 'moment';
-
+import Logger from '../common/Logger';
 export default class EventTime extends PureComponent{
     render(){
         const { event } = this.props;
@@ -9,7 +9,8 @@ export default class EventTime extends PureComponent{
         try{
             formattedTime = moment(+event.date).local().format('hh:mm a');
         }catch(err){
-            console.log('error formatting datetime');
+            Logger.log('error formatting datetime');
+            Logger.error(err);
         }
         return(
             <View style={[styles.timeContainer]}>

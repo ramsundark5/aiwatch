@@ -24,7 +24,7 @@ public class MonitoringService extends AbstractForegroundService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         preStart(this);
-        String action = intent.getStringExtra(AppConstants.ACTION_EXTRA);
+        String action = intent != null ? intent.getStringExtra(AppConstants.ACTION_EXTRA) : null;
         LOGGER.i("Received onStartCommand with action " + action);
         if(action != null){
             switch (action) {
@@ -33,6 +33,14 @@ public class MonitoringService extends AbstractForegroundService {
                     break;
                 case AppConstants.STOP_MONITORING:
                     stopMonitoring();
+                    break;
+                case AppConstants.CONNECT_CAMERA:
+                    long connectCameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
+                    connectCamera(connectCameraId);
+                    break;
+                case AppConstants.DISCONNECT_CAMERA:
+                    long disconnectCameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
+                    DetectionController.INSTANCE().stopDetecting(disconnectCameraId);
                     break;
                 case AppConstants.SAVE_CAMERA:
                     CameraConfig cameraConfig = (CameraConfig) intent.getSerializableExtra(AppConstants.CAMERA_CONFIG_EXTRA);
@@ -47,6 +55,12 @@ public class MonitoringService extends AbstractForegroundService {
             }
         }
         return START_STICKY;
+    }
+
+    private void connectCamera(long cameraId){
+        CameraConfigDao cameraConfigDao = new CameraConfigDao();
+        CameraConfig cameraConfig = cameraConfigDao.getCamera(cameraId);
+        DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
     }
 
     private void startMonitoring(){

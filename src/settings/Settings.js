@@ -3,7 +3,9 @@ import { ToastAndroid, View } from 'react-native';
 import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 import RNSmartCam from '../native/RNSmartCam';
 import { List, Switch } from 'react-native-paper';
-import { withNavigation } from "react-navigation";
+import { withNavigation } from 'react-navigation';
+import Spinner from 'react-native-loading-spinner-overlay';
+import Logger from '../common/Logger';
 class Settings extends Component{
 
     static navigationOptions = {
@@ -17,7 +19,8 @@ class Settings extends Component{
 
     state = {
       settings: {},
-      isMonitoringOn: false
+      isMonitoringOn: false,
+      isLoading: false
     };
 
     componentDidMount(){
@@ -46,23 +49,33 @@ class Settings extends Component{
     }
 
     async onGoogleAccountSettingsChange(isConnected){
-      const { settings } = this.state;
-      if(isConnected){
-        await this.connectGoogleAccount();
-      }else{
-        await this.disconnectGoogleAccount();
-      }
-      this.setState({
-        settings: Object.assign({}, settings, { isGoogleAccountConnected: isConnected })
+      this.setState({isLoading: true});
+      requestAnimationFrame(async () => {
+        if(isConnected){
+          await this.connectGoogleAccount();
+        }else{
+          await this.disconnectGoogleAccount();
+        }
+        this.setState({isLoading: false});
+        try{
+          RNSmartCam.putSettings(this.state.settings);
+        }catch(err){
+          Logger.error(err);
+        }
       });
-      RNSmartCam.putSettings(this.state.settings);
     }
 
     async connectGoogleAccount(){
+        const { settings } = this.state;
         try {
-            const userInfo = await GoogleSignin.signIn();
-            console.log(userInfo);
+            await GoogleSignin.signIn();
+            this.setState({
+              settings: Object.assign({}, settings, { isGoogleAccountConnected: true })
+            });
         }catch (error) {
+            this.setState({
+              settings: Object.assign({}, settings, { isGoogleAccountConnected: false })
+            });
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
               // user cancelled the login flow
             } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -77,7 +90,15 @@ class Settings extends Component{
     }
 
     async disconnectGoogleAccount(){
-      await GoogleSignin.revokeAccess();
+      const { settings } = this.state;
+      try{
+        await GoogleSignin.revokeAccess();
+      }catch(err){
+        Logger.error(err);
+      }
+      this.setState({
+        settings: Object.assign({}, settings, { isGoogleAccountConnected: false })
+      });
     }
 
     async onNotificationEnabledChange(value){
@@ -96,15 +117,19 @@ class Settings extends Component{
     }
 
     render(){
-        return(
-            <View>
-              <List.Section title="Person Detected">
-                <List.Item title="Store in Google Drive" right={() => this.renderGoogleAccountConnected()} />
-                <List.Item title="Enable Notification" right={() => this.renderNotificationEnabled()} />
-                <List.Item title="Monitoring Service Running" right={() => this.renderMonitoringEnabled()} />
-              </List.Section>
-            </View>
-        );
+      const { isLoading } = this.state;
+      return(
+          <View>
+            <Spinner
+              visible={isLoading}
+              textContent={'Loading...'} />
+            <List.Section title="Person Detected">
+              <List.Item title="Store in Google Drive" right={() => this.renderGoogleAccountConnected()} />
+              <List.Item title="Enable Notification" right={() => this.renderNotificationEnabled()} />
+              <List.Item title="Monitoring Service Running" right={() => this.renderMonitoringEnabled()} />
+            </List.Section>
+          </View>
+      );
   }
 
   renderGoogleAccountConnected() {

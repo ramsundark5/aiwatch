@@ -7,7 +7,7 @@ import Theme from '../common/Theme';
 import { loadCameras, deleteCamera } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import CameraControl from './CameraControl';
-
+import Logger from '../common/Logger';
 class CameraView extends Component {
 
   static navigationOptions = {
@@ -29,7 +29,7 @@ class CameraView extends Component {
       let cameras = await RNSmartCam.getAllCameras();
       loadCameras(cameras);
     }catch(err){
-      console.log(err);
+      Logger.error(err);
     }
   }
 

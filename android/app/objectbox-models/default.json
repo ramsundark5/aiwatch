@@ -25,7 +25,7 @@
     },
     {
       "id": "2:4322453221154582630",
-      "lastPropertyId": "17:397177967891502476",
+      "lastPropertyId": "18:1216680727431285669",
       "name": "CameraConfig",
       "properties": [
         {
@@ -95,6 +95,10 @@
         {
           "id": "17:397177967891502476",
           "name": "testModeEnabled"
+        },
+        {
+          "id": "18:1216680727431285669",
+          "name": "disconnected"
         }
       ],
       "relations": []

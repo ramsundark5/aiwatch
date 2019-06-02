@@ -3,6 +3,7 @@ package com.aiwatch;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.bugsnag.BugsnagReactNative;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
 import com.aiwatch.media.db.ObjectBox;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            BugsnagReactNative.getPackage(),
             new RNGoogleSigninPackage(),
             new RNScreensPackage(),
             new RNGestureHandlerPackage(),

@@ -10,6 +10,8 @@ public class AppConstants {
     public static final long WAIT_TIME_AFTER_DETECT = 60*1000; //60 seconds
     public static final String START_MONITORING = "start_monitoring";
     public static final String STOP_MONITORING = "stop_monitoring";
+    public static final String CONNECT_CAMERA = "CONNECT_CAMERA";
+    public static final String DISCONNECT_CAMERA = "DISCONNECT_CAMERA";
     public static final String SAVE_CAMERA = "save_camera";
     public static final String REMOVE_CAMERA = "remove_camera";
     public static final String CAMERA_CONFIG_EXTRA = "camera_config_extra";
@@ -18,6 +20,8 @@ public class AppConstants {
     public static final String AIWATCH_EVENT_INTENT = "AIWATCH_EVENT_INTENT";
     public static final String NEW_DETECTION_EVENT = "NEW_DETECTION_EVENT";
     public static final String NEW_DETECTION_JS_EVENT = "NEW_DETECTION_JS_EVENT";
+    public static final String STATUS_CHANGED_EVENT = "STATUS_CHANGED_EVENT";
+    public static final String STATUS_CHANGED_EVENT_JS_EVENT = "STATUS_CHANGED_EVENT_JS_EVENT";
     public static final String UNCOMPRESSED_VIDEO_FOLDER = "tempvideos";
     public static final String COMPRESSED_VIDEO_FOLDER = "compressed";
     public static final String MERGED_VIDEO_FOLDER = "videos";
