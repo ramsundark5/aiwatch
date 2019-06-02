@@ -55,7 +55,7 @@ class EditCamera extends Component {
       ToastAndroid.showWithGravity("Changes saved successfully", ToastAndroid.SHORT, ToastAndroid.CENTER);
     }catch(err){
       ToastAndroid.showWithGravity("Error saving you changes. Try again", ToastAndroid.SHORT, ToastAndroid.CENTER);
-      Logger.log(err);
+      Logger.error(err);
     }
   }
 

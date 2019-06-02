@@ -29,7 +29,7 @@ class CameraView extends Component {
       let cameras = await RNSmartCam.getAllCameras();
       loadCameras(cameras);
     }catch(err){
-      Logger.log(err);
+      Logger.error(err);
     }
   }
 

@@ -38,7 +38,7 @@ class EventsView extends React.Component {
             loadEvents(events);
         }catch(err){
             Logger.log('error getting events ');
-            Logger.log(err);
+            Logger.error(err);
         }finally{
             this.setState({loading: false});
         }
@@ -64,7 +64,7 @@ class EventsView extends React.Component {
             //await RNSmartCam.deleteEvents(eventsToDelete);
             deleteSelectedEvents();
         }catch(err){
-            Logger.log(err);
+            Logger.error(err);
         }finally{
             this.setState({loading: false});
         }

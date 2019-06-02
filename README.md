@@ -10,7 +10,7 @@ Todo
 - [x] Background service
 - [x] Reconnect logic
 - [x] UI add camera -> test connection
-- [ ] Crash reporting and logging
+- [x] Crash reporting and logging
 - [ ] Ads and payment
 - [x] code obfuscation
 - [ ] Face recognition

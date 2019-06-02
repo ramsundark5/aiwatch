@@ -1,9 +1,12 @@
 import bugsnag from './BugSnag';
 
 class Logger{
-    log(obj){
-        console.log(log);
-        bugsnag.notify(obj);
+    log(msg){
+        console.log(msg);
+    }
+    error(err){
+        console.log(err);
+        bugsnag.notify(err);
     }
 }
 

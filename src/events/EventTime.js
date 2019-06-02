@@ -10,7 +10,7 @@ export default class EventTime extends PureComponent{
             formattedTime = moment(+event.date).local().format('hh:mm a');
         }catch(err){
             Logger.log('error formatting datetime');
-            Logger.log(err);
+            Logger.error(err);
         }
         return(
             <View style={[styles.timeContainer]}>

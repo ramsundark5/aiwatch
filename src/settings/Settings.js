@@ -60,7 +60,7 @@ class Settings extends Component{
         try{
           RNSmartCam.putSettings(this.state.settings);
         }catch(err){
-          Logger.log(err);
+          Logger.error(err);
         }
       });
     }
@@ -94,7 +94,7 @@ class Settings extends Component{
       try{
         await GoogleSignin.revokeAccess();
       }catch(err){
-        Logger.log(err);
+        Logger.error(err);
       }
       this.setState({
         settings: Object.assign({}, settings, { isGoogleAccountConnected: false })
