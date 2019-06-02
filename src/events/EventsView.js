@@ -10,6 +10,7 @@ import { loadEvents, deleteSelectedEvents, toggleEventSelection } from '../store
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Logger from '../common/Logger';
+import AdMob from '../common/AdMob';
 class EventsView extends React.Component {
 
     static navigationOptions = {
@@ -21,9 +22,19 @@ class EventsView extends React.Component {
     }
 
     componentDidMount(){
-        this.loadInitialEvents();
+        this.showAdAndInitialize();
     }
     
+
+    async showAdAndInitialize(){
+        this.setState({loading: true});
+        requestAnimationFrame(async () => {
+          await AdMob.showAd();
+          this.setState({loading: false});
+          this.loadInitialEvents();
+        });
+    }
+
     loadInitialEvents(){
         let startDate = moment().local().subtract(30,'d');
         let currentDate = moment().local();
