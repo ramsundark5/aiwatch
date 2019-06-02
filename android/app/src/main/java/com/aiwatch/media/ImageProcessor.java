@@ -7,6 +7,7 @@ import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.ai.ObjectDetectionService;
 import com.aiwatch.common.AppConstants;
+import com.google.firebase.perf.metrics.AddTrace;
 
 import org.bytedeco.javacv.AndroidFrameConverter;
 
@@ -23,6 +24,7 @@ public class ImageProcessor {
         objectDetectionService = new ObjectDetectionService(assetManager);
     }
 
+    @AddTrace(name = "imageProcessTrace")
     public ObjectDetectionResult processImage(final FrameEvent frameEvent){
         TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "ImageProcessor performance");
         Bitmap bitmapOutput = frameConverter.convert(frameEvent.getFrame());

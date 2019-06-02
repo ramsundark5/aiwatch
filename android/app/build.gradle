@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.firebase.firebase-perf'
 
 import com.android.build.OutputFile
 
@@ -91,12 +92,13 @@ android {
 }
 
 dependencies {
-    implementation project(':bugsnag-react-native')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:support-compat:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:support-media-compat:${rootProject.ext.supportLibVersion}"
     implementation 'com.facebook.react:react-native:+'
+
+    //common libs
     implementation 'com.google.http-client:google-http-client-gson:1.26.0'
     implementation('com.google.api-client:google-api-client-android:1.26.0') {
         exclude group: 'org.apache.httpcomponents'
@@ -104,23 +106,34 @@ dependencies {
     implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation 'org.tensorflow:tensorflow-lite:1.13.1'
     implementation 'org.apache.commons:commons-collections4:4.3'
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    //tflite
+    implementation 'org.tensorflow:tensorflow-lite:1.13.1'
+
+    //javacv and ffmpeg
     implementation 'nl.bravobit:android-ffmpeg:1.1.5'
     implementation 'org.bytedeco:javacv:1.4.4'
     implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-arm'
     implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-arm64'
     implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-x86'
     implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-x86_64'
-    implementation 'com.google.code.gson:gson:2.8.5'
+
+    //firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-perf:17.0.2'
+    implementation 'com.google.firebase:firebase-ads:17.2.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+
+    //react native projects
     implementation project(':react-native-screens')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-yz-vlcplayer')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-orientation')
     implementation project(':react-native-google-signin')
+    implementation project(':bugsnag-react-native')
     implementation project(path: ':transcoder')
 }
 

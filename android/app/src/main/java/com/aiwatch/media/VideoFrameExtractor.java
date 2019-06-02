@@ -9,6 +9,7 @@ import com.aiwatch.common.RTSPTimeOutOption;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
+import com.google.firebase.perf.metrics.AddTrace;
 
 import org.bytedeco.javacpp.avcodec;
 import org.bytedeco.javacv.AndroidFrameConverter;
@@ -35,6 +36,7 @@ public class VideoFrameExtractor {
         }
     }
 
+    @AddTrace(name = "frameGrabTrace")
     public Frame grabFrame(){
         Frame frame = null;
         TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "Framegrabber performance");

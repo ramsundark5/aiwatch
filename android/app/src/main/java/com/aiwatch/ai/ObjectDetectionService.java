@@ -4,6 +4,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 
 import com.aiwatch.Logger;
+import com.google.firebase.perf.metrics.AddTrace;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ObjectDetectionService {
         objectDetector = getObjectDetector(assets);
     }
 
+    @AddTrace(name = "objdectDetectionTrace")
     public ObjectDetectionResult detectObjects(final Bitmap croppedImage) {
         ObjectDetectionResult result = new ObjectDetectionResult();
         final List<Classifier.Recognition> detectionResults = objectDetector.recognizeImage(croppedImage);
