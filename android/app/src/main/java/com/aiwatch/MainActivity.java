@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
 import com.facebook.react.ReactActivity;
+import com.google.android.gms.ads.MobileAds;
 
 public class MainActivity extends ReactActivity {
 
@@ -14,6 +15,7 @@ public class MainActivity extends ReactActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
         startMonitoringService();
+        MobileAds.initialize(this, "ca-app-pub-3233599560396549~2106137714");
     }
 
     /**

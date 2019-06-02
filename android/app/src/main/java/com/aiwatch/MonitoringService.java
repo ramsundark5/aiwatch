@@ -7,7 +7,6 @@ import com.aiwatch.media.CompressionRunnable;
 import com.aiwatch.media.DetectionController;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
-import com.google.android.gms.ads.MobileAds;
 
 import java.util.List;
 
@@ -62,7 +61,6 @@ public class MonitoringService extends AbstractForegroundService {
         CameraConfigDao cameraConfigDao = new CameraConfigDao();
         CameraConfig cameraConfig = cameraConfigDao.getCamera(cameraId);
         DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
-        startAds();
     }
 
     private void startMonitoring(){
@@ -80,16 +78,11 @@ public class MonitoringService extends AbstractForegroundService {
         for(CameraConfig cameraConfig : cameraConfigList){
             DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
         }
-        startAds();
     }
 
     private void stopMonitoring(){
         DetectionController.INSTANCE().stopAllDetecting();
         stopSelf();
-    }
-
-    private void startAds(){
-        MobileAds.initialize(this, "ca-app-pub-3233599560396549~2106137714");
     }
 
     private void scheduleCompression(){

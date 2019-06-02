@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.google.firebase.firebase-perf'
 
 import com.android.build.OutputFile
 
@@ -159,4 +158,5 @@ project.ext.TMP_DIR   = project.buildDir.toString() + '/downloads'
 //apply from: "download-models.gradle"
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.objectbox' // apply last
