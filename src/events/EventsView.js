@@ -9,6 +9,7 @@ import _ from 'lodash';
 import { loadEvents, deleteSelectedEvents, toggleEventSelection } from '../store/EventsStore';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Logger from '../common/Logger';
 class EventsView extends React.Component {
 
     static navigationOptions = {
@@ -36,7 +37,8 @@ class EventsView extends React.Component {
             let events = await RNSmartCam.getEventsForDateRange({startDate: startDate.valueOf(), endDate: endDate.valueOf()});
             loadEvents(events);
         }catch(err){
-            console.log('error getting events '+err);
+            Logger.log('error getting events ');
+            Logger.log(err);
         }finally{
             this.setState({loading: false});
         }
@@ -62,6 +64,7 @@ class EventsView extends React.Component {
             //await RNSmartCam.deleteEvents(eventsToDelete);
             deleteSelectedEvents();
         }catch(err){
+            Logger.log(err);
         }finally{
             this.setState({loading: false});
         }

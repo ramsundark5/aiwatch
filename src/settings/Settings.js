@@ -5,6 +5,7 @@ import RNSmartCam from '../native/RNSmartCam';
 import { List, Switch } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Logger from '../common/Logger';
 class Settings extends Component{
 
     static navigationOptions = {
@@ -59,7 +60,7 @@ class Settings extends Component{
         try{
           RNSmartCam.putSettings(this.state.settings);
         }catch(err){
-
+          Logger.log(err);
         }
       });
     }
@@ -93,7 +94,7 @@ class Settings extends Component{
       try{
         await GoogleSignin.revokeAccess();
       }catch(err){
-
+        Logger.log(err);
       }
       this.setState({
         settings: Object.assign({}, settings, { isGoogleAccountConnected: false })

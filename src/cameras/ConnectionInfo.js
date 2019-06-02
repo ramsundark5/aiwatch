@@ -4,6 +4,8 @@ import ConfigInput from './ConfigInput';
 import Theme from '../common/Theme';
 import RNSmartCam from '../native/RNSmartCam';
 import { Image, View, Text } from 'react-native';
+import Logger from '../common/Logger';
+
 export default class ConnectionInfo extends Component {
   
   state = {
@@ -33,7 +35,8 @@ export default class ConnectionInfo extends Component {
       let image = await RNSmartCam.testCameraConnection(cameraConfig.videoUrl);
       this.setState({ base64Image: image });
     }catch(err){
-      console.log('error loading test image '+err);
+      Logger.log('error loading test image');
+      Logger.log(err);
     }finally{
       this.setState({ isLoading: false });
     }
