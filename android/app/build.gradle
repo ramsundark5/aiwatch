@@ -7,6 +7,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -122,7 +123,7 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.google.firebase:firebase-perf:17.0.2'
-    implementation 'com.google.firebase:firebase-ads:17.2.1'
+    //implementation 'com.google.firebase:firebase-ads:17.2.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
     //react native projects
@@ -134,6 +135,7 @@ dependencies {
     implementation project(':react-native-google-signin')
     implementation project(':bugsnag-react-native')
     implementation project(path: ':transcoder')
+    addUnimodulesDependencies()
 }
 
 repositories {

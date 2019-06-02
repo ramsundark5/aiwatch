@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { ToastAndroid, View } from 'react-native';
 import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 import RNSmartCam from '../native/RNSmartCam';
-import { List, Switch } from 'react-native-paper';
+import { List, Switch, Button } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Logger from '../common/Logger';
+import AdMob from '../common/AdMob';
+
 class Settings extends Component{
 
     static navigationOptions = {
@@ -116,6 +117,14 @@ class Settings extends Component{
       RNSmartCam.toggleMonitoringStatus(enableMonitoring);
     }
 
+    async showAd(){
+      this.setState({isLoading: true});
+      requestAnimationFrame(async () => {
+        await AdMob.showAd();
+        this.setState({isLoading: false});
+      });
+    }
+
     render(){
       const { isLoading } = this.state;
       return(
@@ -128,6 +137,7 @@ class Settings extends Component{
               <List.Item title="Enable Notification" right={() => this.renderNotificationEnabled()} />
               <List.Item title="Monitoring Service Running" right={() => this.renderMonitoringEnabled()} />
             </List.Section>
+            <Button onPress={() => this.showAd() }>Show Ad</Button>
           </View>
       );
   }
