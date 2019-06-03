@@ -13,6 +13,7 @@ Todo
 - [x] Crash reporting and logging
 - [ ] Ads and payment
 - [x] code obfuscation
+- [ ] Remote Notifications
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
 
