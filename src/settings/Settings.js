@@ -5,7 +5,7 @@ import RNSmartCam from '../native/RNSmartCam';
 import { List, Switch } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import Logger from '../common/Logger';
 class Settings extends Component{
 
     static navigationOptions = {

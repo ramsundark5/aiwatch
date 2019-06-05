@@ -16,7 +16,7 @@ public class RemoteMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         LOGGER.d("Refreshed token: " + token);
-        firebaseUserDataManager.sendTokenToDB(getApplicationContext(), token);
+        //firebaseUserDataManager.sendTokenToDB(getApplicationContext(), token);
     }
 
 }
