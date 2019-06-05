@@ -6,7 +6,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 public class RemoteMessagingService extends FirebaseMessagingService {
 
     private static final Logger LOGGER = new Logger();
-    private FirebaseUserDataManager firebaseUserDataManager = new FirebaseUserDataManager();
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -16,7 +15,8 @@ public class RemoteMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         LOGGER.d("Refreshed token: " + token);
-        //firebaseUserDataManager.sendTokenToDB(getApplicationContext(), token);
+        FirebaseUserDataManager firebaseUserDataManager = new FirebaseUserDataManager();
+        firebaseUserDataManager.registerFCMToken(getApplicationContext());
     }
 
 }

@@ -10,33 +10,51 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class FirebaseUserDataManager {
 
     private static final Logger LOGGER = new Logger();
     private FirebaseAuthManager firebaseAuthManager = new FirebaseAuthManager();
 
-    // Do not call this function from the main thread. Otherwise,
-    // an IllegalStateException will be thrown.
-    public void registerToken(Context context, String token) {
-        try{
-           FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
-           sendTokenToDB(firebaseUser, context, token);
-        }catch(Exception e){
-            LOGGER.e(e, "Error registering token");
-        }
+    /*
+     * Do not call this function from the main thread. Otherwise,
+     * an IllegalStateException will be thrown.
+     */
+    public void registerFCMToken(Context context){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                Task<InstanceIdResult> firebaseInstanceIdTask = FirebaseInstanceId.getInstance().getInstanceId();
+                try {
+                    InstanceIdResult instanceIdResult = Tasks.await(firebaseInstanceIdTask);
+                    String token = instanceIdResult.getToken();
+                    FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                    sendTokenToDB(firebaseUser, context, token);
+                } catch (Exception e) {
+                    LOGGER.e(e, "Error registering token");
+                }
+            }
+        });
     }
 
     public void sendTokenToDB(FirebaseUser firebaseUser, Context context, String token) {
-        LOGGER.d("Refreshed token: " + token);
         if(firebaseUser != null && firebaseUser.getUid() != null){
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             FirebaseUserData firebaseUserData = buildUserData(firebaseUser, context, token);
             db.collection("users").document(firebaseUser.getUid()).set(firebaseUserData);
+            LOGGER.d("Refreshed token saved to db: " + token);
         }
     }
 
@@ -52,6 +70,7 @@ public class FirebaseUserDataManager {
         String adInfoId = getAdInfoId(context);
         deviceTokens.put(adInfoId, token);
         firebaseUserData.setDeviceTokens(deviceTokens);
+        firebaseUserData.setLastUpdated(new Date());
         return firebaseUserData;
     }
 
