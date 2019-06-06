@@ -57,7 +57,8 @@ public class DetectionResultProcessor {
             AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getName(), videoPath, thumbnailPath);
             alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
             alarmEvent.setCloudVideoPath(gdriveVideoPath);
-            alarmEvent.setCloudImagePath(gdriveImagePath);
+            String cloudImagePath = "https://drive.google.com/uc?export=view&id="+gdriveImagePath;
+            alarmEvent.setCloudImagePath(cloudImagePath);
             alarmEventDao.putEvent(alarmEvent);
 
             //this will allow UI redux store to refresh with latest results
@@ -79,11 +80,12 @@ public class DetectionResultProcessor {
             timings.dumpToLog();
             RectF location = objectDetectionResult.getLocation();
             if(location != null){
-                Bitmap bitmapToSave = cropBitmap(bitmapOutput, location);
+                //Bitmap scaledBitmap = cropBitmap(bitmapOutput, location);
+                //Bitmap bitmapToSave = cropBitmap(bitmapOutput, location);
 
                 //if bounding box needed, comment out the above line and uncomment the below ones
-                //drawBoundingBox(bitmapOutput, location);
-                //Bitmap bitmapToSave = bitmapOutput;
+                drawBoundingBox(bitmapOutput, location);
+                Bitmap bitmapToSave = bitmapOutput;
                 bitmapToSave.compress(Bitmap.CompressFormat.JPEG, 90, fos);
                 fos.close();
             }else{

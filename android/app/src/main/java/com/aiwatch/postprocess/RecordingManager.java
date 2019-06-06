@@ -113,9 +113,9 @@ public class RecordingManager {
             String appFolderId = gDriveServiceHelper.createFolder(GDriveServiceHelper.APP_FOLDER_NAME, null, true);
             String monthFolderId = gDriveServiceHelper.createFolder(currentMonth, appFolderId , false);
             com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(fileName, monthFolderId, inputFilePath, mimeType);
-            return uploadedFileMetadata.getWebViewLink();
+            return uploadedFileMetadata.getId();
         }catch(Exception e){
-            LOGGER.e("error recording to gdrive "+e);
+            LOGGER.e("error saving to gdrive "+e);
             NotificationManager.sendStringNotification(context, "Cannot upload to Google Drive. Reconnect your account from settings screen.");
         }
         return null;
