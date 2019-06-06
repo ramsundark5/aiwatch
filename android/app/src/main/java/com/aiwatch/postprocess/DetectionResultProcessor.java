@@ -9,10 +9,13 @@ import android.util.TimingLogger;
 
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
+import com.aiwatch.firebase.FirebaseNotificationDao;
 import com.aiwatch.media.FrameEvent;
 import com.aiwatch.media.db.AlarmEvent;
 import com.aiwatch.media.db.AlarmEventDao;
 import com.aiwatch.media.db.CameraConfig;
+import com.google.common.net.MediaType;
+
 import org.bytedeco.javacv.AndroidFrameConverter;
 import java.io.FileOutputStream;
 import java.util.Date;
@@ -42,21 +45,27 @@ public class DetectionResultProcessor {
         }
         //now record
         if(shouldRecordVideo){
-            videoPath = RecordingManager.recordToLocal(frameEvent);
-            gdriveVideoPath = RecordingManager.recordToGdrive(frameEvent, videoPath);
+            //videoPath = RecordingManager.recordToLocal(frameEvent);
+            //gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
         }
         boolean isResultInteresting = shouldRecordVideo || shouldNotify;
 
         if(isResultInteresting){
             //store the results
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
+            String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
             AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getName(), videoPath, thumbnailPath);
             alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
             alarmEvent.setCloudVideoPath(gdriveVideoPath);
+            alarmEvent.setCloudImagePath(gdriveImagePath);
             alarmEventDao.putEvent(alarmEvent);
 
             //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
+
+            //send remote push notification
+            FirebaseNotificationDao firebaseNotificationDao = new FirebaseNotificationDao();
+            firebaseNotificationDao.sendPushNotification(frameEvent.getContext(), alarmEvent);
         }
         return isResultInteresting;
     }

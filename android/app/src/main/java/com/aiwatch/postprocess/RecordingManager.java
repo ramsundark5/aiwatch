@@ -1,5 +1,7 @@
 package com.aiwatch.postprocess;
 
+import android.content.Context;
+
 import com.aiwatch.cloud.gdrive.GDriveServiceHelper;
 import com.aiwatch.cloud.gdrive.GdriveManager;
 import com.aiwatch.Logger;
@@ -9,6 +11,7 @@ import com.aiwatch.media.FrameEvent;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
+import com.google.common.net.MediaType;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -19,7 +22,8 @@ import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
 public class RecordingManager {
 
     private static final Logger LOGGER = new Logger();
-    public static final String DEFAULT_EXTENSION = ".mp4";
+    public static final String DEFAULT_VIDEO_EXTENSION = ".mp4";
+    public static final String DEFAULT_IMAGE_EXTENSION = ".png";
 
     public static boolean shouldStartRecording(ObjectDetectionResult objectDetectionResult, CameraConfig cameraConfig){
         //conditionally notify based on camera config
@@ -44,7 +48,7 @@ public class RecordingManager {
             } else {
                 LOGGER.e("FFmpeg is not supported");
             }
-            String filePath = getFilePathToRecord(frameEvent, DEFAULT_EXTENSION);
+            String filePath = getFilePathToRecord(frameEvent, DEFAULT_VIDEO_EXTENSION);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
             int recordingDuration = cameraConfig.getRecordingDuration();
             if(recordingDuration <= 1){
@@ -87,33 +91,39 @@ public class RecordingManager {
         return null;
     }
 
-    public static String recordToGdrive(FrameEvent frameEvent, String videoPath){
+    public static String saveToGdrive(Context context, long cameraId, String inputFilePath, String mimeType, String extension){
         try{
             SettingsDao settingsDao = new SettingsDao();
             Settings settings = settingsDao.getSettings();
             if(!settings.isGoogleAccountConnected()){
                 return null;
             }
+            if(mimeType == null){
+                mimeType = MediaType.MP4_VIDEO.toString();
+            }
+            if(extension == null){
+                extension = DEFAULT_VIDEO_EXTENSION;
+            }
             DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmm");
             String currentTime = dateFormat.format(System.currentTimeMillis());
-            String fileName = frameEvent.getCameraConfig().getId() + currentTime + DEFAULT_EXTENSION;
-            GDriveServiceHelper gDriveServiceHelper = GdriveManager.getGDriveServiceHelper(frameEvent.getContext());
+            String fileName = cameraId + currentTime + extension;
+            GDriveServiceHelper gDriveServiceHelper = GdriveManager.getGDriveServiceHelper(context);
             DateFormat monthDateFormat = new SimpleDateFormat("yyyy-MM");
             String currentMonth = monthDateFormat.format(System.currentTimeMillis());
             String appFolderId = gDriveServiceHelper.createFolder(GDriveServiceHelper.APP_FOLDER_NAME, null, true);
             String monthFolderId = gDriveServiceHelper.createFolder(currentMonth, appFolderId , false);
-            com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(fileName, monthFolderId, videoPath);
-            return uploadedFileMetadata.getId();
+            com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(fileName, monthFolderId, inputFilePath, mimeType);
+            return uploadedFileMetadata.getWebViewLink();
         }catch(Exception e){
             LOGGER.e("error recording to gdrive "+e);
-            NotificationManager.sendStringNotification(frameEvent, "Cannot upload to Google Drive. Reconnect your account from settings screen.");
+            NotificationManager.sendStringNotification(context, "Cannot upload to Google Drive. Reconnect your account from settings screen.");
         }
         return null;
     }
 
     public static String getFilePathToRecord(FrameEvent frameEvent, String extension){
         if(extension == null){
-            extension = DEFAULT_EXTENSION;
+            extension = DEFAULT_VIDEO_EXTENSION;
         }
         DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmm");
         String currentTime = dateFormat.format(System.currentTimeMillis());

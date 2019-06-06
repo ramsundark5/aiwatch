@@ -15,10 +15,13 @@ public class AlarmEvent implements Serializable {
     private long cameraId;
     private String videoPath;
     private String cloudVideoPath;
+    private String cloudImagePath;
     private String thumbnailPath;
     private Date date;
     private String message;
     private float detectionConfidence;
+
+    private String userId;//this is the firebaseUserId
 
     public AlarmEvent(long cameraId, String cameraName, Date date, String message, String videoPath, String thumbnailPath) {
         this.cameraName = cameraName;
@@ -99,5 +102,21 @@ public class AlarmEvent implements Serializable {
 
     public void setCloudVideoPath(String cloudVideoPath) {
         this.cloudVideoPath = cloudVideoPath;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getCloudImagePath() {
+        return cloudImagePath;
+    }
+
+    public void setCloudImagePath(String cloudImagePath) {
+        this.cloudImagePath = cloudImagePath;
     }
 }

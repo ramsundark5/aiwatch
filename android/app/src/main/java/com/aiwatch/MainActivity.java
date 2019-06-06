@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
-import com.aiwatch.firebase.FirebaseUserDataManager;
+import com.aiwatch.firebase.FirebaseUserDataDao;
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
@@ -38,7 +38,7 @@ public class MainActivity extends ReactActivity {
     }
 
     private void registerFCMToken(){
-        FirebaseUserDataManager firebaseUserDataManager = new FirebaseUserDataManager();
-        firebaseUserDataManager.registerFCMToken(getApplicationContext());
+        FirebaseUserDataDao firebaseUserDataDao = new FirebaseUserDataDao();
+        firebaseUserDataDao.registerFCMToken(getApplicationContext());
     }
 }

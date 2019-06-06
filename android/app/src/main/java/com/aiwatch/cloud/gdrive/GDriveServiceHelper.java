@@ -113,15 +113,15 @@ public class GDriveServiceHelper {
         return folderId;
     }
 
-    public File uploadFile(String fileName, String parentFolderId, String videoPath) throws IOException {
-            java.io.File mediaFile = new java.io.File(videoPath);
+    public File uploadFile(String fileName, String parentFolderId, String filePath, String mimeType) throws IOException {
+            java.io.File mediaFile = new java.io.File(filePath);
             File metadata = new File()
                 .setParents(Collections.singletonList(parentFolderId))
-                .setMimeType(MediaType.MP4_VIDEO.toString())
+                .setMimeType(mimeType)
                 .setName(fileName);
 
             InputStreamContent mediaContent =
-                    new InputStreamContent(MediaType.MP4_VIDEO.toString(),
+                    new InputStreamContent(mimeType,
                             new BufferedInputStream(new FileInputStream(mediaFile)));
             mediaContent.setLength(mediaFile.length());
             File fileMeta = mDriveService.files().create(metadata, mediaContent).execute();
