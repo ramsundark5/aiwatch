@@ -5,10 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.aiwatch.Logger;
 import com.aiwatch.media.db.AlarmEvent;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,6 +17,7 @@ public class FirebaseNotificationDao {
 
     private static final Logger LOGGER = new Logger();
     private FirebaseAuthManager firebaseAuthManager = new FirebaseAuthManager();
+    private FirebaseUserDataDao firebaseUserDataDao = new FirebaseUserDataDao();
 
     /*
      * Do not call this function from the main thread. Otherwise,
@@ -31,6 +30,9 @@ public class FirebaseNotificationDao {
             public void run() {
                 try {
                     FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                    String adInfoId = firebaseUserDataDao.getAdInfoId(context);
+                    alarmEvent.setDeviceId(adInfoId);
+                    alarmEvent.setUserId(firebaseUser.getUid());
                     addNotificationDocument(firebaseUser, alarmEvent);
                 } catch (Exception e) {
                     LOGGER.e(e, "Error adding notification record");
@@ -42,7 +44,6 @@ public class FirebaseNotificationDao {
     private void addNotificationDocument(FirebaseUser firebaseUser, AlarmEvent alarmEvent){
         if(firebaseUser != null && firebaseUser.getUid() != null){
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            alarmEvent.setUserId(firebaseUser.getUid());
             db.collection("notifications").add(alarmEvent)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override

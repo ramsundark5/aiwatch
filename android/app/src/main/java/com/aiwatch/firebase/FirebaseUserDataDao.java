@@ -86,7 +86,7 @@ public class FirebaseUserDataDao {
         return adInfoIdd;
     }
 
-    private FirebaseUserData getCurrentDataFromFirebase(FirebaseUser firebaseUser) {
+    public FirebaseUserData getCurrentDataFromFirebase(FirebaseUser firebaseUser) {
         FirebaseUserData firebaseUserData = null;
         try {
             FirebaseFirestore db = FirebaseFirestore.getInstance();

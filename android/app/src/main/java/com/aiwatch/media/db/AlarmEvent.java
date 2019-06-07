@@ -2,6 +2,7 @@ package com.aiwatch.media.db;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -20,8 +21,8 @@ public class AlarmEvent implements Serializable {
     private Date date;
     private String message;
     private float detectionConfidence;
-
-    private String userId;//this is the firebaseUserId
+    private String userId; //this is the firebaseUserId
+    private String deviceId; //deviceId sending notification
 
     public AlarmEvent(long cameraId, String cameraName, Date date, String message, String videoPath, String thumbnailPath) {
         this.cameraName = cameraName;
@@ -118,5 +119,13 @@ public class AlarmEvent implements Serializable {
 
     public void setCloudImagePath(String cloudImagePath) {
         this.cloudImagePath = cloudImagePath;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 }
