@@ -105,7 +105,7 @@
     },
     {
       "id": "3:4286536874799404927",
-      "lastPropertyId": "9:1086820665270220707",
+      "lastPropertyId": "11:4669294850674506707",
       "name": "AlarmEvent",
       "properties": [
         {
@@ -143,6 +143,14 @@
         {
           "id": "9:1086820665270220707",
           "name": "cloudVideoPath"
+        },
+        {
+          "id": "10:1062369175956564577",
+          "name": "cloudImagePath"
+        },
+        {
+          "id": "11:4669294850674506707",
+          "name": "userId"
         }
       ],
       "relations": []

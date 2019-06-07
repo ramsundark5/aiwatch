@@ -36,11 +36,17 @@ public class DetectionResultProcessor {
         String videoPath = null;
         String gdriveVideoPath = null;
         String thumbnailPath = null;
+        CameraConfig cameraConfig = frameEvent.getCameraConfig();
+        AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getName(), null, thumbnailPath);
+        alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
         boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
         if(shouldNotify){
             //first notify the event
             thumbnailPath = saveImage(frameEvent, objectDetectionResult);
-            NotificationManager.sendImageNotification(frameEvent, objectDetectionResult.getName(), thumbnailPath);
+            String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
+            String cloudImagePath = "https://drive.google.com/uc?export=view&id="+gdriveImagePath;
+            alarmEvent.setCloudImagePath(cloudImagePath);
+            NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
             //NotificationManager.sendStringNotification(frameEvent, objectDetectionResult.getName());
         }
         //now record
@@ -52,21 +58,11 @@ public class DetectionResultProcessor {
 
         if(isResultInteresting){
             //store the results
-            CameraConfig cameraConfig = frameEvent.getCameraConfig();
-            String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
-            AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getName(), videoPath, thumbnailPath);
-            alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
+            alarmEvent.setVideoPath(videoPath);
             alarmEvent.setCloudVideoPath(gdriveVideoPath);
-            String cloudImagePath = "https://drive.google.com/uc?export=view&id="+gdriveImagePath;
-            alarmEvent.setCloudImagePath(cloudImagePath);
             alarmEventDao.putEvent(alarmEvent);
-
             //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
-
-            //send remote push notification
-            FirebaseNotificationDao firebaseNotificationDao = new FirebaseNotificationDao();
-            firebaseNotificationDao.sendPushNotification(frameEvent.getContext(), alarmEvent);
         }
         return isResultInteresting;
     }

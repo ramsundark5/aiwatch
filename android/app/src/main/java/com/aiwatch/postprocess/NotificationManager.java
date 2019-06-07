@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.aiwatch.Logger;
 import com.aiwatch.R;
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.firebase.FirebaseNotificationDao;
 import com.aiwatch.media.FrameEvent;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.aiwatch.ai.Events;
@@ -42,7 +43,10 @@ public class NotificationManager {
     public static void sendUINotification(FrameEvent frameEvent, AlarmEvent alarmEvent){
         try{
             Context context = frameEvent.getContext();
-            notifyEventToUI(context, alarmEvent);
+            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+            Intent newAlarmIntent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
+            newAlarmIntent.putExtra(AppConstants.NEW_DETECTION_EVENT, alarmEvent);
+            localBroadcastManager.sendBroadcast(newAlarmIntent);
 
             UiThreadUtil.runOnUiThread(() -> {
                 Toast.makeText(frameEvent.getContext(), alarmEvent.getMessage(), Toast.LENGTH_SHORT).show();
@@ -54,7 +58,10 @@ public class NotificationManager {
 
     public static void sendUINotification(Context context, CameraConfig cameraConfig){
         try{
-            notifyEventToUI(context, cameraConfig);
+            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+            Intent newAlarmIntent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
+            newAlarmIntent.putExtra(AppConstants.STATUS_CHANGED_EVENT, cameraConfig);
+            localBroadcastManager.sendBroadcast(newAlarmIntent);
 
             String connectedMessage = "Camera  "+cameraConfig.getName() + " connected.";
             String disconnectedMessage = "Camera  "+cameraConfig.getName() + " disconnected.";
@@ -62,27 +69,6 @@ public class NotificationManager {
 
             UiThreadUtil.runOnUiThread(() -> {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-            });
-        }catch(Exception e){
-            LOGGER.e(e, "Error sending local notification "+e);
-        }
-    }
-
-    public static void sendStringNotification(FrameEvent frameEvent, String message){
-        try{
-            Context context = frameEvent.getContext();
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle(message)
-                    .setChannelId(context.getString(R.string.channel_id))
-                    //.setContentText(alarmEvent.getMessage())
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            // notificationId is a unique int for each notification that you must define
-            notificationManager.notify(frameEvent.hashCode(), builder.build());
-
-            UiThreadUtil.runOnUiThread(() -> {
-                Toast.makeText(frameEvent.getContext(), message, Toast.LENGTH_SHORT).show();
             });
         }catch(Exception e){
             LOGGER.e(e, "Error sending local notification "+e);
@@ -109,13 +95,12 @@ public class NotificationManager {
         }
     }
 
-    public static void sendImageNotification(FrameEvent frameEvent, String message, String imagePath){
+    public static void sendImageNotification(Context context, AlarmEvent alarmEvent){
         try{
-            Context context = frameEvent.getContext();
-            Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath);
+            Bitmap imageBitmap = BitmapFactory.decodeFile(alarmEvent.getThumbnailPath());
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
                     .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle(message)
+                    .setContentTitle(alarmEvent.getMessage())
                     .setContentText("")
                     .setLargeIcon(imageBitmap)
                     .setStyle(new NotificationCompat.BigPictureStyle()
@@ -124,39 +109,21 @@ public class NotificationManager {
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             // notificationId is a unique int for each notification that you must define
-            notificationManager.notify(frameEvent.hashCode(), builder.build());
+            notificationManager.notify(alarmEvent.hashCode(), builder.build());
 
             UiThreadUtil.runOnUiThread(() -> {
-                Toast toast = Toast.makeText(frameEvent.getContext(), message,Toast.LENGTH_SHORT);
-                ImageView imageView = new ImageView(frameEvent.getContext());
+                Toast toast = Toast.makeText(context, alarmEvent.getMessage(), Toast.LENGTH_SHORT);
+                ImageView imageView = new ImageView(context);
                 imageView.setImageBitmap(imageBitmap);
                 toast.setView(imageView);
                 toast.show();
             });
+
+            //send remote push notification
+            FirebaseNotificationDao firebaseNotificationDao = new FirebaseNotificationDao();
+            firebaseNotificationDao.sendPushNotification(context, alarmEvent);
         }catch(Exception e){
             LOGGER.e(e, "Error sending local notification "+e);
-        }
-    }
-
-    private static void notifyEventToUI(final Context context, final AlarmEvent alarmEvent){
-        try{
-            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
-            Intent newAlarmIntent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
-            newAlarmIntent.putExtra(AppConstants.NEW_DETECTION_EVENT, alarmEvent);
-            localBroadcastManager.sendBroadcast(newAlarmIntent);
-        }catch(Exception e){
-            LOGGER.e(e, "error sending event to UI "+e.getMessage());
-        }
-    }
-
-    private static void notifyEventToUI(final Context context, final CameraConfig cameraConfig){
-        try{
-            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
-            Intent newAlarmIntent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
-            newAlarmIntent.putExtra(AppConstants.STATUS_CHANGED_EVENT, cameraConfig);
-            localBroadcastManager.sendBroadcast(newAlarmIntent);
-        }catch(Exception e){
-            LOGGER.e(e, "error sending event to UI "+e.getMessage());
         }
     }
 }
