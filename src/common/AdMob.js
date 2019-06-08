@@ -9,7 +9,7 @@ class AdMob{
               AD_UNIT_ID = 'ca-app-pub-3940256099942544/1033173712';
             }
             AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
-            AdMobInterstitial.setTestDeviceID('EMULATOR');
+            //AdMobInterstitial.setTestDeviceID('EMULATOR');
             await AdMobInterstitial.requestAdAsync();
             await AdMobInterstitial.showAdAsync();
           }catch(err){

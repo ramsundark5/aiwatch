@@ -9,5 +9,5 @@ AppRegistry.registerComponent(appName, () => App);
 
 InteractionManager.runAfterInteractions(() => {
     BackgroundListener.init();
-    Logger.error(new Error('app initialized'));
+    Logger.log('app initialized');
 });
