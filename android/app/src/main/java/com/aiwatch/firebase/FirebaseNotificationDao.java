@@ -25,18 +25,15 @@ public class FirebaseNotificationDao {
      */
     public void sendPushNotification(Context context, AlarmEvent alarmEvent){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
-                    String adInfoId = firebaseUserDataDao.getAdInfoId(context);
-                    alarmEvent.setDeviceId(adInfoId);
-                    alarmEvent.setUserId(firebaseUser.getUid());
-                    addNotificationDocument(firebaseUser, alarmEvent);
-                } catch (Exception e) {
-                    LOGGER.e(e, "Error adding notification record");
-                }
+        executorService.submit(() -> {
+            try {
+                FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                String adInfoId = firebaseUserDataDao.getAdInfoId(context);
+                alarmEvent.setDeviceId(adInfoId);
+                alarmEvent.setUserId(firebaseUser.getUid());
+                addNotificationDocument(firebaseUser, alarmEvent);
+            } catch (Exception e) {
+                LOGGER.e(e, "Error adding notification record");
             }
         });
     }
@@ -45,18 +42,8 @@ public class FirebaseNotificationDao {
         if(firebaseUser != null && firebaseUser.getUid() != null){
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("notifications").add(alarmEvent)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            LOGGER.d("new notification document added");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            LOGGER.e(e, "Error adding notification firebase record");
-                        }
-                    });
+                    .addOnSuccessListener(documentReference -> LOGGER.d("New notification document added"))
+                    .addOnFailureListener(e -> LOGGER.e(e, "Error adding notification firebase record"));
         }
     }
 }

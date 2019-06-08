@@ -5,15 +5,17 @@ Todo
 - [ ] Region of interest
 - [x] Video player fullscreen
 - [x] Sync to dropbox/google drive
-- [ ] Firebase integration and sync
+- [x] Firebase integration and sync
 - [x] Styling cleanup
 - [x] Background service
 - [x] Reconnect logic
 - [x] UI add camera -> test connection
 - [x] Crash reporting and logging
-- [ ] Ads and payment
+- [x] Ads
+- [ ] Payment
 - [x] code obfuscation
-- [ ] Remote Notifications
+- [x] Remote Notifications
+- [ ] Sync events and camera config
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
 

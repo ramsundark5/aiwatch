@@ -32,18 +32,15 @@ public class FirebaseUserDataDao {
      */
     public void registerFCMToken(Context context){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                Task<InstanceIdResult> firebaseInstanceIdTask = FirebaseInstanceId.getInstance().getInstanceId();
-                try {
-                    InstanceIdResult instanceIdResult = Tasks.await(firebaseInstanceIdTask);
-                    String token = instanceIdResult.getToken();
-                    FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
-                    sendTokenToDB(firebaseUser, context, token);
-                } catch (Exception e) {
-                    LOGGER.e(e, "Error registering token");
-                }
+        executorService.submit(() -> {
+            Task<InstanceIdResult> firebaseInstanceIdTask = FirebaseInstanceId.getInstance().getInstanceId();
+            try {
+                InstanceIdResult instanceIdResult = Tasks.await(firebaseInstanceIdTask);
+                String token = instanceIdResult.getToken();
+                FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                sendTokenToDB(firebaseUser, context, token);
+            } catch (Exception e) {
+                LOGGER.e(e, "Error registering token");
             }
         });
     }
@@ -112,7 +109,7 @@ public class FirebaseUserDataDao {
             List<CameraConfig> cameraConfigList = cameraConfigDao.getAllCameras();
             userData.setCameraConfigList(cameraConfigList);
         }catch(Exception e){
-            LOGGER.e(e, "error building firebase user data");
+            LOGGER.e(e, "Error building firebase user data");
         }
         return userData;
     }
