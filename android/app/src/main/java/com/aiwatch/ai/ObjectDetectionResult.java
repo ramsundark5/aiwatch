@@ -6,6 +6,8 @@ public class ObjectDetectionResult {
 
     private String name;
 
+    private String message;
+
     private float confidence;
 
     /** Optional location within the source image for the location of the recognized object. */
@@ -33,5 +35,13 @@ public class ObjectDetectionResult {
 
     public void setLocation(RectF location) {
         this.location = location;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -26,4 +26,9 @@ public class AppConstants {
     public static final String COMPRESSED_VIDEO_FOLDER = "compressed";
     public static final String MERGED_VIDEO_FOLDER = "videos";
     public static final String IMAGES_FOLDER = "images";
+
+    public static final String PERSON_DETECTED_MESSAGE = "Person Detected";
+    public static final String ANIMAL_DETECTED_MESSAGE = "Animal Detected";
+    public static final String VEHICLE_DETECTED_MESSAGE = "Vehicle Detected";
+    public static final String OTHER_DETECTED_MESSAGE = "Other event Detected";
 }

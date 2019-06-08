@@ -4,6 +4,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 
 import com.aiwatch.Logger;
+import com.aiwatch.common.AppConstants;
 import com.google.firebase.perf.metrics.AddTrace;
 
 import java.io.IOException;
@@ -38,6 +39,7 @@ public class ObjectDetectionService {
                 case "person":
                     if(detection.getConfidence() > DETECTION_CONFIDENCE_SENSITIVITY){
                         result.setName(Events.PERSON_DETECTED_EVENT.getName());
+                        result.setMessage(AppConstants.PERSON_DETECTED_MESSAGE);
                         result.setConfidence(detection.getConfidence());
                         result.setLocation(detection.getLocation());
                         LOGGER.i("person detected with confidence "+detection.getConfidence());
@@ -50,6 +52,7 @@ public class ObjectDetectionService {
                 case "truck":
                     if(detection.getConfidence() > DETECTION_CONFIDENCE_SENSITIVITY){
                         result.setName(Events.VEHICLE_DETECTED_EVENT.getName());
+                        result.setMessage(AppConstants.VEHICLE_DETECTED_MESSAGE);
                         result.setConfidence(detection.getConfidence());
                         result.setLocation(detection.getLocation());
                     }
@@ -64,6 +67,7 @@ public class ObjectDetectionService {
                 case "sheep":
                     if(detection.getConfidence() > DETECTION_CONFIDENCE_SENSITIVITY){
                         result.setName(Events.ANIMAL_DETECTED_EVENT.getName());
+                        result.setMessage(AppConstants.ANIMAL_DETECTED_MESSAGE);
                         result.setConfidence(detection.getConfidence());
                         result.setLocation(detection.getLocation());
                     }
@@ -80,6 +84,7 @@ public class ObjectDetectionService {
         }
         //TODO if we reached here its just other events. comment these out before PROD
         result.setName(Events.OTHER_DETECTED_EVENT.getName());
+        result.setMessage(AppConstants.OTHER_DETECTED_MESSAGE);
         result.setConfidence(0);
         return result;
     }

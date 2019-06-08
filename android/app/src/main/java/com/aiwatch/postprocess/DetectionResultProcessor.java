@@ -37,7 +37,7 @@ public class DetectionResultProcessor {
         String gdriveVideoPath = null;
         String thumbnailPath = null;
         CameraConfig cameraConfig = frameEvent.getCameraConfig();
-        AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getName(), null, thumbnailPath);
+        AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getMessage(), null, thumbnailPath);
         alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
         boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
         if(shouldNotify){
