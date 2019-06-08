@@ -116,7 +116,7 @@ public class VideoFrameExtractor {
             if(grabber != null){
                 grabber.stop();
             }
-            notifyAndUpdateCameraStatus(true);
+            //notifyAndUpdateCameraStatus(true);
         } catch (Exception e) {
             LOGGER.e(e, e.getMessage());
         }finally{
@@ -124,7 +124,7 @@ public class VideoFrameExtractor {
         }
     }
 
-    private void notifyAndUpdateCameraStatus(boolean disconnected){
+    public void notifyAndUpdateCameraStatus(boolean disconnected){
         try{
             if(cameraConfig.isDisconnected() == disconnected){
                 //nothing new to notify

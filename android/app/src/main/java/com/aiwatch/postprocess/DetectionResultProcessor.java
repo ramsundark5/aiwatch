@@ -9,7 +9,7 @@ import android.util.TimingLogger;
 
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
-import com.aiwatch.firebase.FirebaseNotificationDao;
+import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.media.FrameEvent;
 import com.aiwatch.media.db.AlarmEvent;
 import com.aiwatch.media.db.AlarmEventDao;
@@ -25,10 +25,13 @@ public class DetectionResultProcessor {
     private static final Logger LOGGER = new Logger();
     private AndroidFrameConverter frameConverter;
     private AlarmEventDao alarmEventDao;
+    private FirebaseAlarmEventDao firebaseAlarmEventDao;
 
     public DetectionResultProcessor(){
         this.frameConverter = new AndroidFrameConverter();
         this.alarmEventDao = new AlarmEventDao();
+        this.firebaseAlarmEventDao = new FirebaseAlarmEventDao();
+
     }
 
     public boolean processObjectDetectionResult(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
@@ -51,8 +54,8 @@ public class DetectionResultProcessor {
         }
         //now record
         if(shouldRecordVideo){
-            //videoPath = RecordingManager.recordToLocal(frameEvent);
-            //gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
+            videoPath = RecordingManager.recordToLocal(frameEvent);
+            gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
         }
         boolean isResultInteresting = shouldRecordVideo || shouldNotify;
 
@@ -63,6 +66,7 @@ public class DetectionResultProcessor {
             alarmEventDao.putEvent(alarmEvent);
             //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
+            firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
         }
         return isResultInteresting;
     }

@@ -96,6 +96,7 @@ public class MonitoringRunnable implements Runnable {
             Pair<FrameEvent, ObjectDetectionResult> resultPair = Pair.create(frameEvent, objectDetectionResult);
             return resultPair;
         } else { // when frame == null then connection has been lost
+            videoFrameExtractor.notifyAndUpdateCameraStatus(true);
             LOGGER.i("no frame returned for camera "+cameraConfig.getId());
             LOGGER.i("reconnecting to camera..");
             videoFrameExtractor.initGrabber(cameraConfig);

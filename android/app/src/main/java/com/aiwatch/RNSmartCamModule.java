@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.media.VideoFrameExtractor;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -42,10 +43,12 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     private final Context reactContext;
     private Gson gson;
     private LocalBroadcastReceiver mLocalBroadcastReceiver;
+    private FirebaseAlarmEventDao firebaseAlarmEventDao;
 
     public RNSmartCamModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.firebaseAlarmEventDao = new FirebaseAlarmEventDao();
         gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))
                 .registerTypeAdapter(Date.class, (JsonSerializer<Date>) (date, type, jsonSerializationContext) -> new JsonPrimitive(date.getTime()))
@@ -138,6 +141,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             }
             LOGGER.d("Events deleted");
             promise.resolve("Events deleted");
+            firebaseAlarmEventDao.deleteEvents(reactContext, eventIdList);
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());
