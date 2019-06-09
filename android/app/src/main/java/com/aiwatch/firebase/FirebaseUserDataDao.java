@@ -102,12 +102,9 @@ public class FirebaseUserDataDao {
     private FirebaseUserData buildNewFirebaseUserData(FirebaseUser firebaseUser){
         FirebaseUserData userData = null;
         try{
-            CameraConfigDao cameraConfigDao = new CameraConfigDao();
             userData = new FirebaseUserData();
             userData.setId(firebaseUser.getUid());
             userData.setEmail(firebaseUser.getEmail());
-            List<CameraConfig> cameraConfigList = cameraConfigDao.getAllCameras();
-            userData.setCameraConfigList(cameraConfigList);
         }catch(Exception e){
             LOGGER.e(e, "Error building firebase user data");
         }

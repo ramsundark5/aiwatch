@@ -22,7 +22,7 @@ public class FirebaseAlarmEventDao {
             try {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("alarmevents")
+                db.collection("users")
                         .document(firebaseUser.getUid())
                         .collection("events")
                         .document(String.valueOf(alarmEvent.getId()))
@@ -43,7 +43,7 @@ public class FirebaseAlarmEventDao {
             try {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                CollectionReference eventCollectionRef = db.collection("alarmevents")
+                CollectionReference eventCollectionRef = db.collection("users")
                         .document(firebaseUser.getUid())
                         .collection("events");
                 for(Object eventIdObject: eventIdList){

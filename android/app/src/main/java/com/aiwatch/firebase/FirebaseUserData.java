@@ -1,15 +1,12 @@
 package com.aiwatch.firebase;
 
-import com.aiwatch.media.db.CameraConfig;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 public class FirebaseUserData {
 
     private String id;
     private String email;
-    private List<CameraConfig> cameraConfigList;
     private Map<String, String> deviceTokens;
     private Date lastUpdated;
 
@@ -28,14 +25,6 @@ public class FirebaseUserData {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public List<CameraConfig> getCameraConfigList() {
-        return cameraConfigList;
-    }
-
-    public void setCameraConfigList(List<CameraConfig> cameraConfigList) {
-        this.cameraConfigList = cameraConfigList;
     }
 
     public Map<String, String> getDeviceTokens() {
