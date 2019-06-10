@@ -9,7 +9,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.Date;
 
 public class FirebaseAlarmEventManager {
@@ -19,9 +18,16 @@ public class FirebaseAlarmEventManager {
 
     public void getAlarmEventUpdates(FirebaseUser firebaseUser){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        AlarmEvent latestAlarmEvent = alarmEventDao.getLatestAlarmEvent();
+        Date lastUpdatedDate = new Date(0L);
+        if(latestAlarmEvent != null && latestAlarmEvent.getDate() != null){
+            lastUpdatedDate = latestAlarmEvent.getDate();
+        }
         final DocumentReference userRef = db.collection("users").document(firebaseUser.getUid());
 
-        userRef.collection("events").whereGreaterThanOrEqualTo("date", new Date()).get()
+        userRef.collection("events")
+                .whereGreaterThanOrEqualTo("date", lastUpdatedDate)
+                .get()
                 .addOnSuccessListener(querySnapshots -> handleAlarmEventUpdates(querySnapshots))
                 .addOnFailureListener(e -> LOGGER.e(e, "Error getting alarmevent updates"));
     }

@@ -1,6 +1,7 @@
 package com.aiwatch.media.db;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -27,6 +28,7 @@ public class CameraConfig implements Serializable {
     private boolean recordVehicleDetect;
     private boolean testModeEnabled;
     private boolean disconnected;
+    private Date lastModified;
 
     public long getId() {
         return id;
@@ -178,6 +180,14 @@ public class CameraConfig implements Serializable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     public boolean isMonitoringEnabled(){

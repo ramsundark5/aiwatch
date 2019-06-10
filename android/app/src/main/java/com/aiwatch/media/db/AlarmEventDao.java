@@ -27,6 +27,18 @@ public class AlarmEventDao {
         return alarmEvent;
     }
 
+    public AlarmEvent getLatestAlarmEvent(){
+        Box<AlarmEvent> alarmEventBox = ObjectBox.get().boxFor(AlarmEvent.class);
+        List<AlarmEvent> alarmEventList = alarmEventBox.query()
+                .orderDesc(AlarmEvent_.date)
+                .build()
+                .find(0, 1);
+        if(alarmEventList != null && alarmEventList.size() > 0){
+            return alarmEventList.get(0);
+        }
+       return null;
+    }
+
     public void deleteEvent(long id){
         Box<AlarmEvent> alarmEventBox = ObjectBox.get().boxFor(AlarmEvent.class);
         alarmEventBox.remove(id);

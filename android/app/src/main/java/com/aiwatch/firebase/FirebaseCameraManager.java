@@ -19,9 +19,16 @@ public class FirebaseCameraManager {
 
     public void getCameraConfigUpdates(FirebaseUser firebaseUser){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CameraConfig latestCameraConfig = cameraConfigDao.getLatestCameraConfig();
+        Date lastUpdatedDate = new Date(0L);
+        if(latestCameraConfig != null && latestCameraConfig.getLastModified() != null){
+            lastUpdatedDate = latestCameraConfig.getLastModified();
+        }
         final DocumentReference userRef = db.collection("users").document(firebaseUser.getUid());
 
-        userRef.collection("cameras").whereGreaterThanOrEqualTo("date", new Date()).get()
+        userRef.collection("cameras")
+                .whereGreaterThanOrEqualTo("date", lastUpdatedDate)
+                .get()
                 .addOnSuccessListener(querySnapshots -> handleCameraConfigUpdates(querySnapshots))
                 .addOnFailureListener(e -> LOGGER.e(e, "Error getting cameraconfig updates"));
     }

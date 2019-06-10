@@ -2,6 +2,7 @@ package com.aiwatch.media.db;
 
 import com.aiwatch.Logger;
 
+import java.util.Date;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -14,6 +15,18 @@ public class CameraConfigDao {
         Box<CameraConfig> cameraConfigBox = ObjectBox.get().boxFor(CameraConfig.class);
         cameraConfigBox.put(cameraConfig);
         return cameraConfig;
+    }
+
+    public CameraConfig getLatestCameraConfig(){
+        Box<CameraConfig> cameraConfigBox = ObjectBox.get().boxFor(CameraConfig.class);
+        List<CameraConfig> cameraConfigList = cameraConfigBox.query()
+                .orderDesc(CameraConfig_.lastModified)
+                .build()
+                .find(0, 1);
+        if(cameraConfigList != null && cameraConfigList.size() > 0){
+            return cameraConfigList.get(0);
+        }
+        return null;
     }
 
     public List<CameraConfig> getAllCameras(){
