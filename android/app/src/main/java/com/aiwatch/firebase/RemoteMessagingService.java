@@ -18,5 +18,4 @@ public class RemoteMessagingService extends FirebaseMessagingService {
         FirebaseUserDataDao firebaseUserDataDao = new FirebaseUserDataDao();
         firebaseUserDataDao.registerFCMToken(getApplicationContext(), token);
     }
-
 }

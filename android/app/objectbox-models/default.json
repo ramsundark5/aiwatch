@@ -25,7 +25,7 @@
     },
     {
       "id": "2:4322453221154582630",
-      "lastPropertyId": "18:1216680727431285669",
+      "lastPropertyId": "19:8798077702923724431",
       "name": "CameraConfig",
       "properties": [
         {
@@ -99,6 +99,10 @@
         {
           "id": "18:1216680727431285669",
           "name": "disconnected"
+        },
+        {
+          "id": "19:8798077702923724431",
+          "name": "uuid"
         }
       ],
       "relations": []

@@ -28,6 +28,15 @@ public class CameraConfigDao {
         return cameraConfig;
     }
 
+    public CameraConfig getCameraByUUID(String uuid){
+        Box<CameraConfig> cameraConfigBox = ObjectBox.get().boxFor(CameraConfig.class);
+        CameraConfig cameraConfig = cameraConfigBox.query()
+                .equal(CameraConfig_.uuid, uuid)
+                .build()
+                .findUnique();
+        return cameraConfig;
+    }
+
     public void deleteCamera(long cameraId){
         Box<CameraConfig> cameraConfigBox = ObjectBox.get().boxFor(CameraConfig.class);
         cameraConfigBox.remove(cameraId);

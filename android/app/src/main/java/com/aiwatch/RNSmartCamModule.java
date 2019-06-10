@@ -9,7 +9,10 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
+import com.aiwatch.firebase.FirebaseAlarmEventManager;
+import com.aiwatch.firebase.FirebaseAuthManager;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
+import com.aiwatch.firebase.FirebaseCameraManager;
 import com.aiwatch.media.VideoFrameExtractor;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -22,6 +25,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.aiwatch.common.ConversionUtil;
 import com.aiwatch.media.db.AlarmEvent;
@@ -38,6 +42,8 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RNSmartCamModule extends ReactContextBaseJavaModule {
     private static final Logger LOGGER = new Logger();
@@ -70,6 +76,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             JSONArray jsonArray = new JSONArray(jsonString);
             WritableArray cameraArray = ConversionUtil.convertJsonToArray(jsonArray);
             promise.resolve(cameraArray);
+            getFirebaseUpdates();
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());
@@ -127,6 +134,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             JSONArray jsonArray = new JSONArray(jsonString);
             WritableArray eventsArray = ConversionUtil.convertJsonToArray(jsonArray);
             promise.resolve(eventsArray);
+            getFirebaseUpdates();
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());
@@ -251,6 +259,23 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         } else {
             promise.reject("BAD_URL", "Unable to connect to camera. Check your video url and wifi connection.");
         }
+    }
+
+
+    private void getFirebaseUpdates(){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            try {
+                FirebaseAuthManager firebaseAuthManager = new FirebaseAuthManager();
+                FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(reactContext);
+                FirebaseCameraManager firebaseCameraManager = new FirebaseCameraManager();
+                firebaseCameraManager.getCameraConfigUpdates(firebaseUser);
+                FirebaseAlarmEventManager firebaseAlarmEventManager = new FirebaseAlarmEventManager();
+                firebaseAlarmEventManager.getAlarmEventUpdates(firebaseUser);
+            } catch (Exception e) {
+                LOGGER.e(e, "Error getting updates from firebase");
+            }
+        });
     }
 
     public class LocalBroadcastReceiver extends BroadcastReceiver {
