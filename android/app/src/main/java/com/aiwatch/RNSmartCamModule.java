@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
+import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.media.VideoFrameExtractor;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -44,11 +45,13 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     private Gson gson;
     private LocalBroadcastReceiver mLocalBroadcastReceiver;
     private FirebaseAlarmEventDao firebaseAlarmEventDao;
+    private FirebaseCameraConfigDao firebaseCameraConfigDao;
 
     public RNSmartCamModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
         this.firebaseAlarmEventDao = new FirebaseAlarmEventDao();
+        this.firebaseCameraConfigDao = new FirebaseCameraConfigDao();
         gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))
                 .registerTypeAdapter(Date.class, (JsonSerializer<Date>) (date, type, jsonSerializationContext) -> new JsonPrimitive(date.getTime()))
@@ -88,6 +91,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             intent.putExtra(AppConstants.CAMERA_CONFIG_EXTRA, cameraConfig);
             reactContext.startService(intent);
             promise.resolve(Long.valueOf(cameraConfig.getId()).intValue());
+            firebaseCameraConfigDao.putCamera(reactContext, cameraConfig);
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());
@@ -105,6 +109,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.REMOVE_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraId);
             promise.resolve("camera deleted and object detection stopped");
+            firebaseCameraConfigDao.deleteCamera(reactContext, cameraId);
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());

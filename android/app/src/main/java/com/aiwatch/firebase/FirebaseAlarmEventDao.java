@@ -51,7 +51,7 @@ public class FirebaseAlarmEventDao {
                     eventCollectionRef.document(eventId)
                             .delete()
                             .addOnSuccessListener(documentReference -> LOGGER.d("Alarmevent deleted from firebase"))
-                            .addOnFailureListener(e -> LOGGER.e(e, "Failed deleting alarmevent from firebase"));;
+                            .addOnFailureListener(e -> LOGGER.e(e, "Failed deleting alarmevent from firebase"));
                 }
             } catch (Exception e) {
                 LOGGER.e(e, "Error deleting alarmevent from firebase");

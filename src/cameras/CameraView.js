@@ -8,6 +8,7 @@ import { loadCameras, deleteCamera } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import CameraControl from './CameraControl';
 import Logger from '../common/Logger';
+import AiwatchUtil from '../common/AiwatchUtil';
 class CameraView extends Component {
 
   static navigationOptions = {
@@ -34,8 +35,11 @@ class CameraView extends Component {
   }
 
   onAddCamera(){
+    const uuid = AiwatchUtil.uuidv4();
     this.props.navigation.navigate('EditCamera', {
-      cameraConfig: {}
+      cameraConfig: {
+        uuid: uuid
+      }
     });
   }
 

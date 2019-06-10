@@ -9,6 +9,7 @@ import io.objectbox.annotation.Id;
 public class CameraConfig implements Serializable {
     @Id
     private long id;
+    private String uuid;
     private String name;
     private String brand;
     private String model;
@@ -169,6 +170,14 @@ public class CameraConfig implements Serializable {
 
     public void setDisconnected(boolean disconnected) {
         this.disconnected = disconnected;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public boolean isMonitoringEnabled(){

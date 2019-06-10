@@ -16,7 +16,7 @@ public class RemoteMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token) {
         LOGGER.d("Refreshed token: " + token);
         FirebaseUserDataDao firebaseUserDataDao = new FirebaseUserDataDao();
-        firebaseUserDataDao.registerFCMToken(getApplicationContext());
+        firebaseUserDataDao.registerFCMToken(getApplicationContext(), token);
     }
 
 }

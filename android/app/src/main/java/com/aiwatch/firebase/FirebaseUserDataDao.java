@@ -45,6 +45,18 @@ public class FirebaseUserDataDao {
         });
     }
 
+    public void registerFCMToken(Context context, String token){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            try {
+                FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                sendTokenToDB(firebaseUser, context, token);
+            } catch (Exception e) {
+                LOGGER.e(e, "Error registering token");
+            }
+        });
+    }
+
     public void sendTokenToDB(FirebaseUser firebaseUser, Context context, String token) {
         if(firebaseUser != null && firebaseUser.getUid() != null){
             FirebaseFirestore db = FirebaseFirestore.getInstance();
