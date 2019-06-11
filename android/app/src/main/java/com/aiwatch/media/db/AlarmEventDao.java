@@ -27,6 +27,15 @@ public class AlarmEventDao {
         return alarmEvent;
     }
 
+    public AlarmEvent getEventByUUID(String uuid){
+        Box<AlarmEvent> alarmEventBox = ObjectBox.get().boxFor(AlarmEvent.class);
+        AlarmEvent alarmEvent = alarmEventBox.query()
+                .equal(AlarmEvent_.uuid, uuid)
+                .build()
+                .findUnique();
+        return alarmEvent;
+    }
+
     public AlarmEvent getLatestAlarmEvent(){
         Box<AlarmEvent> alarmEventBox = ObjectBox.get().boxFor(AlarmEvent.class);
         List<AlarmEvent> alarmEventList = alarmEventBox.query()

@@ -12,6 +12,7 @@ public class AlarmEvent implements Serializable {
 
     @Id
     private long id;
+    private String uuid;
     private String cameraName;
     private long cameraId;
     private String videoPath;
@@ -24,13 +25,18 @@ public class AlarmEvent implements Serializable {
     private String userId; //this is the firebaseUserId
     private String deviceId; //deviceId sending notification
 
-    public AlarmEvent(long cameraId, String cameraName, Date date, String message, String videoPath, String thumbnailPath) {
+    public AlarmEvent(){
+        super();
+    }
+
+    public AlarmEvent(long cameraId, String cameraName, Date date, String message, String videoPath, String thumbnailPath, String uuid) {
         this.cameraName = cameraName;
         this.videoPath = videoPath;
         this.cameraId = cameraId;
         this.date = date;
         this.message = message;
         this.thumbnailPath = thumbnailPath;
+        this.uuid = uuid;
     }
 
     public long getId() {
@@ -127,5 +133,13 @@ public class AlarmEvent implements Serializable {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

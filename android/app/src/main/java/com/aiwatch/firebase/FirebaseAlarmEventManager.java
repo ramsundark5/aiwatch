@@ -43,10 +43,14 @@ public class FirebaseAlarmEventManager {
                 AlarmEvent alarmEvent = alarmEventSnapshot.toObject(AlarmEvent.class);
                 switch (dc.getType()) {
                     case ADDED:
+                        alarmEvent.setId(0L);
                         alarmEventDao.putEvent(alarmEvent);
                         break;
                     case REMOVED:
-                        alarmEventDao.deleteEvent(alarmEvent.getId());
+                        AlarmEvent existingAlarmEvent = alarmEventDao.getEventByUUID(alarmEvent.getUuid());
+                        if(existingAlarmEvent != null){
+                            alarmEventDao.deleteEvent(existingAlarmEvent.getId());
+                        }
                         break;
                 }
             }catch (Exception ex){

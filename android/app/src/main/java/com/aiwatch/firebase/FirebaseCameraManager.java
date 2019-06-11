@@ -44,13 +44,17 @@ public class FirebaseCameraManager {
                 CameraConfig cameraConfig = cameraConfigSnapshot.toObject(CameraConfig.class);
                 switch (dc.getType()) {
                     case ADDED:
+                        cameraConfig.setId(0L);
                         cameraConfigDao.putCamera(cameraConfig);
                         break;
                     case MODIFIED:
                         applyModificationsToCameraConfig(cameraConfig);
                         break;
                     case REMOVED:
-                        cameraConfigDao.deleteCamera(cameraConfig.getId());
+                        CameraConfig existingCameraConfig = cameraConfigDao.getCameraByUUID(cameraConfig.getUuid());
+                        if(existingCameraConfig != null){
+                            cameraConfigDao.deleteCamera(existingCameraConfig.getId());
+                        }
                         break;
                 }
             }catch (Exception ex){

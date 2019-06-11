@@ -19,6 +19,7 @@ import com.google.common.net.MediaType;
 import org.bytedeco.javacv.AndroidFrameConverter;
 import java.io.FileOutputStream;
 import java.util.Date;
+import java.util.UUID;
 
 public class DetectionResultProcessor {
 
@@ -31,7 +32,6 @@ public class DetectionResultProcessor {
         this.frameConverter = new AndroidFrameConverter();
         this.alarmEventDao = new AlarmEventDao();
         this.firebaseAlarmEventDao = new FirebaseAlarmEventDao();
-
     }
 
     public boolean processObjectDetectionResult(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
@@ -40,7 +40,7 @@ public class DetectionResultProcessor {
         String gdriveVideoPath = null;
         String thumbnailPath = null;
         CameraConfig cameraConfig = frameEvent.getCameraConfig();
-        AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getMessage(), null, thumbnailPath);
+        AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getMessage(), null, thumbnailPath, UUID.randomUUID().toString());
         alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
         boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
         if(shouldNotify){
@@ -50,12 +50,11 @@ public class DetectionResultProcessor {
             String cloudImagePath = "https://drive.google.com/uc?export=view&id="+gdriveImagePath;
             alarmEvent.setCloudImagePath(cloudImagePath);
             NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
-            //NotificationManager.sendStringNotification(frameEvent, objectDetectionResult.getName());
         }
         //now record
         if(shouldRecordVideo){
-            videoPath = RecordingManager.recordToLocal(frameEvent);
-            gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
+            //videoPath = RecordingManager.recordToLocal(frameEvent);
+            //gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
         }
         boolean isResultInteresting = shouldRecordVideo || shouldNotify;
 
