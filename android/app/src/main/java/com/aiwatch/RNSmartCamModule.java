@@ -89,6 +89,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
             CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
+            cameraConfig.setLastModified(new Date());
             cameraConfigDao.putCamera(cameraConfig);
             if (cameraConfig.getId() == 0) {
                 throw new Exception("Error trying to save Camera Info. Please try again.");

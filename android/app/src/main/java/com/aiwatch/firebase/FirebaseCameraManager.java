@@ -27,7 +27,7 @@ public class FirebaseCameraManager {
         final DocumentReference userRef = db.collection("users").document(firebaseUser.getUid());
 
         userRef.collection("cameras")
-                .whereGreaterThanOrEqualTo("date", lastUpdatedDate)
+                .whereGreaterThan("lastModified", lastUpdatedDate)
                 .get()
                 .addOnSuccessListener(querySnapshots -> handleCameraConfigUpdates(querySnapshots))
                 .addOnFailureListener(e -> LOGGER.e(e, "Error getting cameraconfig updates"));
@@ -42,16 +42,19 @@ public class FirebaseCameraManager {
             }
             try{
                 CameraConfig cameraConfig = cameraConfigSnapshot.toObject(CameraConfig.class);
+                CameraConfig existingCameraConfig = cameraConfigDao.getCameraByUUID(cameraConfig.getUuid());
                 switch (dc.getType()) {
                     case ADDED:
-                        cameraConfig.setId(0L);
-                        cameraConfigDao.putCamera(cameraConfig);
+                        if(existingCameraConfig == null) {
+                            existingCameraConfig = new CameraConfig();
+                            existingCameraConfig.setId(0L);
+                        }
+                        applyModificationsToCameraConfig(existingCameraConfig, cameraConfig);
                         break;
                     case MODIFIED:
-                        applyModificationsToCameraConfig(cameraConfig);
+                        applyModificationsToCameraConfig(existingCameraConfig, cameraConfig);
                         break;
                     case REMOVED:
-                        CameraConfig existingCameraConfig = cameraConfigDao.getCameraByUUID(cameraConfig.getUuid());
                         if(existingCameraConfig != null){
                             cameraConfigDao.deleteCamera(existingCameraConfig.getId());
                         }
@@ -64,17 +67,15 @@ public class FirebaseCameraManager {
         }
     }
 
-    private void applyModificationsToCameraConfig(CameraConfig updatedCameraConfig){
-        CameraConfig existingCameraConfig = cameraConfigDao.getCameraByUUID(updatedCameraConfig.getUuid());
-        if(existingCameraConfig != null){
-            existingCameraConfig.setVideoUrl(updatedCameraConfig.getVideoUrl());
-            existingCameraConfig.setBrand(updatedCameraConfig.getBrand());
-            existingCameraConfig.setModel(updatedCameraConfig.getModel());
-            existingCameraConfig.setName(updatedCameraConfig.getName());
-            existingCameraConfig.setUsername(updatedCameraConfig.getUsername());
-            existingCameraConfig.setPassword(updatedCameraConfig.getPassword());
-            existingCameraConfig.setVideoCodec(updatedCameraConfig.getVideoCodec());
-            cameraConfigDao.putCamera(existingCameraConfig);
-        }
+    private void applyModificationsToCameraConfig(CameraConfig existingCameraConfig, CameraConfig updatedCameraConfig){
+        existingCameraConfig.setVideoUrl(updatedCameraConfig.getVideoUrl());
+        existingCameraConfig.setBrand(updatedCameraConfig.getBrand());
+        existingCameraConfig.setModel(updatedCameraConfig.getModel());
+        existingCameraConfig.setName(updatedCameraConfig.getName());
+        existingCameraConfig.setUsername(updatedCameraConfig.getUsername());
+        existingCameraConfig.setLastModified(updatedCameraConfig.getLastModified());
+        existingCameraConfig.setPassword(updatedCameraConfig.getPassword());
+        existingCameraConfig.setVideoCodec(updatedCameraConfig.getVideoCodec());
+        cameraConfigDao.putCamera(existingCameraConfig);
     }
 }
