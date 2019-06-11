@@ -21,6 +21,9 @@ public class FirebaseAlarmEventDao {
         executorService.submit(() -> {
             try {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                if(firebaseUser == null){
+                    return;
+                }
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("users")
                         .document(firebaseUser.getUid())
@@ -42,6 +45,9 @@ public class FirebaseAlarmEventDao {
         executorService.submit(() -> {
             try {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                if(firebaseUser == null){
+                    return;
+                }
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 CollectionReference eventCollectionRef = db.collection("users")
                         .document(firebaseUser.getUid())

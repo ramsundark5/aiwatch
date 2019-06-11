@@ -19,6 +19,9 @@ public class FirebaseCameraConfigDao {
         executorService.submit(() -> {
             try {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                if(firebaseUser == null){
+                    return;
+                }
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("users")
                         .document(firebaseUser.getUid())
@@ -39,6 +42,9 @@ public class FirebaseCameraConfigDao {
         executorService.submit(() -> {
             try {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                if(firebaseUser == null){
+                    return;
+                }
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("users")
                         .document(firebaseUser.getUid())

@@ -23,12 +23,14 @@ public class FirebaseAuthManager {
         FirebaseUser firebaseUser = null;
         try{
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-            LOGGER.d("firebaseAuthWithGoogle:" + account.getId());
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-            Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential);
-            AuthResult authResult = Tasks.await(authResultTask);
-            firebaseUser = authResult.getUser();
+            if(account != null){
+                LOGGER.d("firebaseAuthWithGoogle:" + account.getId());
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential);
+                AuthResult authResult = Tasks.await(authResultTask);
+                firebaseUser = authResult.getUser();
+            }
         }catch(Exception e){
             LOGGER.e(e, "error getting firebaseauth user");
         }

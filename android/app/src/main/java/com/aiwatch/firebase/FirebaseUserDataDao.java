@@ -38,7 +38,9 @@ public class FirebaseUserDataDao {
                 InstanceIdResult instanceIdResult = Tasks.await(firebaseInstanceIdTask);
                 String token = instanceIdResult.getToken();
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
-                sendTokenToDB(firebaseUser, context, token);
+                if(firebaseUser != null){
+                    sendTokenToDB(firebaseUser, context, token);
+                }
             } catch (Exception e) {
                 LOGGER.e(e, "Error registering token");
             }
@@ -50,7 +52,9 @@ public class FirebaseUserDataDao {
         executorService.submit(() -> {
             try {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
-                sendTokenToDB(firebaseUser, context, token);
+                if(firebaseUser != null){
+                    sendTokenToDB(firebaseUser, context, token);
+                }
             } catch (Exception e) {
                 LOGGER.e(e, "Error registering token");
             }

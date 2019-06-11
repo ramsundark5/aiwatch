@@ -53,8 +53,8 @@ public class DetectionResultProcessor {
         }
         //now record
         if(shouldRecordVideo){
-            //videoPath = RecordingManager.recordToLocal(frameEvent);
-            //gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
+            videoPath = RecordingManager.recordToLocal(frameEvent);
+            gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
         }
         boolean isResultInteresting = shouldRecordVideo || shouldNotify;
 

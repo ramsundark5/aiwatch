@@ -28,10 +28,12 @@ public class FirebaseNotificationDao {
         executorService.submit(() -> {
             try {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
-                String adInfoId = firebaseUserDataDao.getAdInfoId(context);
-                alarmEvent.setDeviceId(adInfoId);
-                alarmEvent.setUserId(firebaseUser.getUid());
-                addNotificationDocument(firebaseUser, alarmEvent);
+                if(firebaseUser != null){
+                    String adInfoId = firebaseUserDataDao.getAdInfoId(context);
+                    alarmEvent.setDeviceId(adInfoId);
+                    alarmEvent.setUserId(firebaseUser.getUid());
+                    addNotificationDocument(firebaseUser, alarmEvent);
+                }
             } catch (Exception e) {
                 LOGGER.e(e, "Error adding notification record");
             }

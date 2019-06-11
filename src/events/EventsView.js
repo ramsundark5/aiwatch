@@ -29,7 +29,7 @@ class EventsView extends React.Component {
     async showAdAndInitialize(){
         this.setState({loading: true});
         requestAnimationFrame(async () => {
-          await AdMob.showAd();
+          //await AdMob.showAd();
           this.setState({loading: false});
           this.loadInitialEvents();
         });

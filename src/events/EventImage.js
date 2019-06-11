@@ -21,9 +21,15 @@ export default class EventImage extends PureComponent{
     }
     
     renderImageItem(event){
+        let imageSource = {};
+        if(event.thumbnailPath){
+            imageSource = {isStatic:true, uri: 'file://'+event.thumbnailPath};
+        }else{
+            imageSource = {uri: event.cloudImagePath};
+        }
         return(
             <ImageOverlay
-                source={{isStatic:true, uri: 'file://'+event.thumbnailPath}}
+                source={imageSource}
                 height={120}
                 overlayAlpha={0}
                 containerStyle={{width: '100%'}} 
@@ -45,9 +51,10 @@ export default class EventImage extends PureComponent{
 
     onPlayVideo(){
         const { event } = this.props;
+        const videoUri = event.videoPath ? event.videoPath : event.cloudVideoPath;
         console.log('play video pressed');
         this.props.navigation.navigate('EventVideo', {
-            videoUrl: event.videoPath
+            videoUrl: videoUri
         });
     }
 }
