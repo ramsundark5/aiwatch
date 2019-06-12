@@ -1,14 +1,9 @@
 package com.aiwatch.firebase;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-
 import com.aiwatch.Logger;
 import com.aiwatch.media.db.AlarmEvent;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

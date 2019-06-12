@@ -2,8 +2,6 @@ package com.aiwatch.firebase;
 
 import android.content.Context;
 import com.aiwatch.Logger;
-import com.aiwatch.media.db.CameraConfig;
-import com.aiwatch.media.db.CameraConfigDao;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.tasks.Task;
@@ -13,10 +11,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

@@ -48,7 +48,8 @@ export default class CameraControl extends Component {
         if(isFull){
             return null;
         }
-        const monitoringIcon = cameraConfig.disconnected ? 'visibility-off' : 'visibility';
+        const monitoringEnabled = this.isMonitoringEnabled(cameraConfig);
+        const monitoringIcon = cameraConfig.disconnected || !monitoringEnabled ? 'visibility-off' : 'visibility';
         return(
             <View>
                <Appbar style={styles.appBar}>
@@ -59,6 +60,14 @@ export default class CameraControl extends Component {
               <View style={styles.divider} />
             </View>
         )
+    }
+
+    isMonitoringEnabled(cameraConfig){
+      let monitoringEnabled = cameraConfig.notifyPersonDetect || cameraConfig.recordPersonDetect
+                || cameraConfig.notifyAnimalDetect || cameraConfig.recordAnimalDetect
+                || cameraConfig.notifyVehicleDetect || cameraConfig.recordVehicleDetect
+                || cameraConfig.testModeEnabled;
+      return monitoringEnabled;
     }
 }
 
