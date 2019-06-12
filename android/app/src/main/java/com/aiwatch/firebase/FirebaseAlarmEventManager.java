@@ -36,7 +36,7 @@ public class FirebaseAlarmEventManager {
             final DocumentReference userRef = db.collection("users").document(firebaseUser.getUid());
 
             Task<QuerySnapshot> querySnapshotTask = userRef.collection("events")
-                    .whereGreaterThanOrEqualTo("date", lastUpdatedDate)
+                    .whereGreaterThan("date", lastUpdatedDate)
                     .get();
             QuerySnapshot querySnapshots = Tasks.await(querySnapshotTask);
             handleAlarmEventUpdates(querySnapshots, context);
