@@ -273,7 +273,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                     FirebaseCameraManager firebaseCameraManager = new FirebaseCameraManager();
                     firebaseCameraManager.getCameraConfigUpdates(firebaseUser);
                     FirebaseAlarmEventManager firebaseAlarmEventManager = new FirebaseAlarmEventManager();
-                    firebaseAlarmEventManager.getAlarmEventUpdates(firebaseUser);
+                    firebaseAlarmEventManager.getAlarmEventUpdates(firebaseUser, reactContext);
                 }
             } catch (Exception e) {
                 LOGGER.e(e, "Error getting updates from firebase");

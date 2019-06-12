@@ -15,34 +15,19 @@
  */
 package com.aiwatch.cloud.gdrive;
 
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.OpenableColumns;
-import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
-
 import com.aiwatch.Logger;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import com.google.common.net.MediaType;
-
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * A utility for performing read/write operations on Drive files via the REST API and opening a
@@ -126,6 +111,12 @@ public class GDriveServiceHelper {
             mediaContent.setLength(mediaFile.length());
             File fileMeta = mDriveService.files().create(metadata, mediaContent).execute();
             return fileMeta;
+    }
+
+    public void downloadFile(String fileId, String outputFilePath) throws IOException {
+        OutputStream out = new FileOutputStream(outputFilePath);
+        mDriveService.files().get(fileId)
+                .executeMediaAndDownloadTo(out);
     }
 
     public Task<Void> deleteFolderFile(String fileId) throws IOException {

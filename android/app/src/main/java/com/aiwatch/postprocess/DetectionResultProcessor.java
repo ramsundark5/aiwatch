@@ -46,9 +46,9 @@ public class DetectionResultProcessor {
         if(shouldNotify){
             //first notify the event
             thumbnailPath = saveImage(frameEvent, objectDetectionResult);
+            alarmEvent.setThumbnailPath(thumbnailPath);
             String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
-            String cloudImagePath = "https://drive.google.com/uc?export=view&id="+gdriveImagePath;
-            alarmEvent.setCloudImagePath(cloudImagePath);
+            alarmEvent.setCloudImagePath(gdriveImagePath);
             NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
         }
         //now record

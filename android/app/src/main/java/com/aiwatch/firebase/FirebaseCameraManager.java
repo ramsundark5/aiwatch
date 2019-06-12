@@ -3,6 +3,8 @@ package com.aiwatch.firebase;
 import com.aiwatch.Logger;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -18,19 +20,23 @@ public class FirebaseCameraManager {
     private CameraConfigDao cameraConfigDao = new CameraConfigDao();
 
     public void getCameraConfigUpdates(FirebaseUser firebaseUser){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CameraConfig latestCameraConfig = cameraConfigDao.getLatestCameraConfig();
-        Date lastUpdatedDate = new Date(0L);
-        if(latestCameraConfig != null && latestCameraConfig.getLastModified() != null){
-            lastUpdatedDate = latestCameraConfig.getLastModified();
-        }
-        final DocumentReference userRef = db.collection("users").document(firebaseUser.getUid());
+        try{
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            CameraConfig latestCameraConfig = cameraConfigDao.getLatestCameraConfig();
+            Date lastUpdatedDate = new Date(0L);
+            if(latestCameraConfig != null && latestCameraConfig.getLastModified() != null){
+                lastUpdatedDate = latestCameraConfig.getLastModified();
+            }
+            final DocumentReference userRef = db.collection("users").document(firebaseUser.getUid());
 
-        userRef.collection("cameras")
-                .whereGreaterThan("lastModified", lastUpdatedDate)
-                .get()
-                .addOnSuccessListener(querySnapshots -> handleCameraConfigUpdates(querySnapshots))
-                .addOnFailureListener(e -> LOGGER.e(e, "Error getting cameraconfig updates"));
+            Task<QuerySnapshot> querySnapshotTask = userRef.collection("cameras")
+                    .whereGreaterThan("lastModified", lastUpdatedDate)
+                    .get();
+            QuerySnapshot querySnapshots = Tasks.await(querySnapshotTask);
+            handleCameraConfigUpdates(querySnapshots);
+        }catch(Exception e){
+            LOGGER.e(e, "Error getting cameraconfig updates");
+        }
     }
 
     protected void handleCameraConfigUpdates(QuerySnapshot querySnapshots){

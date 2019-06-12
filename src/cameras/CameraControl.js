@@ -49,7 +49,7 @@ export default class CameraControl extends Component {
             return null;
         }
         const monitoringEnabled = this.isMonitoringEnabled(cameraConfig);
-        const monitoringIcon = cameraConfig.disconnected || !monitoringEnabled ? 'visibility-off' : 'visibility';
+        const monitoringIcon = !cameraConfig.disconnected && monitoringEnabled ? 'visibility' : 'visibility-off';
         return(
             <View>
                <Appbar style={styles.appBar}>

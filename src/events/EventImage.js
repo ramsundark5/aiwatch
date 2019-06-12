@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import ImageOverlay from 'react-native-image-overlay';
 import { Avatar, Colors, TouchableRipple } from 'react-native-paper';
 export default class EventImage extends PureComponent{
@@ -21,15 +21,9 @@ export default class EventImage extends PureComponent{
     }
     
     renderImageItem(event){
-        let imageSource = {};
-        if(event.thumbnailPath){
-            imageSource = {isStatic:true, uri: 'file://'+event.thumbnailPath};
-        }else{
-            imageSource = {uri: event.cloudImagePath};
-        }
         return(
             <ImageOverlay
-                source={imageSource}
+                source={{isStatic:true, uri: 'file://'+event.thumbnailPath}}
                 height={120}
                 overlayAlpha={0}
                 containerStyle={{width: '100%'}} 
@@ -51,7 +45,7 @@ export default class EventImage extends PureComponent{
 
     onPlayVideo(){
         const { event } = this.props;
-        const videoUri = event.videoPath ? event.videoPath : event.cloudVideoPath;
+        const videoUri = event.videoPath;
         console.log('play video pressed');
         this.props.navigation.navigate('EventVideo', {
             videoUrl: videoUri
