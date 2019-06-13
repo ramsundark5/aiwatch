@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     separatorContainer: {
       minHeight: 150,//configure this adjust spacing between events
       alignItems: 'center',
-      paddingLeft: '15%',
+      paddingLeft: '10%',
       paddingRight: '10%'
     },
     line: {
