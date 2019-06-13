@@ -14,7 +14,7 @@ export default class EventTime extends PureComponent{
         }
         return(
             <View style={[styles.timeContainer]}>
-                <Text>{formattedTime}{event.id}</Text>
+                <Text>{formattedTime}</Text>
             </View>
         )
     }
