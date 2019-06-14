@@ -20,7 +20,7 @@ class Settings extends Component{
 
     componentDidMount(){
       const { navigation } = this.props;
-      this.loadSettings();
+      //this.loadSettings();
       this.focusListener = navigation.addListener('didFocus', () => this.loadSettings());
     }
 

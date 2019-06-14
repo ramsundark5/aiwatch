@@ -5,6 +5,10 @@ import Config from 'react-native-config';
 class AdMob{
     async showAd(){
         try{
+            let isRemoveAds = Config.REMOVE_ADS;
+            if(isRemoveAds){
+              return;  
+            }
             let AD_UNIT_ID = Config.AD_UNIT_ID;
             AdMobInterstitial.setAdUnitID(AD_UNIT_ID); 
             //AdMobInterstitial.setTestDeviceID('EMULATOR');

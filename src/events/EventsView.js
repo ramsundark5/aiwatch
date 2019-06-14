@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import EventCard from './EventCard';
 import RNSmartCam from '../native/RNSmartCam';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import moment from 'moment';
 import _ from 'lodash';
 import { loadEvents, deleteSelectedEvents, toggleEventSelection } from '../store/EventsStore';
@@ -11,7 +11,14 @@ import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Logger from '../common/Logger';
 import AdMob from '../common/AdMob';
+import { withNavigation } from 'react-navigation';
+
 class EventsView extends React.Component {
+
+    constructor(props, context) {
+        super(props, context);
+        this.spinnerCache = new Set();
+    }
 
     static navigationOptions = {
         header: null,
@@ -21,18 +28,21 @@ class EventsView extends React.Component {
         loading: false,
     }
 
-    componentDidMount(){
-        this.showAdAndInitialize();
+    async componentDidMount(){
+        const { navigation } = this.props;
+        this.loadInitialEvents();
+        this.focusListener = navigation.addListener('didFocus', () => this.showAd());
     }
     
+    componentWillUnmount() {
+        // Remove the event listener
+        this.focusListener.remove();
+    }
 
-    async showAdAndInitialize(){
-        this.setState({loading: true});
-        requestAnimationFrame(async () => {
-          await AdMob.showAd();
-          this.setState({loading: false});
-          this.loadInitialEvents();
-        });
+    async showAd(){
+        this._addSpinner('ads');
+        await AdMob.showAd();
+        this._removeSpinner('ads');
     }
 
     loadInitialEvents(){
@@ -43,7 +53,7 @@ class EventsView extends React.Component {
 
     async loadEventsForDateRange(startDate, endDate){
         const { loadEvents } = this.props;
-        this.setState({loading: true})
+        this._addSpinner('loadevents');
         try{
             let events = await RNSmartCam.getEventsForDateRange({startDate: startDate.valueOf(), endDate: endDate.valueOf()});
             loadEvents(events);
@@ -51,7 +61,7 @@ class EventsView extends React.Component {
             Logger.log('error getting events ');
             Logger.error(err);
         }finally{
-            this.setState({loading: false});
+            this._removeSpinner('loadevents');
         }
     }
     
@@ -69,14 +79,32 @@ class EventsView extends React.Component {
 
     async deleteEvents(){
         const { events, deleteSelectedEvents } = this.props;
-        this.setState({loading: true});
+        this._addSpinner('deleteevents');
         try{
             const eventsToDelete = events.filter(event => event.selected === true);
-            //await RNSmartCam.deleteEvents(eventsToDelete);
+            await RNSmartCam.deleteEvents(eventsToDelete);
             deleteSelectedEvents();
         }catch(err){
             Logger.error(err);
         }finally{
+            this._removeSpinner('deleteevents');
+        }
+    }
+
+    _addSpinner(spinner) {
+        this.spinnerCache.add(spinner);
+        if(this.spinnerCache.size > 0 ){
+            this.setState({loading: true});
+        }
+    }
+    
+    _removeSpinner(spinnerToRemove) {
+        this.spinnerCache.forEach(spinner => {
+          if (spinner === spinnerToRemove) {
+            this.spinnerCache.delete(spinner);
+          }
+        });
+        if(this.spinnerCache.size <=0 ){
             this.setState({loading: false});
         }
     }
@@ -165,10 +193,12 @@ const mapStateToProps = state => ({
     editMode: state.events.editMode
 });
   
-export default connect(
+const connectedEventsView = connect(
     mapStateToProps,
     { loadEvents, deleteSelectedEvents, toggleEventSelection }
 )(EventsView);
+
+export default withNavigation(connectedEventsView);
 
 const styles = StyleSheet.create({
     firstEventPadding: {
