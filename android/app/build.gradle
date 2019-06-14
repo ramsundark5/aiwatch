@@ -136,7 +136,6 @@ dependencies {
     implementation project(':react-native-orientation')
     implementation project(':react-native-google-signin')
     implementation project(':bugsnag-react-native')
-    implementation project(':react-native-iap')
     implementation project(path: ':transcoder')
     addUnimodulesDependencies()
 }
