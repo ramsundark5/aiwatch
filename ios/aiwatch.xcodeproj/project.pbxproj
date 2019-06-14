@@ -64,6 +64,8 @@
 		C6C52BC42FD24FECBA7F9E59 /* libRCTVLCPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BE256E0B96A4D8B93D53544 /* libRCTVLCPlayer.a */; };
 		C3DC6B984CF041A0BF38C921 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D5183257CFF40A588938A16 /* libBugsnagReactNative.a */; };
 		E2B708CAD273427EA3357F76 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BE3D0B786FE44742AA08725B /* libz.tbd */; };
+		BFDC7F611B90458FBDB69F2F /* libReactNativeConfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A04C609FDB7842A6BBAAAB36 /* libReactNativeConfig.a */; };
+		16AF51D3093D4C8588C939DA /* libReactNativeConfig-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44260BFE89DE45148AD4F848 /* libReactNativeConfig-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -403,6 +405,9 @@
 		810D939DA4E94C44A83F66FD /* BugsnagReactNative.xcodeproj */ = {isa = PBXFileReference; name = "BugsnagReactNative.xcodeproj"; path = "../node_modules/bugsnag-react-native/cocoa/BugsnagReactNative.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		3D5183257CFF40A588938A16 /* libBugsnagReactNative.a */ = {isa = PBXFileReference; name = "libBugsnagReactNative.a"; path = "libBugsnagReactNative.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		BE3D0B786FE44742AA08725B /* libz.tbd */ = {isa = PBXFileReference; name = "libz.tbd"; path = "usr/lib/libz.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
+		C4A02BB163444457B6BE5138 /* ReactNativeConfig.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeConfig.xcodeproj"; path = "../node_modules/react-native-config/ios/ReactNativeConfig.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		A04C609FDB7842A6BBAAAB36 /* libReactNativeConfig.a */ = {isa = PBXFileReference; name = "libReactNativeConfig.a"; path = "libReactNativeConfig.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		44260BFE89DE45148AD4F848 /* libReactNativeConfig-tvOS.a */ = {isa = PBXFileReference; name = "libReactNativeConfig-tvOS.a"; path = "libReactNativeConfig-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -439,6 +444,7 @@
 				C6C52BC42FD24FECBA7F9E59 /* libRCTVLCPlayer.a in Frameworks */,
 				C3DC6B984CF041A0BF38C921 /* libBugsnagReactNative.a in Frameworks */,
 				E2B708CAD273427EA3357F76 /* libz.tbd in Frameworks */,
+				BFDC7F611B90458FBDB69F2F /* libReactNativeConfig.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -457,6 +463,7 @@
 				2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */,
 				866D50937FA44CA5864CF378 /* libRNGestureHandler-tvOS.a in Frameworks */,
 				5E29DCD6B2514BC48AF7C482 /* libRNVectorIcons-tvOS.a in Frameworks */,
+				16AF51D3093D4C8588C939DA /* libReactNativeConfig-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,6 +645,7 @@
 				B986D303009B46E69647EB15 /* RNVectorIcons.xcodeproj */,
 				A6657FC1ACEC44B995E4AF18 /* RCTVLCPlayer.xcodeproj */,
 				810D939DA4E94C44A83F66FD /* BugsnagReactNative.xcodeproj */,
+				C4A02BB163444457B6BE5138 /* ReactNativeConfig.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1304,6 +1312,8 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/aiwatch.app/aiwatch";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1314,6 +1324,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-yz-vlcplayer/ios/RCTVLCPlayer",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 			};
 			name = Debug;
@@ -1335,6 +1346,8 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/aiwatch.app/aiwatch";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1345,6 +1358,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-yz-vlcplayer/ios/RCTVLCPlayer",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 			};
 			name = Release;
@@ -1374,6 +1388,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-yz-vlcplayer/ios/RCTVLCPlayer",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 			};
 			name = Debug;
@@ -1402,6 +1417,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-yz-vlcplayer/ios/RCTVLCPlayer",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 			};
 			name = Release;
@@ -1431,6 +1447,8 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1441,6 +1459,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-yz-vlcplayer/ios/RCTVLCPlayer",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 			};
 			name = Debug;
@@ -1470,6 +1489,8 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1480,6 +1501,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-yz-vlcplayer/ios/RCTVLCPlayer",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 			};
 			name = Release;
@@ -1508,6 +1530,8 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1518,6 +1542,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-yz-vlcplayer/ios/RCTVLCPlayer",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 			};
 			name = Debug;
@@ -1546,6 +1571,8 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1556,6 +1583,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-yz-vlcplayer/ios/RCTVLCPlayer",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 			};
 			name = Release;

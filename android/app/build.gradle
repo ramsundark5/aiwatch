@@ -1,5 +1,12 @@
 apply plugin: "com.android.application"
 
+project.ext.envConfigFiles = [
+        debug: ".env.dev",
+        release: ".env.lite",
+        releasePro: ".env.pro",
+]
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 import com.android.build.OutputFile
 
 project.ext.react = [
@@ -52,6 +59,7 @@ android {
         manifestPlaceholders = [
             appAuthRedirectScheme: 'com.aiwatch'
         ]
+        resValue "string", "build_config_package", "com.aiwatch"
     }
     splits {
         abi {
@@ -66,6 +74,12 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+        releasePro {
+            minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            applicationIdSuffix ".pro"
         }
     }
     aaptOptions {
@@ -136,6 +150,7 @@ dependencies {
     implementation project(':react-native-orientation')
     implementation project(':react-native-google-signin')
     implementation project(':bugsnag-react-native')
+    implementation project(':react-native-config')
     implementation project(path: ':transcoder')
     addUnimodulesDependencies()
 }

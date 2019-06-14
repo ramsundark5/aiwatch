@@ -1,14 +1,12 @@
 import Logger from './Logger';
 import { AdMobInterstitial } from 'expo-ads-admob';
+import Config from 'react-native-config';
 
 class AdMob{
     async showAd(){
         try{
-            let AD_UNIT_ID = 'ca-app-pub-3233599560396549/3036076005';
-            if (__DEV__) {
-              AD_UNIT_ID = 'ca-app-pub-3940256099942544/1033173712';
-            }
-            AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
+            let AD_UNIT_ID = Config.AD_UNIT_ID;
+            AdMobInterstitial.setAdUnitID(AD_UNIT_ID); 
             //AdMobInterstitial.setTestDeviceID('EMULATOR');
             await AdMobInterstitial.requestAdAsync();
             await AdMobInterstitial.showAdAsync();
