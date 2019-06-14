@@ -1,6 +1,7 @@
+import * as RNIap from 'react-native-iap';
 import React, { Component } from 'react';
 import { Button } from 'react-native-paper';
-import { ToastAndroid, View } from 'react-native';
+import { View } from 'react-native';
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 
@@ -12,10 +13,12 @@ export default class InAppPurchase extends Component{
     };
 
     componentDidMount() {
-        init();
+      if(!this.props.isNoAdsPurchased){
+        this.init();
+      }
     }
 
-    init() {
+    async init() {
         try {
           const result = await RNIap.initConnection();
           await RNIap.consumeAllItemsAndroid();
@@ -26,12 +29,12 @@ export default class InAppPurchase extends Component{
     
         purchaseUpdateSubscription = purchaseUpdatedListener((purchase) => {
           console.log('purchaseUpdatedListener', purchase);
-          this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
+          //this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
         });
     
         purchaseErrorSubscription = purchaseErrorListener((error) => {
           console.log('purchaseErrorListener', error);
-          Alert.alert('purchase error', JSON.stringify(error));
+          //Alert.alert('purchase error', JSON.stringify(error));
         });
     }
     
@@ -59,7 +62,7 @@ export default class InAppPurchase extends Component{
           }
         } catch (err) {
           console.warn(err.code, err.message);
-          Alert.alert(err.message);
+          //Alert.alert(err.message);
         }
     }
     
