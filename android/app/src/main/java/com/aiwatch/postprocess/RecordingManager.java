@@ -91,6 +91,57 @@ public class RecordingManager {
         return null;
     }
 
+    public static String recordToYoutube(FrameEvent frameEvent){
+        try{
+            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
+            if (ffmpeg.isSupported()) {
+                LOGGER.d("FFmpeg is supported");
+            } else {
+                LOGGER.e("FFmpeg is not supported");
+            }
+            String filePath = getFilePathToRecord(frameEvent, DEFAULT_VIDEO_EXTENSION);
+            CameraConfig cameraConfig = frameEvent.getCameraConfig();
+            int recordingDuration = cameraConfig.getRecordingDuration();
+            if(recordingDuration <= 1){
+                recordingDuration = 15;
+            }
+            String videoUrl = cameraConfig.getVideoUrl();
+            String recordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration + " -codec copy "+ " -f ";
+            String[] ffmpegCommand = recordCommand.split("\\s+");
+            String response = ffmpeg.executeSync(ffmpegCommand, new FFcommandExecuteResponseHandler() {
+                @Override
+                public void onStart() {
+                    LOGGER.d("ffmpeg recording started. Thread is "+ Thread.currentThread().getName());
+                }
+
+                @Override
+                public void onFinish() {
+                    LOGGER.d("ffmpeg recording completed");
+                }
+
+                @Override
+                public void onSuccess(String message) {
+                    LOGGER.d("ffmpeg recording success");
+                }
+
+                @Override
+                public void onProgress(String message) {
+                    LOGGER.v("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName());
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    LOGGER.e("ffmpeg recording failed " + message);
+                }
+            });
+            LOGGER.d("record to local returned "+ response);
+            return filePath;
+        }catch (Exception e){
+            LOGGER.e("Error recording video to local "+ e.getMessage());
+        }
+        return null;
+    }
+
     public static String saveToGdrive(Context context, long cameraId, String inputFilePath, String mimeType, String extension){
         try{
             SettingsDao settingsDao = new SettingsDao();
@@ -108,6 +159,9 @@ public class RecordingManager {
             String currentTime = dateFormat.format(System.currentTimeMillis());
             String fileName = cameraId + currentTime + extension;
             GDriveServiceHelper gDriveServiceHelper = GdriveManager.getGDriveServiceHelper(context);
+            if(gDriveServiceHelper == null){
+                return null;
+            }
             DateFormat monthDateFormat = new SimpleDateFormat("yyyy-MM");
             String currentMonth = monthDateFormat.format(System.currentTimeMillis());
             String appFolderId = gDriveServiceHelper.createFolder(GDriveServiceHelper.APP_FOLDER_NAME, null, true);

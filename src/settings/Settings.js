@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { ToastAndroid, View } from 'react-native';
-import { GoogleSignin, statusCodes } from 'react-native-google-signin';
+import { View } from 'react-native';
 import RNSmartCam from '../native/RNSmartCam';
 import { List, Switch } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Logger from '../common/Logger';
+import { updateSettings } from '../store/SettingsStore';
+import GoogleConnectStatus from './GoogleConnectStatus';
+import { connect } from 'react-redux';
 class Settings extends Component{
 
     static navigationOptions = {
@@ -17,19 +18,8 @@ class Settings extends Component{
       }
     };
 
-    state = {
-      settings: {},
-      isMonitoringOn: false,
-      isLoading: false
-    };
-
     componentDidMount(){
       const { navigation } = this.props;
-      GoogleSignin.configure({
-        scopes: ['https://www.googleapis.com/auth/drive.file'], // what API you want to access on behalf of the user, default is email and profile
-        webClientId: '119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-        offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-      });
       this.loadSettings();
       this.focusListener = navigation.addListener('didFocus', () => this.loadSettings());
     }
@@ -39,91 +29,53 @@ class Settings extends Component{
       this.focusListener.remove();
     }
 
+    componentDidUpdate(prevProps){
+      const prevSettings  = prevProps.settings;
+      const currentSettings = this.props.settings;
+      if (currentSettings.isGoogleAccountConnected !== prevSettings.isGoogleAccountConnected 
+        || currentSettings.isNotificationEnabled !== prevSettings.isNotificationEnabled 
+        || currentSettings.isNoAdsPurchased !== prevSettings.isNoAdsPurchased ) {
+          RNSmartCam.putSettings(this.props.settings);
+      }
+    }
+
     async loadSettings(){
+      const { updateSettings } = this.props;
       let settings = await RNSmartCam.getSettings();
       let isMonitoringRunning = await RNSmartCam.isMonitoringServiceRunning();
-      this.setState({
-        settings: settings, 
-        isMonitoringOn: isMonitoringRunning
-      });
-    }
-
-    async onGoogleAccountSettingsChange(isConnected){
-      this.setState({isLoading: true});
-      requestAnimationFrame(async () => {
-        if(isConnected){
-          await this.connectGoogleAccount();
-        }else{
-          await this.disconnectGoogleAccount();
-        }
-        this.setState({isLoading: false});
-        try{
-          RNSmartCam.putSettings(this.state.settings);
-        }catch(err){
-          Logger.error(err);
-        }
-      });
-    }
-
-    async connectGoogleAccount(){
-        const { settings } = this.state;
-        try {
-            await GoogleSignin.signIn();
-            this.setState({
-              settings: Object.assign({}, settings, { isGoogleAccountConnected: true })
-            });
-        }catch (error) {
-            this.setState({
-              settings: Object.assign({}, settings, { isGoogleAccountConnected: false })
-            });
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-              // user cancelled the login flow
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-              // operation (f.e. sign in) is in progress already
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-              // play services not available or outdated
-            } else {
-              // some other error happened
-              ToastAndroid.show(error.message, ToastAndroid.SHORT);
-            }
-          }
-    }
-
-    async disconnectGoogleAccount(){
-      const { settings } = this.state;
-      try{
-        await GoogleSignin.revokeAccess();
-      }catch(err){
-        Logger.error(err);
-      }
-      this.setState({
-        settings: Object.assign({}, settings, { isGoogleAccountConnected: false })
-      });
+      settings.isMonitoringOn = isMonitoringRunning;
+      updateSettings(settings);
     }
 
     async onNotificationEnabledChange(value){
-      const { settings } = this.state;
-      this.setState({
-        settings: Object.assign({}, settings, { notificationEnabled: value })
-      });
-      RNSmartCam.putSettings(this.state.settings);
+      const { updateSettings } = this.props;
+      updateSettings({ isLoading: true });
+      try{
+        updateSettings({ notificationEnabled: value });
+      }finally{
+        updateSettings({ isLoading: false });
+      }
     }
 
     async onToggleMonitoring(enableMonitoring){
-      this.setState({
-        isMonitoringOn: enableMonitoring
-      });
-      RNSmartCam.toggleMonitoringStatus(enableMonitoring);
+      const { updateSettings } = this.props;
+      updateSettings({ isLoading: true });
+      try{
+        await RNSmartCam.toggleMonitoringStatus(enableMonitoring);
+        updateSettings({ isMonitoringOn: enableMonitoring });
+      }finally{
+        updateSettings({ isLoading: false });
+      }
     }
 
     render(){
-      const { isLoading } = this.state;
+      const { isLoading } = this.props;
       return(
           <View>
             <Spinner
               visible={isLoading}
               textContent={'Loading...'} />
-            <List.Section title="Person Detected">
+            <List.Section>
               <List.Item title="Store in Google Drive" right={() => this.renderGoogleAccountConnected()} />
               <List.Item title="Enable Notification" right={() => this.renderNotificationEnabled()} />
               <List.Item title="Monitoring Service Running" right={() => this.renderMonitoringEnabled()} />
@@ -133,17 +85,15 @@ class Settings extends Component{
   }
 
   renderGoogleAccountConnected() {
-    const { settings } = this.state;
+    const { settings, updateSettings } = this.props;
     return (
-      <Switch
-        value={settings.isGoogleAccountConnected}
-        onValueChange={value => this.onGoogleAccountSettingsChange(value)}
-      />
+      <GoogleConnectStatus isGoogleAccountConnected={settings.isGoogleAccountConnected}
+          updateSettings={updateSettings}/>
     );
   }
 
   renderNotificationEnabled() {
-    const { settings } = this.state;
+    const { settings } = this.props;
     return (
       <Switch
         value={settings.notificationEnabled}
@@ -153,7 +103,7 @@ class Settings extends Component{
   }
 
   renderMonitoringEnabled() {
-    const { isMonitoringOn } = this.state;
+    const { isMonitoringOn } = this.props.settings;
     return (
       <Switch
         value={isMonitoringOn}
@@ -162,5 +112,13 @@ class Settings extends Component{
     );
   }
 }
+const mapStateToProps = state => ({
+  settings: state.settings
+});
 
-export default withNavigation(Settings);
+const connectedSettings = connect(
+  mapStateToProps,
+  { updateSettings }
+)(Settings);
+
+export default withNavigation(connectedSettings);

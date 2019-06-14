@@ -1,6 +1,8 @@
 package com.aiwatch.cloud.gdrive;
 
 import android.content.Context;
+
+import com.aiwatch.Logger;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -12,11 +14,14 @@ import java.util.Collections;
 
 public class GdriveManager {
 
+    private static final Logger LOGGER = new Logger();
+
     public static GDriveServiceHelper getGDriveServiceHelper(Context context){
-        GDriveServiceHelper driveServiceHelper = null;
+        GDriveServiceHelper driveServiceHelper;
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
         if(account == null){
-            throw new RuntimeException("Google drive account not associated");
+            LOGGER.e("Google drive account not associated");
+            return null;
         }
         GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
                 context, Collections.singleton(DriveScopes.DRIVE_FILE));

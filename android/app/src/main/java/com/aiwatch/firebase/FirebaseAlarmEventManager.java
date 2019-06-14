@@ -81,6 +81,9 @@ public class FirebaseAlarmEventManager {
     private void saveFileLocally(AlarmEvent alarmEvent, Context context){
         try{
             GDriveServiceHelper gDriveServiceHelper = GdriveManager.getGDriveServiceHelper(context);
+            if(gDriveServiceHelper == null){
+                return;
+            }
             String filePath = getFilePathToRecord(alarmEvent, context);
             String imageDownloadPath = filePath + RecordingManager.DEFAULT_IMAGE_EXTENSION;
             String videoDownloadPath = filePath + RecordingManager.DEFAULT_VIDEO_EXTENSION;

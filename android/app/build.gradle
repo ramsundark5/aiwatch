@@ -92,7 +92,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-iap')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:support-compat:${rootProject.ext.supportLibVersion}"
@@ -137,6 +136,7 @@ dependencies {
     implementation project(':react-native-orientation')
     implementation project(':react-native-google-signin')
     implementation project(':bugsnag-react-native')
+    implementation project(':react-native-iap')
     implementation project(path: ':transcoder')
     addUnimodulesDependencies()
 }
