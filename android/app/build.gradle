@@ -95,6 +95,7 @@ android {
         releasePro {
             minifyEnabled enableProguardInReleaseBuilds
             signingConfig signingConfigs.releasePro
+            matchingFallbacks = ['release']
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             applicationIdSuffix ".pro"
