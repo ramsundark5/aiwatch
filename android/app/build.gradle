@@ -51,16 +51,32 @@ android {
         applicationId 'com.aiwatch'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-        /*ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }*/
+        versionCode 2
+        versionName "1.0.1"
         manifestPlaceholders = [
             appAuthRedirectScheme: 'com.aiwatch'
         ]
         resValue "string", "build_config_package", "com.aiwatch"
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('AIWATCH_UPLOAD_STORE_FILE')) {
+                storeFile file(AIWATCH_UPLOAD_STORE_FILE)
+                storePassword AIWATCH_UPLOAD_STORE_PASSWORD
+                keyAlias AIWATCH_UPLOAD_KEY_ALIAS
+                keyPassword AIWATCH_UPLOAD_KEY_PASSWORD
+            }
+        }
+        releasePro {
+            if (project.hasProperty('AIWATCH_UPLOAD_STORE_FILE')) {
+                storeFile file(AIWATCH_UPLOAD_STORE_FILE)
+                storePassword AIWATCH_UPLOAD_STORE_PASSWORD
+                keyAlias AIWATCH_UPLOAD_KEY_ALIAS
+                keyPassword AIWATCH_UPLOAD_KEY_PASSWORD
+            }
+        }
+    }
+
     splits {
         abi {
             reset()
@@ -72,11 +88,13 @@ android {
     buildTypes {
         release {
             minifyEnabled enableProguardInReleaseBuilds
+            signingConfig signingConfigs.release
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
         releasePro {
             minifyEnabled enableProguardInReleaseBuilds
+            signingConfig signingConfigs.releasePro
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             applicationIdSuffix ".pro"
