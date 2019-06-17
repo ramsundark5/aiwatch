@@ -12,11 +12,12 @@ Todo
 - [x] UI add camera -> test connection
 - [x] Crash reporting and logging
 - [x] Ads
-- [ ] Payment
+- [x] Payment
 - [x] code obfuscation
 - [x] Remote Notifications
 - [ ] Encryption
-- [ ] Sync events and camera config
+- [ ] Notification icons
+- [x] Sync events and camera config
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
 

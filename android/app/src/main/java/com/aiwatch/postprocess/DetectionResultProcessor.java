@@ -40,7 +40,8 @@ public class DetectionResultProcessor {
         String gdriveVideoPath = null;
         String thumbnailPath = null;
         CameraConfig cameraConfig = frameEvent.getCameraConfig();
-        AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), objectDetectionResult.getMessage(), null, thumbnailPath, UUID.randomUUID().toString());
+        String notificationMessage = objectDetectionResult.getMessage() + " at "+ cameraConfig.getName();
+        AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), notificationMessage, null, thumbnailPath, UUID.randomUUID().toString());
         alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
         boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
         if(shouldNotify){
