@@ -15,6 +15,7 @@ Todo
 - [ ] Payment
 - [x] code obfuscation
 - [x] Remote Notifications
+- [ ] Encryption
 - [ ] Sync events and camera config
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
