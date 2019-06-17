@@ -98,8 +98,14 @@ public class NotificationManager {
     public static void sendImageNotification(Context context, AlarmEvent alarmEvent){
         try{
             Bitmap imageBitmap = BitmapFactory.decodeFile(alarmEvent.getThumbnailPath());
+            int smallIcon = R.drawable.ic_person_detect;
+            if(alarmEvent.getMessage().contains("Animal")){
+                smallIcon = R.drawable.ic_animal_detect;
+            }else if(alarmEvent.getMessage().contains("Vehicle")){
+                smallIcon = R.drawable.ic_vehicle_detect;
+            }
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(smallIcon)
                     .setContentTitle(alarmEvent.getMessage())
                     .setContentText("")
                     .setLargeIcon(imageBitmap)
