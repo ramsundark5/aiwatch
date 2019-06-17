@@ -23,6 +23,8 @@ public class FirebaseCameraConfigDao {
                     return;
                 }
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
+                //scrub password
+                cameraConfig.setPassword(null);
                 db.collection("users")
                         .document(firebaseUser.getUid())
                         .collection("cameras")

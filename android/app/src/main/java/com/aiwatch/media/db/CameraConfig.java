@@ -1,5 +1,7 @@
 package com.aiwatch.media.db;
 
+import com.google.common.base.Strings;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -196,5 +198,15 @@ public class CameraConfig implements Serializable {
                 || notifyVehicleDetect || recordVehicleDetect
                 || testModeEnabled;
         return monitoringEnabled;
+    }
+
+    public String getVideoUrlWithAuth(){
+        if(!Strings.isNullOrEmpty(this.username) && !Strings.isNullOrEmpty(this.password)){
+            int insertIndex = this.videoUrl.indexOf("://");
+            String authStr = this.username + ":" + this.password;
+            String urlWithAuth = new StringBuilder(this.videoUrl).insert(insertIndex, authStr).toString();
+            return urlWithAuth;
+        }
+        return this.videoUrl;
     }
 }
