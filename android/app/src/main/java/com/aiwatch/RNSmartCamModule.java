@@ -110,14 +110,15 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     public void deleteCamera(Integer cameraId, final Promise promise) {
         try {
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
-            cameraConfigDao.deleteCamera(cameraId);
+            CameraConfig cameraConfig = cameraConfigDao.getCamera(cameraId);
             AlarmEventDao alarmEventDao = new AlarmEventDao();
             alarmEventDao.deleteEventsForCamera(cameraId);
             Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.REMOVE_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraId);
             promise.resolve("camera deleted and object detection stopped");
-            firebaseCameraConfigDao.deleteCamera(reactContext, cameraId);
+            firebaseCameraConfigDao.deleteCamera(reactContext, cameraConfig.getUuid());
+            cameraConfigDao.deleteCamera(cameraId);
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());

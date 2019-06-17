@@ -100,7 +100,7 @@ public class FirebaseUserDataDao {
         try {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Task<DocumentSnapshot> userDataSnapshotTask = db.collection("users").document(firebaseUser.getUid()).get();
-            DocumentSnapshot userDataSnapshot = null;
+            DocumentSnapshot userDataSnapshot;
             userDataSnapshot = Tasks.await(userDataSnapshotTask);
             if(userDataSnapshot != null){
                 firebaseUserData = userDataSnapshot.toObject(FirebaseUserData.class);

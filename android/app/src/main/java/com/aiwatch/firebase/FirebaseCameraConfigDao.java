@@ -26,7 +26,7 @@ public class FirebaseCameraConfigDao {
                 db.collection("users")
                         .document(firebaseUser.getUid())
                         .collection("cameras")
-                        .document(String.valueOf(cameraConfig.getId()))
+                        .document(String.valueOf(cameraConfig.getUuid()))
                         .set(cameraConfig)
                         .addOnSuccessListener(documentReference -> LOGGER.d("Camera updated to firebase"))
                         .addOnFailureListener(e -> LOGGER.e(e, "Failed updating camera to firebase"));
@@ -37,7 +37,7 @@ public class FirebaseCameraConfigDao {
         });
     }
 
-    public void deleteCamera(Context context, long cameraId){
+    public void deleteCamera(Context context, String cameraUUId){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
             try {
@@ -49,7 +49,7 @@ public class FirebaseCameraConfigDao {
                 db.collection("users")
                         .document(firebaseUser.getUid())
                         .collection("cameras")
-                        .document(String.valueOf(cameraId))
+                        .document(cameraUUId)
                         .delete()
                         .addOnSuccessListener(documentReference -> LOGGER.d("Camera deleted from firebase"))
                         .addOnFailureListener(e -> LOGGER.e(e, "Failed deleting Camera from firebase"));
