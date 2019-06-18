@@ -33,7 +33,7 @@ export default class Detect extends Component {
       lastDetecedTime: new Date().getTime(),
       currentTime: '',
       //videoUrl: 'rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov',
-      videoUrl: 'rtsp://admin:230982@ramsundark5.ddns.net:554/cam/realmonitor?channel=3&subtype=0',
+      videoUrl: 'rtsp://ramsundark5.ddns.net:554/cam/realmonitor?channel=3&subtype=0',
       capturedImage: ''
     };
   }

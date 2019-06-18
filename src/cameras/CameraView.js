@@ -75,9 +75,9 @@ class CameraView extends Component {
   }
 
   renderVideoPlayer(cameraConfig){
-    if(!cameraConfig.videoUrl){
+    if(!cameraConfig.videoUrlWithAuth){
       //return null;
-      cameraConfig.videoUrl = 'rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov';
+      //cameraConfig.videoUrl = 'rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov';
     }
     return(
       <View style={[styles.container]} key={cameraConfig.id}>
@@ -87,7 +87,7 @@ class CameraView extends Component {
               isLive={true}
               showFullScreen={true}
               key={cameraConfig.id}
-              url={cameraConfig.videoUrl}
+              url={cameraConfig.videoUrlWithAuth}
               onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
           <CameraControl {...this.props} cameraConfig={cameraConfig}/>
       </View>

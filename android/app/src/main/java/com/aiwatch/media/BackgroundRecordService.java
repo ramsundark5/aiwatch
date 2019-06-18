@@ -27,7 +27,7 @@ public class BackgroundRecordService {
 
     public void startFFMpegRecording() {
         long cameraId = cameraConfig.getId();
-        String videoUrl = cameraConfig.getVideoUrl();
+        String videoUrl = cameraConfig.getVideoUrlWithAuth();
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         boolean isffmpegSupported = ffmpeg.isSupported();
         LOGGER.i("ffmpeg supported "+isffmpegSupported);

@@ -1,6 +1,7 @@
 package com.aiwatch.media.db;
 
 import com.google.common.base.Strings;
+import com.google.firebase.firestore.Exclude;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,8 +18,14 @@ public class CameraConfig implements Serializable {
     private String brand;
     private String model;
     private String videoUrl;
+
+    @Exclude
+    private String videoUrlWithAuth;
     private String username;
+
+    @Exclude
     private String password;
+
     private int videoCodec;
     private int recordingDuration;
     private int waitPeriodAfterDetection;
@@ -31,6 +38,7 @@ public class CameraConfig implements Serializable {
     private boolean testModeEnabled;
     private boolean disconnected;
     private Date lastModified;
+    private boolean monitoringEnabled;
 
     public long getId() {
         return id;
@@ -192,6 +200,7 @@ public class CameraConfig implements Serializable {
         this.lastModified = lastModified;
     }
 
+    @Exclude
     public boolean isMonitoringEnabled(){
         boolean monitoringEnabled = notifyPersonDetect || recordPersonDetect
                 || notifyAnimalDetect || recordAnimalDetect
@@ -200,10 +209,14 @@ public class CameraConfig implements Serializable {
         return monitoringEnabled;
     }
 
+    public void setVideoUrlWithAuth(String videoUrlWithAuth) {
+        this.videoUrlWithAuth = videoUrlWithAuth;
+    }
+
     public String getVideoUrlWithAuth(){
         if(!Strings.isNullOrEmpty(this.username) && !Strings.isNullOrEmpty(this.password)){
-            int insertIndex = this.videoUrl.indexOf("://");
-            String authStr = this.username + ":" + this.password;
+            int insertIndex = this.videoUrl.indexOf("://") + 3; //+3 is to add credentials at end of string match
+            String authStr = this.username + ":" + this.password + "@";
             String urlWithAuth = new StringBuilder(this.videoUrl).insert(insertIndex, authStr).toString();
             return urlWithAuth;
         }

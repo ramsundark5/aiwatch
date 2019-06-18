@@ -54,59 +54,8 @@ public class RecordingManager {
             if(recordingDuration <= 1){
                 recordingDuration = 15;
             }
-            String videoUrl = cameraConfig.getVideoUrl();
+            String videoUrl = cameraConfig.getVideoUrlWithAuth();
             String recordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration + " -codec copy "+filePath;
-            String[] ffmpegCommand = recordCommand.split("\\s+");
-            String response = ffmpeg.executeSync(ffmpegCommand, new FFcommandExecuteResponseHandler() {
-                @Override
-                public void onStart() {
-                    LOGGER.d("ffmpeg recording started. Thread is "+ Thread.currentThread().getName());
-                }
-
-                @Override
-                public void onFinish() {
-                    LOGGER.d("ffmpeg recording completed");
-                }
-
-                @Override
-                public void onSuccess(String message) {
-                    LOGGER.d("ffmpeg recording success");
-                }
-
-                @Override
-                public void onProgress(String message) {
-                    LOGGER.v("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName());
-                }
-
-                @Override
-                public void onFailure(String message) {
-                    LOGGER.e("ffmpeg recording failed " + message);
-                }
-            });
-            LOGGER.d("record to local returned "+ response);
-            return filePath;
-        }catch (Exception e){
-            LOGGER.e("Error recording video to local "+ e.getMessage());
-        }
-        return null;
-    }
-
-    public static String recordToYoutube(FrameEvent frameEvent){
-        try{
-            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
-            if (ffmpeg.isSupported()) {
-                LOGGER.d("FFmpeg is supported");
-            } else {
-                LOGGER.e("FFmpeg is not supported");
-            }
-            String filePath = getFilePathToRecord(frameEvent, DEFAULT_VIDEO_EXTENSION);
-            CameraConfig cameraConfig = frameEvent.getCameraConfig();
-            int recordingDuration = cameraConfig.getRecordingDuration();
-            if(recordingDuration <= 1){
-                recordingDuration = 15;
-            }
-            String videoUrl = cameraConfig.getVideoUrl();
-            String recordCommand = "-rtsp_transport tcp -i " + videoUrl + " -t "+ recordingDuration + " -codec copy "+ " -f ";
             String[] ffmpegCommand = recordCommand.split("\\s+");
             String response = ffmpeg.executeSync(ffmpegCommand, new FFcommandExecuteResponseHandler() {
                 @Override

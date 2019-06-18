@@ -246,11 +246,11 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void testCameraConnection(final String videoUrl, final Promise promise) {
-        CameraConfig cameraConfig = new CameraConfig();
-        cameraConfig.setVideoUrl(videoUrl);
+    public void testCameraConnection(final ReadableMap readableMap, final Promise promise) {
         String base64Image = null;
         try {
+            JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
+            CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
             VideoFrameExtractor videoFrameExtractor = new VideoFrameExtractor(cameraConfig, reactContext);
             base64Image = videoFrameExtractor.getImageFromCamera();
         } catch (Exception e) {

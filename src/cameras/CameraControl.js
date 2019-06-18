@@ -48,7 +48,7 @@ export default class CameraControl extends Component {
         if(isFull){
             return null;
         }
-        const monitoringEnabled = this.isMonitoringEnabled(cameraConfig);
+        const monitoringEnabled = cameraConfig.monitoringEnabled;//this.isMonitoringEnabled(cameraConfig);
         const monitoringIcon = !cameraConfig.disconnected && monitoringEnabled ? 'visibility' : 'visibility-off';
         return(
             <View>

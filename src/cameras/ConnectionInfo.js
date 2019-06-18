@@ -32,7 +32,7 @@ export default class ConnectionInfo extends Component {
 
   async loadBase64Image(cameraConfig){
     try{
-      let image = await RNSmartCam.testCameraConnection(cameraConfig.videoUrl);
+      let image = await RNSmartCam.testCameraConnection(cameraConfig);
       this.setState({ base64Image: image });
     }catch(err){
       Logger.log('error loading test image');
@@ -48,7 +48,7 @@ export default class ConnectionInfo extends Component {
       <List.Accordion title="Connection Info" expanded={state.expanded} onPress={this.toggleExpand}>
         <ConfigInput {...props} label="Video URL" name="videoUrl" />
         <ConfigInput {...props} label="Username" name="username" />
-        <ConfigInput {...props} label="Password" name="password" />
+        <ConfigInput {...props} label="Password" name="password" secureTextEntry={true}/>
         <Button mode='outlined' color={Theme.primary} onPress={() => this.testConnection()}>
           Test Connection
         </Button>

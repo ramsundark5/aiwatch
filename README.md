@@ -16,7 +16,7 @@ Todo
 - [x] code obfuscation
 - [x] Remote Notifications
 - [ ] Encryption
-- [ ] Notification icons
+- [x] Notification icons
 - [x] Sync events and camera config
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT

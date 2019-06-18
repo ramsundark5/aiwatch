@@ -91,7 +91,7 @@ public class VideoFrameExtractor {
     public void initGrabber(CameraConfig cameraConfig) {
         int TIMEOUT = 10; //10 secs
         try{
-            grabber = new FFmpegFrameGrabber(cameraConfig.getVideoUrl()); // rtsp url
+            grabber = new FFmpegFrameGrabber(cameraConfig.getVideoUrlWithAuth()); // rtsp url
             //rtsp_transport flag is important. Otherwise grabbed image will be distorted
             grabber.setOption("rtsp_transport", "tcp");
             grabber.setOption(
