@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.aiwatch.Logger;
@@ -76,17 +75,21 @@ public class NotificationManager {
     }
 
     public static void sendStringNotification(Context context, String message){
-        sendStringNotification(context, message, R.drawable.ic_launcher);
+        sendStringNotification(context, message, 0);
     }
 
-    public static void sendStringNotification(Context context, String message, int smallIcon){
+    public static void sendStringNotification(Context context, String message, int notificationIcon){
         try{
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
-                    .setSmallIcon(smallIcon)
+                    .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentTitle(message)
                     .setChannelId(context.getString(R.string.channel_id))
                     //.setContentText(alarmEvent.getMessage())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            if(notificationIcon != 0){
+                Bitmap imageBitmap = BitmapFactory.decodeResource(context.getResources(), notificationIcon);
+                builder.setLargeIcon(imageBitmap);
+            }
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             // notificationId is a unique int for each notification that you must define
             notificationManager.notify(message.hashCode(), builder.build());
@@ -102,14 +105,8 @@ public class NotificationManager {
     public static void sendImageNotification(Context context, AlarmEvent alarmEvent){
         try{
             Bitmap imageBitmap = BitmapFactory.decodeFile(alarmEvent.getThumbnailPath());
-            int smallIcon = R.drawable.ic_person_detect;
-            if(alarmEvent.getMessage().contains("Animal")){
-                smallIcon = R.drawable.ic_animal_detect;
-            }else if(alarmEvent.getMessage().contains("Vehicle")){
-                smallIcon = R.drawable.ic_vehicle_detect;
-            }
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
-                    .setSmallIcon(smallIcon)
+                    .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentTitle(alarmEvent.getMessage())
                     .setContentText("")
                     .setLargeIcon(imageBitmap)

@@ -44,18 +44,17 @@ public class RemoteMessagingService extends FirebaseMessagingService {
                 Map<String, String> params = remoteMessage.getData();
                 JSONObject jsonObject = new JSONObject(params);
                 AlarmEvent alarmEvent = gson.fromJson(jsonObject.toString(), AlarmEvent.class);
-                int smallIcon = R.drawable.ic_person_detect;
+                int icon = R.drawable.ic_person_detect;
                 if(alarmEvent.getMessage().contains("Animal")){
-                    smallIcon = R.drawable.ic_animal_detect;
+                    icon = R.drawable.ic_animal_detect;
                 }else if(alarmEvent.getMessage().contains("Vehicle")){
-                    smallIcon = R.drawable.ic_vehicle_detect;
+                    icon = R.drawable.ic_vehicle_detect;
                 }
-                NotificationManager.sendStringNotification(getApplicationContext(), alarmEvent.getMessage(), smallIcon);
+                NotificationManager.sendStringNotification(getApplicationContext(), alarmEvent.getMessage(), icon);
                 //NotificationManager.sendImageNotification(getApplicationContext(), alarmEvent);
             }
         }catch (Exception e){
             LOGGER.e(e, "Error sending local notification.");
         }
-
     }
 }

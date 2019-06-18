@@ -81,7 +81,7 @@ public abstract class AbstractForegroundService extends Service {
             String NOTIFICATION_CHANNEL_ID = getApplicationContext().getString(R.string.channel_id);
             // Set the info for the views that show in the notification panel.
             Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_launcher)  // the status icon
+                    .setSmallIcon(R.drawable.ic_stat_name)  // the status icon
                     .setTicker("aiwatch monitoring started")  // the status text
                     .setWhen(System.currentTimeMillis())  // the time stamp
                     .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
