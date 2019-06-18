@@ -76,9 +76,13 @@ public class NotificationManager {
     }
 
     public static void sendStringNotification(Context context, String message){
+        sendStringNotification(context, message, R.drawable.ic_launcher);
+    }
+
+    public static void sendStringNotification(Context context, String message, int smallIcon){
         try{
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(smallIcon)
                     .setContentTitle(message)
                     .setChannelId(context.getString(R.string.channel_id))
                     //.setContentText(alarmEvent.getMessage())

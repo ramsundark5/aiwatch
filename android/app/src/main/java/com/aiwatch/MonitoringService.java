@@ -3,7 +3,6 @@ package com.aiwatch;
 import android.content.Intent;
 import android.os.Build;
 import com.aiwatch.common.AppConstants;
-import com.aiwatch.media.CompressionRunnable;
 import com.aiwatch.media.DetectionController;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
@@ -83,16 +82,5 @@ public class MonitoringService extends AbstractForegroundService {
     private void stopMonitoring(){
         DetectionController.INSTANCE().stopAllDetecting();
         stopSelf();
-    }
-
-    private void scheduleCompression(){
-        try {
-            CompressionRunnable compressionRunnable = new CompressionRunnable(getApplicationContext());
-            Thread compressionThread = new Thread(compressionRunnable);
-            compressionThread.start();
-            LOGGER.i("compression thread name is "+compressionThread.getId());
-        } catch (Exception e) {
-            LOGGER.e(e, "compression exception " + e.getMessage());
-        }
     }
 }
