@@ -215,13 +215,17 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void toggleMonitoringStatus(boolean enableMonitoring, final Promise promise) {
-        Intent intent = new Intent(reactContext, MonitoringService.class);
-        if (enableMonitoring) {
-            intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.START_MONITORING);
-            reactContext.startService(intent);
-        } else {
-            intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.STOP_MONITORING);
-            reactContext.startService(intent);
+        try{
+            Intent intent = new Intent(reactContext, MonitoringService.class);
+            if (enableMonitoring) {
+                intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.START_MONITORING);
+                reactContext.startService(intent);
+            } else {
+                intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.STOP_MONITORING);
+                reactContext.startService(intent);
+            }
+        }finally {
+            promise.resolve("monitoring toggle completed");
         }
     }
 

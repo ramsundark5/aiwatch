@@ -4,10 +4,11 @@ import RTSPVideoPlayer from './RTSPVideoPlayer';
 import { Button} from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import Theme from '../common/Theme';
-import { loadCameras, deleteCamera } from '../store/CamerasStore';
+import { loadCameras, deleteCamera, updateMonitoringStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import CameraControl from './CameraControl';
 import Logger from '../common/Logger';
+import MonitoringStatus from './MonitoringStatus';
 import AiwatchUtil from '../common/AiwatchUtil';
 class CameraView extends Component {
 
@@ -16,15 +17,14 @@ class CameraView extends Component {
   };
 
   state = {
-    isFull: false,
-    selectedVideoUrl: ''
+    isFull: false
   }
 
   componentDidMount(){
-    this.loadAllCamera();
+    this.loadAllCameras();
   }
 
-  async loadAllCamera(){
+  async loadAllCameras(){
     const { loadCameras } = this.props;
     try{
       let cameras = await RNSmartCam.getAllCameras();
@@ -50,14 +50,15 @@ class CameraView extends Component {
   }
 
   onCloseFullScreen(){
-    this.setState({ isFull: false, selectedVideoUrl: ''});
+    this.setState({ isFull: false});
   }
 
   render() {
-    const { isFull, selectedVideoUrl } = this.state;
+    const { isFull } = this.state;
     const { cameras } = this.props;
     return (
       <View style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
+        <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
         <ScrollView
           ref={ref => (this.scrollRef = ref)}
           style={{ flex: 1 }}
@@ -109,12 +110,13 @@ class CameraView extends Component {
 }
 
 const mapStateToProps = state => ({
-  cameras: state.cameras.cameras
+  cameras: state.cameras.cameras,
+  isMonitoringOn: state.cameras.isMonitoringOn
 });
 
 export default connect(
   mapStateToProps,
-  { loadCameras, deleteCamera }
+  { loadCameras, deleteCamera, updateMonitoringStatus }
 )(CameraView);
 
 const styles = StyleSheet.create({

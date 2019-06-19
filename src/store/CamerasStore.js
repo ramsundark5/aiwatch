@@ -5,6 +5,7 @@ const camerasSlice = createSlice({
 
     initialState: {
       isFull: false,
+      isMonitoringOn: false,
       cameras: []
     },
       
@@ -35,13 +36,17 @@ const camerasSlice = createSlice({
           state.cameras[existingCameraIndex].disconnected = cameraConfig.disconnected;
         }
       },
+      updateMonitoringStatus(state, action){
+        const newMonitoringStatus = action.payload;
+        state.isMonitoringOn = newMonitoringStatus;
+      },
     }
 });
 
 // Extract the action creators object and the reducer
 const { actions, reducer } = camerasSlice;
 // Extract and export each action creator by name
-export const { loadCameras, editCamera, deleteCamera, updateStatus } = actions;
+export const { loadCameras, editCamera, deleteCamera, updateStatus, updateMonitoringStatus } = actions;
 // Export the reducer, either as a default or named export
 export default reducer;
 

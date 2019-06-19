@@ -4,7 +4,6 @@ const settingsSlice = createSlice({
     slice: 'settings',
 
     initialState: {
-      isMonitoringOn: false,
       isGoogleAccountConnected: false,
       isNotificationEnabled: false,
       isNoAdsPurchased: false,

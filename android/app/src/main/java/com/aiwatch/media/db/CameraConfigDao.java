@@ -1,10 +1,7 @@
 package com.aiwatch.media.db;
 
 import com.aiwatch.Logger;
-
-import java.util.Date;
 import java.util.List;
-
 import io.objectbox.Box;
 
 public class CameraConfigDao {
