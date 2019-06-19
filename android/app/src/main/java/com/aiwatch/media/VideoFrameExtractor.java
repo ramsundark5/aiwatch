@@ -3,6 +3,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Base64;
 import com.aiwatch.Logger;
+import com.aiwatch.common.AppConstants;
 import com.aiwatch.common.RTSPTimeOutOption;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
@@ -92,13 +93,15 @@ public class VideoFrameExtractor {
             grabber = new FFmpegFrameGrabber(cameraConfig.getVideoUrlWithAuth()); // rtsp url
             //rtsp_transport flag is important. Otherwise grabbed image will be distorted
             grabber.setOption("rtsp_transport", "tcp");
+            grabber.setImageHeight(AppConstants.TF_OD_API_INPUT_SIZE);
+            grabber.setImageWidth(AppConstants.TF_OD_API_INPUT_SIZE);
             grabber.setOption(
                     RTSPTimeOutOption.STIMEOUT.getKey(),
                     String.valueOf(TIMEOUT * 1000000)
             ); // In microseconds.
             grabber.setPixelFormat(AV_PIX_FMT_RGBA);
-            //grabber.setVideoOption("threads", "8");
-            //grabber.setAudioOption("threads", "4");
+            grabber.setVideoOption("threads", "0");
+            grabber.setAudioOption("threads", "0");
             //grabber.setOption("hwaccel", "auto");
             grabber.start();
             notifyAndUpdateCameraStatus(false);
