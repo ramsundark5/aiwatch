@@ -120,7 +120,7 @@ public class VideoFrameExtractor {
             }
             //notifyAndUpdateCameraStatus(true);
         } catch (Exception e) {
-            LOGGER.e(e, e.getMessage());
+            LOGGER.e(e, "Error stopping grabber");
         }finally{
             grabber = null;
         }

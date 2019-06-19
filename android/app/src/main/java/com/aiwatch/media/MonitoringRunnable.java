@@ -64,7 +64,8 @@ public class MonitoringRunnable implements Runnable {
                 try {
                     Pair<FrameEvent, ObjectDetectionResult> resultPair = grabFrameAndProcess();
                     if (resultPair != null) {
-                        pauseFrameGrabbing = detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
+                        //pauseFrameGrabbing = detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
+                        detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
                         if (pauseFrameGrabbing) {
                             pauseFrameGrabbing();
                         }
@@ -75,13 +76,12 @@ public class MonitoringRunnable implements Runnable {
                 }
             }
         }
+        LOGGER.i("Stopped monitoring runnable for camera "+cameraConfig.getId());
     }
 
     private Pair<FrameEvent, ObjectDetectionResult> grabFrameAndProcess() throws Exception {
         Frame frame;
-        TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "Framegrabber performance");
         frame = videoFrameExtractor.grabFrame();
-        timings.addSplit("Frame grab time");
         if (frame != null) {
             if(!frame.keyFrame){
                 return null;
@@ -92,7 +92,6 @@ public class MonitoringRunnable implements Runnable {
             LOGGER.d("start processing next frame. Thread is "+ Thread.currentThread().getName());
             ObjectDetectionResult objectDetectionResult = imageProcessor.processImage(frameEvent);
             LOGGER.d("frames grabbed "+ framesGrabbed);
-            timings.dumpToLog();
             Pair<FrameEvent, ObjectDetectionResult> resultPair = Pair.create(frameEvent, objectDetectionResult);
             return resultPair;
         } else { // when frame == null then connection has been lost

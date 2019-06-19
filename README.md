@@ -18,6 +18,7 @@ Todo
 - [ ] Encryption
 - [x] Notification icons
 - [x] Sync events and camera config
+- [ ] Splash screen
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
 

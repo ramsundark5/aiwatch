@@ -25,30 +25,40 @@ public abstract class AbstractForegroundService extends Service {
     static boolean isNotifChannelCreated;
 
     static synchronized void preStart(Context context) {
-        synchronized (MonitoringService.class) {
-            if (_wakeLock == null) {
-                PowerManager powerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
-                _wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MonitoringService.class.getSimpleName());
-                _wakeLock.acquire();
+        try{
+            synchronized (MonitoringService.class) {
+                if (_wakeLock == null) {
+                    PowerManager powerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
+                    _wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MonitoringService.class.getSimpleName());
+                    _wakeLock.acquire();
+                }
+                if(_wifiLock == null){
+                    _wifiLock = ((WifiManager) context.getSystemService(WIFI_SERVICE)).createWifiLock("MonitoringService_wifilock");
+                    _wifiLock.acquire();
+                }
             }
-            if(_wifiLock == null){
-                _wifiLock = ((WifiManager) context.getSystemService(WIFI_SERVICE)).createWifiLock("MonitoringService_wifilock");
-                _wifiLock.acquire();
-            }
+        }catch(Exception e){
+            LOGGER.e(e, "Error acquiring wifilock or wakelock");
         }
+
     }
 
     static synchronized void postStopCleanup() {
-        synchronized (MonitoringService.class) {
-            if (_wakeLock != null) {
-                _wakeLock.release();
-                _wakeLock = null;
+        try{
+            synchronized (MonitoringService.class) {
+                if (_wakeLock != null) {
+                    _wakeLock.release();
+                    _wakeLock = null;
+                }
+                if(_wifiLock != null){
+                    _wifiLock.release();
+                    _wifiLock = null;
+                }
             }
-            if(_wifiLock != null){
-                _wifiLock.release();
-                _wifiLock = null;
-            }
+        }catch(Exception e){
+            LOGGER.e(e, "Error releasing wifilock or wakelock");
         }
+
     }
 
     @Override
