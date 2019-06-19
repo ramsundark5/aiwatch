@@ -2,22 +2,17 @@ package com.aiwatch.media;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Base64;
-import android.util.TimingLogger;
-
 import com.aiwatch.Logger;
 import com.aiwatch.common.RTSPTimeOutOption;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
-import com.google.firebase.perf.metrics.AddTrace;
-
-import org.bytedeco.javacpp.avcodec;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 import org.bytedeco.javacv.AndroidFrameConverter;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
-
 import java.io.ByteArrayOutputStream;
-
 import static org.bytedeco.javacpp.avutil.AV_PIX_FMT_RGBA;
 
 public class VideoFrameExtractor {
@@ -36,22 +31,25 @@ public class VideoFrameExtractor {
         }
     }
 
-    @AddTrace(name = "frameGrabTrace")
     public Frame grabFrame(){
         Frame frame = null;
-        TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "Framegrabber performance");
+        Trace keyFrameTrace = FirebasePerformance.getInstance().newTrace("keyFrameGrabTrace");
+        Trace nonKeyFrameTrace = FirebasePerformance.getInstance().newTrace("nonKeyFrameGrabTrace");
         try{
             if (grabber == null) {
                 initGrabber(cameraConfig); // connect
-                timings.addSplit("ffmpeg connect time for camera "+cameraConfig.getId());
             }
+            long startTime = System.currentTimeMillis();
             frame = grabber.grabImage();
+            long endTime = System.currentTimeMillis();
+            long timeElapsed = endTime - startTime;
             if(frame.keyFrame){
-                timings.addSplit("KeyFrame grab time for camera "+cameraConfig.getId());
+                keyFrameTrace.putMetric("grabTime", timeElapsed);
+                LOGGER.d("KeyFrame grab time for camera "+cameraConfig.getId() + ":  "+timeElapsed);
             }else{
-                timings.addSplit("NokeyFrame grab time for camera "+cameraConfig.getId());
+                nonKeyFrameTrace.putMetric("grabTime", timeElapsed);
+                LOGGER.d("NokeyFrame grab time for camera "+cameraConfig.getId() + ":  "+timeElapsed);
             }
-            timings.dumpToLog();
         }catch(Exception e){
             LOGGER.e(e, "Exception grabbing frame");
         }

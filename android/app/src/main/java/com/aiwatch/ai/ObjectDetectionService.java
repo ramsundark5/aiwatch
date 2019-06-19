@@ -32,7 +32,11 @@ public class ObjectDetectionService {
     @AddTrace(name = "objdectDetectionTrace")
     public ObjectDetectionResult detectObjects(final Bitmap croppedImage) {
         ObjectDetectionResult result = new ObjectDetectionResult();
+        long startTime = System.currentTimeMillis();
         final List<Classifier.Recognition> detectionResults = objectDetector.recognizeImage(croppedImage);
+        long endTime = System.currentTimeMillis();
+        long timeElapsed = endTime - startTime;
+        LOGGER.d("inference time "+timeElapsed);
         for (Classifier.Recognition detection: detectionResults) {
             switch(detection.getTitle())
             {
