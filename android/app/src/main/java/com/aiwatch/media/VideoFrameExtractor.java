@@ -34,8 +34,8 @@ public class VideoFrameExtractor {
 
     public Frame grabFrame(){
         Frame frame = null;
-        Trace keyFrameTrace = FirebasePerformance.getInstance().newTrace("keyFrameGrabTrace");
-        Trace nonKeyFrameTrace = FirebasePerformance.getInstance().newTrace("nonKeyFrameGrabTrace");
+        Trace frameGrabTrace = FirebasePerformance.getInstance().newTrace("frameGrabTrace");
+        frameGrabTrace.start();
         try{
             if (grabber == null) {
                 initGrabber(cameraConfig); // connect
@@ -45,15 +45,16 @@ public class VideoFrameExtractor {
             long endTime = System.currentTimeMillis();
             long timeElapsed = endTime - startTime;
             if(frame.keyFrame){
-                keyFrameTrace.putMetric("grabTime", timeElapsed);
+                frameGrabTrace.putMetric("keyFrameGrabTime", timeElapsed);
                 LOGGER.d("KeyFrame grab time for camera "+cameraConfig.getId() + ":  "+timeElapsed);
             }else{
-                nonKeyFrameTrace.putMetric("grabTime", timeElapsed);
+                frameGrabTrace.putMetric("nonKeyFrameGrabTime", timeElapsed);
                 LOGGER.d("NokeyFrame grab time for camera "+cameraConfig.getId() + ":  "+timeElapsed);
             }
         }catch(Exception e){
             LOGGER.e(e, "Exception grabbing frame");
         }
+        frameGrabTrace.stop();
         return frame;
     }
 
