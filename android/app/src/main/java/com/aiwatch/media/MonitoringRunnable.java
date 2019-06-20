@@ -1,15 +1,15 @@
 package com.aiwatch.media;
 
 import android.content.Context;
-import android.util.Pair;
-import android.util.TimingLogger;
+import android.os.FileObserver;
+
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.postprocess.DetectionResultProcessor;
 
-import org.bytedeco.javacv.Frame;
+import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MonitoringRunnable implements Runnable {
@@ -18,11 +18,10 @@ public class MonitoringRunnable implements Runnable {
     private AtomicBoolean running = new AtomicBoolean(false);
     private CameraConfig cameraConfig;
     private DetectionResultProcessor detectionResultProcessor;
-    private VideoFrameExtractor videoFrameExtractor;
     private ImageProcessor imageProcessor;
     private Context context;
-    private boolean pauseFrameGrabbing = false;
-    private int framesGrabbed = 0;
+    private FFmpegFrameExtractor fFmpegFrameExtractor;
+    public static FileObserver observer;
 
     public MonitoringRunnable(CameraConfig cameraConfig, Context context) {
         try {
@@ -30,7 +29,7 @@ public class MonitoringRunnable implements Runnable {
             this.context = context;
             this.detectionResultProcessor = new DetectionResultProcessor();
             this.imageProcessor = new ImageProcessor(context.getAssets());
-            this.videoFrameExtractor = new VideoFrameExtractor(cameraConfig, context);
+            fFmpegFrameExtractor = new FFmpegFrameExtractor(context, cameraConfig);
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
@@ -38,82 +37,45 @@ public class MonitoringRunnable implements Runnable {
 
     public void stop() {
         LOGGER.i("monitoring stop requested for camera "+cameraConfig.getId());
-        running.set(false);
-        videoFrameExtractor.stopGrabber();
+        fFmpegFrameExtractor.stop();
+        observer.stopWatching();
     }
 
     @Override
     public void run() {
         try {
             LOGGER.i("Creating new VideoProcessor runnable instance. Thread is "+Thread.currentThread().getName());
-            running.set(true);
-            monitor();
+            fFmpegFrameExtractor.start();
+            startWatching();
         } catch (Exception e) {
             LOGGER.e(e, "monitoring exception ");
         }
-        finally{
-            videoFrameExtractor.stopGrabber();
-            framesGrabbed = 0;
-            LOGGER.i("stopping monitoring runnable for camera "+cameraConfig.getId());
-        }
     }
 
-    private void monitor(){
-        while (running.get()) {
-            if (!pauseFrameGrabbing) {
-                try {
-                    Pair<FrameEvent, ObjectDetectionResult> resultPair = grabFrameAndProcess();
-                    if (resultPair != null) {
-                        //pauseFrameGrabbing = detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
-                        detectionResultProcessor.processObjectDetectionResult(resultPair.first, resultPair.second);
-                        if (pauseFrameGrabbing) {
-                            pauseFrameGrabbing();
-                        }
-                    }
-                } catch (Exception e) {
-                    //swallow exception to continue processing
-                    LOGGER.e(e, e.getMessage());
-                }
+    private void startWatching() {
+        File imageFolder = new File(context.getFilesDir(), AppConstants.IMAGES_FOLDER);
+        String imageFolderPath = imageFolder.getAbsolutePath();
+        // set up a file observer to watch this directory
+        observer = new FileObserver(imageFolderPath, FileObserver.MODIFY) {
+            @Override
+            public void onEvent(int event, final String file) {
+                processImage(file);
             }
-        }
-        LOGGER.i("Stopped monitoring runnable for camera "+cameraConfig.getId());
+        };
+        observer.startWatching();
     }
 
-    private Pair<FrameEvent, ObjectDetectionResult> grabFrameAndProcess() throws Exception {
-        Frame frame;
-        frame = videoFrameExtractor.grabFrame();
-        if (frame != null) {
-            if(!frame.keyFrame){
-                return null;
+    private void processImage(final String file){
+        try{
+            ObjectDetectionResult objectDetectionResult = imageProcessor.processImage(file);
+            if(objectDetectionResult != null){
+                LOGGER.d("detected "+objectDetectionResult.getName());
+                FrameEvent frameEvent = new FrameEvent(null, cameraConfig, context);
+                detectionResultProcessor.processObjectDetectionResult(frameEvent, objectDetectionResult);
             }
-            LOGGER.d("just grabbed a frame for camera "+cameraConfig.getId());
-            framesGrabbed++;
-            FrameEvent frameEvent = new FrameEvent(frame, cameraConfig, context);
-            LOGGER.d("start processing next frame. Thread is "+ Thread.currentThread().getName());
-            ObjectDetectionResult objectDetectionResult = imageProcessor.processImage(frameEvent);
-            LOGGER.d("frames grabbed "+ framesGrabbed);
-            Pair<FrameEvent, ObjectDetectionResult> resultPair = Pair.create(frameEvent, objectDetectionResult);
-            return resultPair;
-        } else { // when frame == null then connection has been lost
-            videoFrameExtractor.notifyAndUpdateCameraStatus(true);
-            LOGGER.i("no frame returned for camera "+cameraConfig.getId());
-            LOGGER.i("reconnecting to camera..");
-            videoFrameExtractor.initGrabber(cameraConfig);
+        } catch (Exception e) {
+            LOGGER.e(e, "Image process exception ");
         }
-        return null;
-    }
 
-    private void pauseFrameGrabbing() throws InterruptedException {
-        long waitTimeInMins = cameraConfig.getWaitPeriodAfterDetection();
-        long waitTime = waitTimeInMins >= 1 ? waitTimeInMins * 60 * 1000 : AppConstants.WAIT_TIME_AFTER_DETECT;
-        waitTime = 30 * 1000; //20 secs
-
-        videoFrameExtractor.stopGrabber();
-        LOGGER.i("paused frame grabbing. sleep time " + waitTime + ". Running flag set to "+running.get());
-        LOGGER.i("paused frame grabbing and running flag set to "+running.get());
-        framesGrabbed = 0;
-        Thread.sleep(waitTime);
-        pauseFrameGrabbing = false;
-        LOGGER.d("sleep is over and running flag is set to " + running.get());
     }
 }

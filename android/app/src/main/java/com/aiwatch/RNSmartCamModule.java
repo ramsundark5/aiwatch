@@ -246,6 +246,8 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             }
         } catch (Exception e) {
             LOGGER.e(e, "error updating camera monitoring");
+        }finally {
+            promise.resolve("camera status updated");
         }
     }
 

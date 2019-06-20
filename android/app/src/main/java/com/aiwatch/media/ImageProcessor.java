@@ -2,6 +2,7 @@ package com.aiwatch.media;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.TimingLogger;
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
@@ -44,6 +45,17 @@ public class ImageProcessor {
         LOGGER.d("images skippped "+ imagesSkipped);
         timings.addSplit("Image processing time");
         timings.dumpToLog();
+        return objectDetectionResult;
+    }
+
+    public ObjectDetectionResult processImage(final String filePath){
+        Bitmap bitmapOutput = BitmapFactory.decodeFile(filePath);
+        if(bitmapOutput == null){
+            return null;
+        }
+        Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmapOutput, AppConstants.TF_OD_API_INPUT_SIZE, AppConstants.TF_OD_API_INPUT_SIZE, false);
+        //conditionally call based on camera config
+        final ObjectDetectionResult objectDetectionResult = objectDetectionService.detectObjects(croppedBitmap);
         return objectDetectionResult;
     }
 }

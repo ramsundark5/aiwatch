@@ -117,7 +117,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
             String[] ffmpegBinary = new String[]{FileUtils.getFFmpeg(context.provide()).getAbsolutePath()};
             String[] command = concatenate(ffmpegBinary, cmd);
             FFcommandExecuteAsyncTask task = new FFcommandExecuteAsyncTask(command, environvenmentVars, timeout, ffmpegExecuteResponseHandler);
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            task.executeOnExecutor(Executors.newSingleThreadExecutor());
             return task;
         } else {
             throw new IllegalArgumentException("shell command cannot be empty");
@@ -152,7 +152,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
             String[] command = concatenate(ffmpegBinary, cmd);
             FFcommandExecuteAsyncTask task = new FFcommandExecuteAsyncTask(command, null, timeout, fFcommandExecuteResponseHandler);
             try {
-                CommandResult result = task.executeOnExecutor(Executors.newFixedThreadPool(3)).get();
+                CommandResult result = task.executeOnExecutor(Executors.newSingleThreadExecutor()).get();
                 killRunningProcesses(task);
                 return result.output;
             } catch (Exception e) {

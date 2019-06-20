@@ -37,9 +37,6 @@ public class VideoFrameExtractor {
         Trace frameGrabTrace = FirebasePerformance.getInstance().newTrace("frameGrabTrace");
         frameGrabTrace.start();
         try{
-            if (grabber == null) {
-                initGrabber(cameraConfig); // connect
-            }
             long startTime = System.currentTimeMillis();
             frame = grabber.grabImage();
             long endTime = System.currentTimeMillis();
@@ -88,7 +85,7 @@ public class VideoFrameExtractor {
         return base64String;
     }
 
-    public void initGrabber(CameraConfig cameraConfig) {
+    public synchronized void initGrabber(CameraConfig cameraConfig) {
         int TIMEOUT = 10; //10 secs
         try{
             grabber = new FFmpegFrameGrabber(cameraConfig.getVideoUrlWithAuth()); // rtsp url
@@ -113,7 +110,7 @@ public class VideoFrameExtractor {
         }
     }
 
-    public void stopGrabber(){
+    public synchronized void stopGrabber(){
         try {
             if(grabber != null){
                 grabber.stop();

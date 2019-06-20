@@ -37,10 +37,11 @@ export default class CameraControl extends Component {
     }
     
     async toggleMonitoring(){
-        const { cameraConfig } = this.props;
+        const { cameraConfig, updateStatus } = this.props;
         let camerConfigUpdate = Object.assign({}, cameraConfig);
         camerConfigUpdate.disconnected = !cameraConfig.disconnected;
         await RNSmartCam.togglCameraMonitoring(camerConfigUpdate);
+        updateStatus(camerConfigUpdate);
     }
 
     render(){
@@ -60,14 +61,6 @@ export default class CameraControl extends Component {
               <View style={styles.divider} />
             </View>
         )
-    }
-
-    isMonitoringEnabled(cameraConfig){
-      let monitoringEnabled = cameraConfig.notifyPersonDetect || cameraConfig.recordPersonDetect
-                || cameraConfig.notifyAnimalDetect || cameraConfig.recordAnimalDetect
-                || cameraConfig.notifyVehicleDetect || cameraConfig.recordVehicleDetect
-                || cameraConfig.testModeEnabled;
-      return monitoringEnabled;
     }
 }
 

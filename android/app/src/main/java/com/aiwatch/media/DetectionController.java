@@ -55,14 +55,14 @@ public class DetectionController {
     private synchronized void stopSelectedVideoProcessor(long cameraId){
         RunningThreadInfo runningThreadInfo = cameraMap.get(cameraId);
         if(runningThreadInfo != null){
-            //ExecutorService executorService = runningThreadInfo.getExecutorService();
+            ExecutorService executorService = runningThreadInfo.getExecutorService();
             MonitoringRunnable monitoringRunnable = runningThreadInfo.getMonitoringRunnable();
             if(monitoringRunnable != null){
                 monitoringRunnable.stop();
             }
-           /* if(executorService != null && !executorService.isShutdown()){
+            if(executorService != null && !executorService.isShutdown()){
                 executorService.shutdown();
-            }*/
+            }
             cameraMap.remove(cameraId);
             LOGGER.d("Monitoring stopped for cameraId "+ runningThreadInfo.getCameraConfig().getName() + runningThreadInfo.getCameraConfig().getId());
         }else{
