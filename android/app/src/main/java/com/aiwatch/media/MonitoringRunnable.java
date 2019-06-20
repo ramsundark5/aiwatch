@@ -24,7 +24,8 @@ public class MonitoringRunnable implements Runnable {
     private ObjectDetectionService objectDetectionService;
     private Context context;
     private FFmpegFrameExtractor fFmpegFrameExtractor;
-    public static FileObserver observer;
+    private String imageFilePath;
+    private static FileObserver observer;
 
     public MonitoringRunnable(CameraConfig cameraConfig, Context context) {
         try {
@@ -33,6 +34,7 @@ public class MonitoringRunnable implements Runnable {
             this.detectionResultProcessor = new DetectionResultProcessor();
             this.fFmpegFrameExtractor = new FFmpegFrameExtractor(context, cameraConfig);
             this.objectDetectionService = new ObjectDetectionService(context.getAssets());
+            this.imageFilePath = getImageFilePath();
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
@@ -48,7 +50,7 @@ public class MonitoringRunnable implements Runnable {
     public void run() {
         try {
             LOGGER.i("Creating new VideoProcessor runnable instance. Thread is "+Thread.currentThread().getName());
-            fFmpegFrameExtractor.start();
+            fFmpegFrameExtractor.start(imageFilePath);
             startWatching();
         } catch (Exception e) {
             LOGGER.e(e, "monitoring exception ");
@@ -56,10 +58,8 @@ public class MonitoringRunnable implements Runnable {
     }
 
     private void startWatching() {
-        File imageFolder = new File(context.getFilesDir(), AppConstants.IMAGES_FOLDER);
-        String imageFolderPath = imageFolder.getAbsolutePath();
         // set up a file observer to watch this directory
-        observer = new FileObserver(imageFolderPath, FileObserver.MODIFY) {
+        observer = new FileObserver(imageFilePath, FileObserver.MODIFY) {
             @Override
             public void onEvent(int event, final String file) {
                 processImage(file);
@@ -73,13 +73,12 @@ public class MonitoringRunnable implements Runnable {
             ObjectDetectionResult objectDetectionResult = detectImage(file);
             if(objectDetectionResult != null){
                 LOGGER.d("detected "+objectDetectionResult.getName());
-                FrameEvent frameEvent = new FrameEvent(cameraConfig, context);
+                FrameEvent frameEvent = new FrameEvent(cameraConfig, imageFilePath, context);
                 detectionResultProcessor.processObjectDetectionResult(frameEvent, objectDetectionResult);
             }
         } catch (Exception e) {
             LOGGER.e(e, "Image process exception ");
         }
-
     }
 
     @AddTrace(name = "imageProcessTrace")
@@ -92,5 +91,15 @@ public class MonitoringRunnable implements Runnable {
         //conditionally call based on camera config
         final ObjectDetectionResult objectDetectionResult = objectDetectionService.detectObjects(croppedBitmap);
         return objectDetectionResult;
+    }
+
+    private String getImageFilePath(){
+        File imageFolder = new File(context.getFilesDir(), AppConstants.IMAGES_FOLDER);
+        if (!imageFolder.exists()) {
+            imageFolder.mkdirs();
+        }
+        String imageFolderPath = imageFolder.getAbsolutePath();
+        File imageFile = new File(imageFolderPath, "/camera" + cameraConfig.getId() + ".png");
+        return imageFile.getAbsolutePath();
     }
 }

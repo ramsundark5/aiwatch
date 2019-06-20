@@ -1,18 +1,13 @@
 package com.aiwatch.media;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-
 import com.aiwatch.Logger;
-import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
-
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import nl.bravobit.ffmpeg.CustomFFmpeg;
 import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
 import nl.bravobit.ffmpeg.FFtask;
@@ -29,26 +24,21 @@ public class FFmpegFrameExtractor {
         this.cameraConfig = cameraConfig;
     }
 
-    public void start() {
+    public void start(String imageFilePath) {
         if(ffTask != null && !ffTask.isProcessCompleted()){
             LOGGER.d("Tried to start process when its already running. Skipping the restart for camera "+cameraConfig.getId());
         }
-        long cameraId = cameraConfig.getId();
         String videoUrl = cameraConfig.getVideoUrlWithAuth();
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         boolean isffmpegSupported = ffmpeg.isSupported();
         LOGGER.i("ffmpeg supported "+isffmpegSupported);
-        File imageFolder = new File(context.getFilesDir(), AppConstants.IMAGES_FOLDER);
-        if (!imageFolder.exists()) {
-            imageFolder.mkdirs();
-        }
-        //long timeout = 10 * 1000000; //10 seconds
-        String imageFolderPath = imageFolder.getAbsolutePath();
-        File imageFile = new File(imageFolderPath, "/camera" + cameraId + ".png");
+        File imageFile = new File(imageFilePath);
+
+        //this is important. ffmpeg runs in separate process and do not have permission on files unless it creates it
         if(imageFile.exists()){
-            //this is important. ffmpeg runs in separate process and do not have permission on files unless it creates it
             imageFile.delete();
         }
+
         String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
         String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand;
         String[] ffmpegCommand = command.split("\\s+");
@@ -95,11 +85,6 @@ public class FFmpegFrameExtractor {
         }catch (Exception e){
             LOGGER.e(e, "error notifying camera status ");
         }
-    }
-
-    public String getImageFromCamera(){
-        String base64image = null;
-        return base64image;
     }
 
     public void stop(){
