@@ -150,13 +150,8 @@ dependencies {
     //tflite
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
 
-    //javacv and ffmpeg
+    //ffmpeg
     implementation 'nl.bravobit:android-ffmpeg:1.1.5'
-    implementation 'org.bytedeco:javacv:1.4.4'
-    implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-arm'
-    implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-arm64'
-    implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-x86'
-    implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-x86_64'
 
     //firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'

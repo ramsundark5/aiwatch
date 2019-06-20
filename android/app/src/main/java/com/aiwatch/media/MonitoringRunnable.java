@@ -1,13 +1,17 @@
 package com.aiwatch.media;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.FileObserver;
 
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
+import com.aiwatch.ai.ObjectDetectionService;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.postprocess.DetectionResultProcessor;
+import com.google.firebase.perf.metrics.AddTrace;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,10 +19,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MonitoringRunnable implements Runnable {
 
     private static final Logger LOGGER = new Logger();
-    private AtomicBoolean running = new AtomicBoolean(false);
     private CameraConfig cameraConfig;
     private DetectionResultProcessor detectionResultProcessor;
-    private ImageProcessor imageProcessor;
+    private ObjectDetectionService objectDetectionService;
     private Context context;
     private FFmpegFrameExtractor fFmpegFrameExtractor;
     public static FileObserver observer;
@@ -28,8 +31,8 @@ public class MonitoringRunnable implements Runnable {
             this.cameraConfig = cameraConfig;
             this.context = context;
             this.detectionResultProcessor = new DetectionResultProcessor();
-            this.imageProcessor = new ImageProcessor(context.getAssets());
-            fFmpegFrameExtractor = new FFmpegFrameExtractor(context, cameraConfig);
+            this.fFmpegFrameExtractor = new FFmpegFrameExtractor(context, cameraConfig);
+            this.objectDetectionService = new ObjectDetectionService(context.getAssets());
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
@@ -67,15 +70,27 @@ public class MonitoringRunnable implements Runnable {
 
     private void processImage(final String file){
         try{
-            ObjectDetectionResult objectDetectionResult = imageProcessor.processImage(file);
+            ObjectDetectionResult objectDetectionResult = detectImage(file);
             if(objectDetectionResult != null){
                 LOGGER.d("detected "+objectDetectionResult.getName());
-                FrameEvent frameEvent = new FrameEvent(null, cameraConfig, context);
+                FrameEvent frameEvent = new FrameEvent(cameraConfig, context);
                 detectionResultProcessor.processObjectDetectionResult(frameEvent, objectDetectionResult);
             }
         } catch (Exception e) {
             LOGGER.e(e, "Image process exception ");
         }
 
+    }
+
+    @AddTrace(name = "imageProcessTrace")
+    public ObjectDetectionResult detectImage(final String filePath){
+        Bitmap bitmapOutput = BitmapFactory.decodeFile(filePath);
+        if(bitmapOutput == null){
+            return null;
+        }
+        Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmapOutput, AppConstants.TF_OD_API_INPUT_SIZE, AppConstants.TF_OD_API_INPUT_SIZE, false);
+        //conditionally call based on camera config
+        final ObjectDetectionResult objectDetectionResult = objectDetectionService.detectObjects(croppedBitmap);
+        return objectDetectionResult;
     }
 }

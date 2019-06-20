@@ -13,7 +13,7 @@ import com.aiwatch.firebase.FirebaseAlarmEventManager;
 import com.aiwatch.firebase.FirebaseAuthManager;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseCameraManager;
-import com.aiwatch.media.VideoFrameExtractor;
+import com.aiwatch.media.FFmpegFrameExtractor;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.facebook.react.bridge.Promise;
@@ -257,7 +257,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         try {
             JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
             CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
-            VideoFrameExtractor videoFrameExtractor = new VideoFrameExtractor(cameraConfig, reactContext);
+            FFmpegFrameExtractor videoFrameExtractor = new FFmpegFrameExtractor(reactContext, cameraConfig);
             base64Image = videoFrameExtractor.getImageFromCamera();
         } catch (Exception e) {
             LOGGER.e(e, "error getting base64 image");

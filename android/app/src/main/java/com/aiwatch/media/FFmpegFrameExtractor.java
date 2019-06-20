@@ -1,9 +1,13 @@
 package com.aiwatch.media;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+
 import com.aiwatch.Logger;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.media.db.CameraConfigDao;
+import com.aiwatch.postprocess.NotificationManager;
 
 import java.io.File;
 import java.util.Timer;
@@ -17,7 +21,7 @@ public class FFmpegFrameExtractor {
 
     private static final Logger LOGGER = new Logger();
     private Context context;
-    private FFtask recordingTask;
+    private FFtask ffTask;
     private CameraConfig cameraConfig;
 
     public FFmpegFrameExtractor(Context context, CameraConfig cameraConfig){
@@ -26,6 +30,9 @@ public class FFmpegFrameExtractor {
     }
 
     public void start() {
+        if(ffTask != null && !ffTask.isProcessCompleted()){
+            LOGGER.d("Tried to start process when its already running. Skipping the restart for camera "+cameraConfig.getId());
+        }
         long cameraId = cameraConfig.getId();
         String videoUrl = cameraConfig.getVideoUrlWithAuth();
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
@@ -42,12 +49,10 @@ public class FFmpegFrameExtractor {
             //this is important. ffmpeg runs in separate process and do not have permission on files unless it creates it
             imageFile.delete();
         }
-        //"select='eq(pict_type,PICT_TYPE_I)'"
-        //String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 ";
         String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
         String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand;
         String[] ffmpegCommand = command.split("\\s+");
-        recordingTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
+        ffTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
             public void onStart() {
                 LOGGER.d("ffmpeg recording started. Thread is "+ Thread.currentThread().getName());
@@ -55,7 +60,7 @@ public class FFmpegFrameExtractor {
 
             @Override
             public void onFinish() {
-                LOGGER.d("ffmpeg recording completed");
+                notifyAndUpdateCameraStatus(true);
             }
 
             @Override
@@ -71,28 +76,51 @@ public class FFmpegFrameExtractor {
             @Override
             public void onFailure(String message) {
                 LOGGER.e("ffmpeg recording failed " + message);
-                //keep retrying
-                //startFFMpegRecording(cameraId, videoUrl);
             }
         });
     }
 
+    public void notifyAndUpdateCameraStatus(boolean disconnected){
+        try{
+            if(cameraConfig.isDisconnected() == disconnected){
+                //nothing new to notify
+                return;
+            }
+            String status = disconnected ? "disconnected" : "connected";
+            cameraConfig.setDisconnected(disconnected);
+            NotificationManager.sendStringNotification(context, "Camera "+ cameraConfig.getName() + " "+ status);
+            NotificationManager.sendUINotification(context, cameraConfig);
+            CameraConfigDao cameraConfigDao = new CameraConfigDao();
+            cameraConfigDao.updateCameraStatus(cameraConfig.getId(), disconnected);
+        }catch (Exception e){
+            LOGGER.e(e, "error notifying camera status ");
+        }
+    }
+
+    public String getImageFromCamera(){
+        String base64image = null;
+        return base64image;
+    }
+
     public void stop(){
-        recordingTask.sendQuitSignal();
+        ffTask.sendQuitSignal();
         long waitTime = 2 * 1000; //2 seconds
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                recordingTask.killRunningProcess();
+                ffTask.killRunningProcess();
             }
         }, waitTime);
     }
 
     public boolean isRunning(){
-        return !recordingTask.isProcessCompleted();
+        if(ffTask == null){
+            return false;
+        }
+        return !ffTask.isProcessCompleted();
     }
 
     public boolean kill(){
-        return recordingTask.killRunningProcess();
+        return ffTask.killRunningProcess();
     }
 }

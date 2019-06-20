@@ -22,3 +22,11 @@ Todo
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
 
+
+Command to record video in chunks
+
+String recordCommand = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 " + videoPath + "/" + cameraId +"-%Y%m%d_%H:%M:%S.mp4 ";
+
+Other useful dev commands
+
+adb shell input keyevent 82
