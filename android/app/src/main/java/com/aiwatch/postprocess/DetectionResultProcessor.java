@@ -54,15 +54,15 @@ public class DetectionResultProcessor {
         }
         boolean isResultInteresting = shouldRecordVideo || shouldNotify;
 
-       /* if(isResultInteresting){
+        if(isResultInteresting){
             //store the results
-            alarmEvent.setVideoPath(videoPath);
+            /*alarmEvent.setVideoPath(videoPath);
             alarmEvent.setCloudVideoPath(gdriveVideoPath);
-            alarmEventDao.putEvent(alarmEvent);
+            alarmEventDao.putEvent(alarmEvent);*/
             //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
-            firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
-        }*/
+            //firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
+        }
         return isResultInteresting;
     }
 

@@ -43,7 +43,7 @@ public class MonitoringRunnable implements Runnable {
     public void stop() {
         LOGGER.i("monitoring stop requested for camera "+cameraConfig.getId());
         fFmpegFrameExtractor.stop();
-        observer.stopWatching();
+        stopWatching();
     }
 
     @Override
@@ -58,14 +58,29 @@ public class MonitoringRunnable implements Runnable {
     }
 
     private void startWatching() {
+        int CHANGES_ONLY = FileObserver.CLOSE_WRITE | FileObserver.MODIFY;
+
+        //stop if observer is already running
+        stopWatching();
         // set up a file observer to watch this directory
-        observer = new FileObserver(imageFilePath, FileObserver.MODIFY) {
+        observer = new FileObserver(imageFilePath, CHANGES_ONLY) {
             @Override
             public void onEvent(int event, final String file) {
-                processImage(file);
+                LOGGER.d("Start image processing for "+cameraConfig.getId());
+                processImage(imageFilePath);
             }
         };
         observer.startWatching();
+    }
+
+    private void stopWatching(){
+        try{
+            if(observer!=null){
+                observer.stopWatching();
+            }
+        }catch(Exception e){
+            LOGGER.e(e, "Exception stopping file observer");
+        }
     }
 
     private void processImage(final String file){

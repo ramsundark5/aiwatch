@@ -60,7 +60,7 @@ public class FFmpegFrameExtractor {
 
             @Override
             public void onProgress(String message) {
-                LOGGER.d("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName()+ " camera is "+cameraConfig.getId());
+                LOGGER.v("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName()+ " camera is "+cameraConfig.getId());
             }
 
             @Override
@@ -88,14 +88,20 @@ public class FFmpegFrameExtractor {
     }
 
     public void stop(){
-        ffTask.sendQuitSignal();
-        long waitTime = 2 * 1000; //2 seconds
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ffTask.killRunningProcess();
+        try{
+            if(ffTask != null){
+                ffTask.sendQuitSignal();
+                long waitTime = 2 * 1000; //2 seconds
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        ffTask.killRunningProcess();
+                    }
+                }, waitTime);
             }
-        }, waitTime);
+        }catch(Exception e){
+            LOGGER.e(e, "Error stopping ffmpeg");
+        }
     }
 
     public boolean isRunning(){
