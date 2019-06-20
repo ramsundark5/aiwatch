@@ -3,8 +3,6 @@ package com.aiwatch.media;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.FileObserver;
-
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.ai.ObjectDetectionService;
@@ -14,7 +12,9 @@ import com.aiwatch.postprocess.DetectionResultProcessor;
 import com.google.firebase.perf.metrics.AddTrace;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class MonitoringRunnable implements Runnable {
 
@@ -25,7 +25,9 @@ public class MonitoringRunnable implements Runnable {
     private Context context;
     private FFmpegFrameExtractor fFmpegFrameExtractor;
     private String imageFilePath;
-    private static FileObserver observer;
+    private Timer ffmpegTimer = new Timer("ffmpegCheckTimer");
+    private Timer imageProcessTimer = new Timer("imageProcessTimer");
+    private long previousLastModified;
 
     public MonitoringRunnable(CameraConfig cameraConfig, Context context) {
         try {
@@ -43,7 +45,8 @@ public class MonitoringRunnable implements Runnable {
     public void stop() {
         LOGGER.i("monitoring stop requested for camera "+cameraConfig.getId());
         fFmpegFrameExtractor.stop();
-        stopWatching();
+        ffmpegTimer.cancel();
+        imageProcessTimer.cancel();
     }
 
     @Override
@@ -51,35 +54,10 @@ public class MonitoringRunnable implements Runnable {
         try {
             LOGGER.i("Creating new VideoProcessor runnable instance. Thread is "+Thread.currentThread().getName());
             fFmpegFrameExtractor.start(imageFilePath);
-            startWatching();
+            startFFmpegCheckTimer();
+            startImageProcessTimer();
         } catch (Exception e) {
             LOGGER.e(e, "monitoring exception ");
-        }
-    }
-
-    private void startWatching() {
-        int CHANGES_ONLY = FileObserver.CLOSE_WRITE | FileObserver.MODIFY;
-
-        //stop if observer is already running
-        stopWatching();
-        // set up a file observer to watch this directory
-        observer = new FileObserver(imageFilePath, CHANGES_ONLY) {
-            @Override
-            public void onEvent(int event, final String file) {
-                LOGGER.d("Start image processing for "+cameraConfig.getId());
-                processImage(imageFilePath);
-            }
-        };
-        observer.startWatching();
-    }
-
-    private void stopWatching(){
-        try{
-            if(observer!=null){
-                observer.stopWatching();
-            }
-        }catch(Exception e){
-            LOGGER.e(e, "Exception stopping file observer");
         }
     }
 
@@ -114,7 +92,42 @@ public class MonitoringRunnable implements Runnable {
             imageFolder.mkdirs();
         }
         String imageFolderPath = imageFolder.getAbsolutePath();
-        File imageFile = new File(imageFolderPath, "/camera" + cameraConfig.getId() + ".png");
+        File imageFile = new File(imageFolderPath, "/" + cameraConfig.getId() + "-camera.png");
         return imageFile.getAbsolutePath();
+    }
+
+    private void startFFmpegCheckTimer(){
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if(!fFmpegFrameExtractor.isRunning()){
+                    fFmpegFrameExtractor.start(imageFilePath);
+                }
+            }
+        };
+
+        ffmpegTimer.schedule(timerTask, 60000, 30000);
+    }
+
+    public void startImageProcessTimer(){
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                try{
+                    File imageFile = new File(imageFilePath);
+                    if(imageFile != null && imageFile.exists()){
+                        long lastModified = imageFile.lastModified();
+                        if(lastModified > previousLastModified){
+                            processImage(imageFilePath);
+                            previousLastModified = lastModified;
+                        }
+                    }
+                }catch(Exception e){
+                    LOGGER.e(e, "Error starting image processing");
+                }
+            }
+        };
+
+        imageProcessTimer.schedule(timerTask, 10000, 1000);
     }
 }
