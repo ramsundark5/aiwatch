@@ -19,7 +19,6 @@ public class MonitoringService extends AbstractForegroundService {
         LOGGER.i("Creating new monitoring service instance. Thread is "+Thread.currentThread().getName());
         detectionController = new DetectionController();
         startMonitoring();
-        //scheduleCompression();
     }
 
     @Override
@@ -83,6 +82,6 @@ public class MonitoringService extends AbstractForegroundService {
 
     private void stopMonitoring(){
         detectionController.stopAllDetecting();
-        //stopSelf();
+        stopSelf();
     }
 }

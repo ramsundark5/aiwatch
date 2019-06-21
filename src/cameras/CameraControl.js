@@ -3,9 +3,13 @@ import { Alert, StyleSheet, ToastAndroid, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import Theme from '../common/Theme';
+import Logger from '../common/Logger';
 
 export default class CameraControl extends Component {
 
+    state = {
+      disableToggleMonitoring: false
+    }
     editCamera(){
         const { cameraConfig, navigation } = this.props;
         navigation.navigate('EditCamera', {
@@ -37,11 +41,17 @@ export default class CameraControl extends Component {
     }
     
     async toggleMonitoring(){
-        const { cameraConfig, updateStatus } = this.props;
-        let camerConfigUpdate = Object.assign({}, cameraConfig);
-        camerConfigUpdate.disconnected = !cameraConfig.disconnected;
-        await RNSmartCam.togglCameraMonitoring(camerConfigUpdate);
-        updateStatus(camerConfigUpdate);
+        const { cameraConfig } = this.props;
+        this.setState({disableToggleMonitoring: true});
+        try{
+          let camerConfigUpdate = Object.assign({}, cameraConfig);
+          camerConfigUpdate.disconnected = !cameraConfig.disconnected;
+          await RNSmartCam.togglCameraMonitoring(camerConfigUpdate);
+        }catch(err){
+          Logger.log('error toggling monitor status '+err);
+        }finally{
+          this.setState({disableToggleMonitoring: false});
+        }
     }
 
     render(){
@@ -55,7 +65,7 @@ export default class CameraControl extends Component {
             <View>
                <Appbar style={styles.appBar}>
                 <Appbar.Action icon='settings' color={Theme.primary} onPress={() => this.editCamera()} />
-                <Appbar.Action icon={monitoringIcon} color={Theme.primary} onPress={() => this.toggleMonitoring()} />
+                <Appbar.Action icon={monitoringIcon} color={Theme.primary} onPress={() => this.toggleMonitoring()} disabled={this.state.disableToggleMonitoring}/>
                 <Appbar.Action icon='delete' color={Theme.primary} onPress={() => this.onPressDeleteButton()} />
               </Appbar>
               <View style={styles.divider} />

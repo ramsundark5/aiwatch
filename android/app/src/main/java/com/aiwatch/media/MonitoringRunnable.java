@@ -14,6 +14,7 @@ import com.google.firebase.perf.metrics.AddTrace;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class MonitoringRunnable implements Runnable {
@@ -23,18 +24,19 @@ public class MonitoringRunnable implements Runnable {
     private DetectionResultProcessor detectionResultProcessor;
     private ObjectDetectionService objectDetectionService;
     private Context context;
-    private FFmpegFrameExtractor fFmpegFrameExtractor;
+    private FFmpegFrameExtractor ffmpegFrameExtractor;
     private String imageFilePath;
     private Timer ffmpegTimer = new Timer("ffmpegCheckTimer");
     private Timer imageProcessTimer = new Timer("imageProcessTimer");
-    private long previousLastModified;
+    private volatile long previousLastModified;
+    private AtomicBoolean running = new AtomicBoolean(false);
 
     public MonitoringRunnable(CameraConfig cameraConfig, Context context) {
         try {
             this.cameraConfig = cameraConfig;
             this.context = context;
             this.detectionResultProcessor = new DetectionResultProcessor();
-            this.fFmpegFrameExtractor = new FFmpegFrameExtractor(context, cameraConfig);
+            this.ffmpegFrameExtractor = new FFmpegFrameExtractor(context, cameraConfig);
             this.objectDetectionService = new ObjectDetectionService(context.getAssets());
             this.imageFilePath = getImageFilePath();
         } catch (Exception e) {
@@ -43,8 +45,9 @@ public class MonitoringRunnable implements Runnable {
     }
 
     public void stop() {
+        running.set(false);
         LOGGER.i("monitoring stop requested for camera "+cameraConfig.getId());
-        fFmpegFrameExtractor.stop();
+        ffmpegFrameExtractor.stop();
         ffmpegTimer.cancel();
         imageProcessTimer.cancel();
     }
@@ -52,8 +55,9 @@ public class MonitoringRunnable implements Runnable {
     @Override
     public void run() {
         try {
+            running.set(true);
             LOGGER.i("Creating new VideoProcessor runnable instance. Thread is "+Thread.currentThread().getName());
-            fFmpegFrameExtractor.start(imageFilePath);
+            ffmpegFrameExtractor.start(imageFilePath);
             startFFmpegCheckTimer();
             startImageProcessTimer();
         } catch (Exception e) {
@@ -100,8 +104,8 @@ public class MonitoringRunnable implements Runnable {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                if(!fFmpegFrameExtractor.isRunning()){
-                    fFmpegFrameExtractor.start(imageFilePath);
+                if(!ffmpegFrameExtractor.isRunning()){
+                    ffmpegFrameExtractor.start(imageFilePath);
                 }
             }
         };
@@ -114,13 +118,17 @@ public class MonitoringRunnable implements Runnable {
             @Override
             public void run() {
                 try{
-                    File imageFile = new File(imageFilePath);
-                    if(imageFile != null && imageFile.exists()){
-                        long lastModified = imageFile.lastModified();
-                        if(lastModified > previousLastModified){
-                            processImage(imageFilePath);
-                            previousLastModified = lastModified;
+                    if(running.get()){
+                        File imageFile = new File(imageFilePath);
+                        if(imageFile != null && imageFile.exists()){
+                            long lastModified = imageFile.lastModified();
+                            if(lastModified > previousLastModified){
+                                previousLastModified = lastModified;
+                                processImage(imageFilePath);
+                            }
                         }
+                    }else{
+                        this.cancel();
                     }
                 }catch(Exception e){
                     LOGGER.e(e, "Error starting image processing");

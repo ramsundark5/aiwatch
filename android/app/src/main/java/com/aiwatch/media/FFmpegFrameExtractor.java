@@ -27,6 +27,11 @@ public class FFmpegFrameExtractor {
     public void start(String imageFilePath) {
         if(ffTask != null && !ffTask.isProcessCompleted()){
             LOGGER.d("Tried to start process when its already running. Skipping the restart for camera "+cameraConfig.getId());
+            return;
+        }
+        if(!cameraConfig.isMonitoringEnabled()){
+            LOGGER.d("all monitoring flags are turned off. Skipping monitorinng for camera "+cameraConfig.getId());
+            return;
         }
         String videoUrl = cameraConfig.getVideoUrlWithAuth();
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
@@ -46,6 +51,7 @@ public class FFmpegFrameExtractor {
             @Override
             public void onStart() {
                 LOGGER.d("ffmpeg recording started. Thread is "+ Thread.currentThread().getName());
+                notifyAndUpdateCameraStatus(false);
             }
 
             @Override
@@ -68,23 +74,6 @@ public class FFmpegFrameExtractor {
                 LOGGER.e("ffmpeg recording failed " + message);
             }
         });
-    }
-
-    public void notifyAndUpdateCameraStatus(boolean disconnected){
-        try{
-            if(cameraConfig.isDisconnected() == disconnected){
-                //nothing new to notify
-                return;
-            }
-            String status = disconnected ? "disconnected" : "connected";
-            cameraConfig.setDisconnected(disconnected);
-            NotificationManager.sendStringNotification(context, "Camera "+ cameraConfig.getName() + " "+ status);
-            NotificationManager.sendUINotification(context, cameraConfig);
-            CameraConfigDao cameraConfigDao = new CameraConfigDao();
-            cameraConfigDao.updateCameraStatus(cameraConfig.getId(), disconnected);
-        }catch (Exception e){
-            LOGGER.e(e, "error notifying camera status ");
-        }
     }
 
     public void stop(){
@@ -113,5 +102,23 @@ public class FFmpegFrameExtractor {
 
     public boolean kill(){
         return ffTask.killRunningProcess();
+    }
+
+    public void notifyAndUpdateCameraStatus(boolean disconnected){
+        try{
+            CameraConfigDao cameraConfigDao = new CameraConfigDao();
+            CameraConfig previousCameraConfig = cameraConfigDao.getCamera(cameraConfig.getId());
+            if(previousCameraConfig.isDisconnected() == disconnected){
+                //nothing new to notify
+                return;
+            }
+            String status = disconnected ? "disconnected" : "connected";
+            cameraConfig.setDisconnected(disconnected);
+            NotificationManager.sendStringNotification(context, "Camera "+ cameraConfig.getName() + " "+ status);
+            NotificationManager.sendUINotification(context, cameraConfig);
+            cameraConfigDao.updateCameraStatus(cameraConfig.getId(), disconnected);
+        }catch (Exception e){
+            LOGGER.e(e, "error notifying camera status ");
+        }
     }
 }
