@@ -95,7 +95,7 @@ public class RecordingManager {
         try{
             SettingsDao settingsDao = new SettingsDao();
             Settings settings = settingsDao.getSettings();
-            if(!settings.isGoogleAccountConnected()){
+            if(settings == null || !settings.isGoogleAccountConnected()){
                 return null;
             }
             if(mimeType == null){

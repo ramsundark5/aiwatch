@@ -12,12 +12,13 @@ import java.util.List;
 public class MonitoringService extends AbstractForegroundService {
 
     private static final Logger LOGGER = new Logger();
+    private DetectionController detectionController;
 
     @Override
     public void onCreate() {
         LOGGER.i("Creating new monitoring service instance. Thread is "+Thread.currentThread().getName());
+        detectionController = new DetectionController();
         startMonitoring();
-        //scheduleCompression();
     }
 
     @Override
@@ -39,15 +40,15 @@ public class MonitoringService extends AbstractForegroundService {
                     break;
                 case AppConstants.DISCONNECT_CAMERA:
                     long disconnectCameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
-                    DetectionController.INSTANCE().stopDetecting(disconnectCameraId);
+                    detectionController.stopDetecting(disconnectCameraId);
                     break;
                 case AppConstants.SAVE_CAMERA:
                     CameraConfig cameraConfig = (CameraConfig) intent.getSerializableExtra(AppConstants.CAMERA_CONFIG_EXTRA);
-                    DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
+                    detectionController.startDetection(cameraConfig, getApplicationContext());
                     break;
                 case AppConstants.REMOVE_CAMERA:
                     long cameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
-                    DetectionController.INSTANCE().stopDetecting(cameraId);
+                    detectionController.stopDetecting(cameraId);
                     break;
                 default:
                     LOGGER.i("unknown command sent to monitoring serivce "+ action);
@@ -59,7 +60,7 @@ public class MonitoringService extends AbstractForegroundService {
     private void connectCamera(long cameraId){
         CameraConfigDao cameraConfigDao = new CameraConfigDao();
         CameraConfig cameraConfig = cameraConfigDao.getCamera(cameraId);
-        DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
+        detectionController.startDetection(cameraConfig, getApplicationContext());
     }
 
     private void startMonitoring(){
@@ -75,12 +76,12 @@ public class MonitoringService extends AbstractForegroundService {
         }
 
         for(CameraConfig cameraConfig : cameraConfigList){
-            DetectionController.INSTANCE().startDetection(cameraConfig, getApplicationContext());
+            detectionController.startDetection(cameraConfig, getApplicationContext());
         }
     }
 
     private void stopMonitoring(){
-        DetectionController.INSTANCE().stopAllDetecting();
+        detectionController.stopAllDetecting();
         stopSelf();
     }
 }

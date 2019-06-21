@@ -4,7 +4,7 @@ import RTSPVideoPlayer from './RTSPVideoPlayer';
 import { Button} from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import Theme from '../common/Theme';
-import { loadCameras, deleteCamera, updateMonitoringStatus } from '../store/CamerasStore';
+import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import CameraControl from './CameraControl';
 import Logger from '../common/Logger';
@@ -116,7 +116,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { loadCameras, deleteCamera, updateMonitoringStatus }
+  { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus }
 )(CameraView);
 
 const styles = StyleSheet.create({

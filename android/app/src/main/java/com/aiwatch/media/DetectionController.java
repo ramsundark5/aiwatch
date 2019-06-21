@@ -11,22 +11,10 @@ import java.util.concurrent.Executors;
 public class DetectionController {
 
     private static final Logger LOGGER = new Logger();
-    private static volatile DetectionController sInstance;
-    private static volatile Map<Long, RunningThreadInfo> cameraMap = new ConcurrentHashMap<>();
+    private  Map<Long, RunningThreadInfo> cameraMap;
 
-    private DetectionController() {
-    }
-
-    public static DetectionController INSTANCE() {
-        if  (sInstance == null) {
-            synchronized (DetectionController.class) {
-                if (sInstance == null) {
-                    sInstance = new DetectionController();
-                    cameraMap = new ConcurrentHashMap<>();
-                }
-            }
-        }
-        return sInstance;
+    public DetectionController() {
+        cameraMap = new ConcurrentHashMap<>();
     }
 
     public synchronized void startDetection(CameraConfig cameraConfig, final Context context) {
@@ -77,6 +65,8 @@ public class DetectionController {
             }
             cameraMap.remove(cameraId);
             LOGGER.d("Monitoring stopped for cameraId "+ runningThreadInfo.getCameraConfig().getName() + runningThreadInfo.getCameraConfig().getId());
+        }else{
+            cameraMap.remove(cameraId);
         }
     }
 }

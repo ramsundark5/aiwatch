@@ -2,22 +2,16 @@ package com.aiwatch.media;
 import android.content.Context;
 import com.aiwatch.media.db.CameraConfig;
 
-import org.bytedeco.javacv.Frame;
-
 public class FrameEvent {
 
-    private Frame frame;
     private Context context;
     private CameraConfig cameraConfig;
+    private String imageFilePath;
 
-    public FrameEvent(final Frame frame, final CameraConfig cameraConfig, final Context context) {
-        this.frame = frame;
+    public FrameEvent(final CameraConfig cameraConfig, final String imageFilePath, final Context context) {
         this.cameraConfig = cameraConfig;
         this.context = context;
-    }
-
-    public Frame getFrame() {
-        return frame;
+        this.imageFilePath = imageFilePath;
     }
 
     public CameraConfig getCameraConfig() {
@@ -26,5 +20,9 @@ public class FrameEvent {
 
     public Context getContext() {
         return context;
+    }
+
+    public String getImageFilePath() {
+        return imageFilePath;
     }
 }

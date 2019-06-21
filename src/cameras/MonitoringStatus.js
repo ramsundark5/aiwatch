@@ -41,7 +41,7 @@ export default class MonitoringStatus extends Component{
         const { isMonitoringOn } = this.props;
         return(
             <View style={styles.row}>
-                <Subheading style={styles.textStyle}>Service Running</Subheading>
+                <Subheading style={styles.textStyle}>Monitoring On</Subheading>
                 <Switch
                     value={isMonitoringOn}
                     onValueChange={value => this.onToggleMonitoring(value)} />

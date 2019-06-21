@@ -1,12 +1,11 @@
 package com.aiwatch.postprocess;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.TimingLogger;
-
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
@@ -16,7 +15,7 @@ import com.aiwatch.media.db.AlarmEventDao;
 import com.aiwatch.media.db.CameraConfig;
 import com.google.common.net.MediaType;
 
-import org.bytedeco.javacv.AndroidFrameConverter;
+import org.greenrobot.essentials.io.FileUtils;
 import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.UUID;
@@ -24,12 +23,10 @@ import java.util.UUID;
 public class DetectionResultProcessor {
 
     private static final Logger LOGGER = new Logger();
-    private AndroidFrameConverter frameConverter;
     private AlarmEventDao alarmEventDao;
     private FirebaseAlarmEventDao firebaseAlarmEventDao;
 
     public DetectionResultProcessor(){
-        this.frameConverter = new AndroidFrameConverter();
         this.alarmEventDao = new AlarmEventDao();
         this.firebaseAlarmEventDao = new FirebaseAlarmEventDao();
     }
@@ -73,27 +70,21 @@ public class DetectionResultProcessor {
 
     private String saveImage(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
         try {
-            String imageFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".jpg");
-            FileOutputStream fos=new FileOutputStream(imageFilePath);
-            TimingLogger timings = new TimingLogger(LOGGER.DEFAULT_TAG, "Frame converter performance");
-            Bitmap bitmapOutput = frameConverter.convert(frameEvent.getFrame());
-            timings.dumpToLog();
+            String inputFilePath = frameEvent.getImageFilePath();
+            String outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".jpg");
+            FileUtils.copyFile(inputFilePath, outputFilePath);
             RectF location = objectDetectionResult.getLocation();
             if(location != null){
-                //Bitmap scaledBitmap = cropBitmap(bitmapOutput, location);
-                //Bitmap bitmapToSave = cropBitmap(bitmapOutput, location);
-
+                FileOutputStream fos=new FileOutputStream(outputFilePath);
+                Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFilePath);
                 //if bounding box needed, comment out the above line and uncomment the below ones
                 drawBoundingBox(bitmapOutput, location);
-                Bitmap bitmapToSave = bitmapOutput;
-                bitmapToSave.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-                fos.close();
-            }else{
                 bitmapOutput.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                fos.flush();
                 fos.close();
             }
-            LOGGER.d("image filepath is "+imageFilePath);
-            return imageFilePath;
+            LOGGER.d("image filepath is " + outputFilePath);
+            return outputFilePath;
         }
         catch (Exception e) {
             LOGGER.e(e.getMessage());

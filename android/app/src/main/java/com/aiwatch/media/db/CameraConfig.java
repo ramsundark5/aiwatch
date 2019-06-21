@@ -213,6 +213,7 @@ public class CameraConfig implements Serializable {
         this.videoUrlWithAuth = videoUrlWithAuth;
     }
 
+    @Exclude
     public String getVideoUrlWithAuth(){
         if(!Strings.isNullOrEmpty(this.username) && !Strings.isNullOrEmpty(this.password)){
             int insertIndex = this.videoUrl.indexOf("://") + 3; //+3 is to add credentials at end of string match

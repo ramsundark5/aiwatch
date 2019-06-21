@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'io.fabric'
 
 project.ext.envConfigFiles = [
         debug: ".env.dev",
@@ -124,6 +125,10 @@ android {
     }
 }
 
+crashlytics {
+    enableNdk true
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
@@ -145,20 +150,17 @@ dependencies {
     //tflite
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
 
-    //javacv and ffmpeg
+    //ffmpeg
     implementation 'nl.bravobit:android-ffmpeg:1.1.5'
-    implementation 'org.bytedeco:javacv:1.4.4'
-    implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-arm'
-    implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-arm64'
-    implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-x86'
-    implementation 'org.bytedeco.javacpp-presets:ffmpeg:4.1-1.4.4:android-x86_64'
 
     //firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.crashlytics.sdk.android:crashlytics-ndk:2.1.0'
     implementation 'com.google.firebase:firebase-perf:17.0.2'
     implementation 'com.google.firebase:firebase-messaging:18.0.0'
     implementation 'com.google.firebase:firebase-auth:17.0.0'
-    implementation 'com.google.firebase:firebase-firestore:19.0.1'
+    implementation 'com.google.firebase:firebase-firestore:19.0.2'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
     //react native projects
@@ -170,6 +172,7 @@ dependencies {
     implementation project(':react-native-google-signin')
     implementation project(':bugsnag-react-native')
     implementation project(':react-native-config')
+    implementation project(':react-native-splash-screen')
     addUnimodulesDependencies()
 }
 

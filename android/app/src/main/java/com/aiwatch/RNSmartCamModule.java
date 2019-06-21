@@ -13,7 +13,8 @@ import com.aiwatch.firebase.FirebaseAlarmEventManager;
 import com.aiwatch.firebase.FirebaseAuthManager;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseCameraManager;
-import com.aiwatch.media.VideoFrameExtractor;
+import com.aiwatch.media.FFmpegConnectionTester;
+import com.aiwatch.media.FFmpegFrameExtractor;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.facebook.react.bridge.Promise;
@@ -86,6 +87,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void putCamera(final ReadableMap readableMap, final Promise promise) {
         try {
+            //save cameraconfig
             JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
             CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
@@ -94,11 +96,20 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             if (cameraConfig.getId() == 0) {
                 throw new Exception("Error trying to save Camera Info. Please try again.");
             }
+
+            //start or stop service
             Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.SAVE_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_EXTRA, cameraConfig);
             reactContext.startService(intent);
-            promise.resolve(Long.valueOf(cameraConfig.getId()).intValue());
+
+            //return updated cameraconfig to UI
+            String jsonString = gson.toJson(cameraConfig);
+            JSONObject updatedJsonObject = new JSONObject(jsonString);
+            WritableMap cameraConfigMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
+            promise.resolve(cameraConfigMap);
+
+            //sync with firebase
             firebaseCameraConfigDao.putCamera(reactContext, cameraConfig);
         } catch (Exception e) {
             promise.reject(e);
@@ -113,12 +124,14 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             CameraConfig cameraConfig = cameraConfigDao.getCamera(cameraId);
             AlarmEventDao alarmEventDao = new AlarmEventDao();
             alarmEventDao.deleteEventsForCamera(cameraId);
+
             Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.REMOVE_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraId);
+
             promise.resolve("camera deleted and object detection stopped");
-            firebaseCameraConfigDao.deleteCamera(reactContext, cameraConfig.getUuid());
             cameraConfigDao.deleteCamera(cameraId);
+            firebaseCameraConfigDao.deleteCamera(reactContext, cameraConfig.getUuid());
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());
@@ -173,7 +186,11 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             if (settings.getId() == 0) {
                 throw new Exception("Error trying to save settings. Please try again.");
             }
-            promise.resolve(Long.valueOf(settings.getId()).intValue());
+
+            String jsonString = gson.toJson(settings);
+            JSONObject updatedJsonObject = new JSONObject(jsonString);
+            WritableMap settingsMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
+            promise.resolve(settingsMap);
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());
@@ -209,7 +226,9 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                 break;
             }
         }
-        LOGGER.i("Monitoring service is NOT running");
+        if(!isRunning){
+            LOGGER.i("Monitoring service is NOT running");
+        }
         promise.resolve(isRunning);
     }
 
@@ -246,6 +265,8 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             }
         } catch (Exception e) {
             LOGGER.e(e, "error updating camera monitoring");
+        }finally {
+            promise.resolve("camera status updated");
         }
     }
 
@@ -255,8 +276,8 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         try {
             JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
             CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
-            VideoFrameExtractor videoFrameExtractor = new VideoFrameExtractor(cameraConfig, reactContext);
-            base64Image = videoFrameExtractor.getImageFromCamera();
+            FFmpegConnectionTester connectionTester = new FFmpegConnectionTester();
+            base64Image = connectionTester.getImageFromCamera(reactContext, cameraConfig);
         } catch (Exception e) {
             LOGGER.e(e, "error getting base64 image");
         }

@@ -3,8 +3,13 @@ import { Alert, StyleSheet, ToastAndroid, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import Theme from '../common/Theme';
-
+import Logger from '../common/Logger';
+import Spinner from 'react-native-loading-spinner-overlay';
 export default class CameraControl extends Component {
+
+    state = {
+      isLoading: false
+    }
 
     editCamera(){
         const { cameraConfig, navigation } = this.props;
@@ -28,7 +33,30 @@ export default class CameraControl extends Component {
           ]
         );
     }
-      
+    
+    onPressToggleMonitorButton(){
+      const { cameraConfig } = this.props;
+      const isDisconnectRequested = !cameraConfig.disconnected;
+      let title = 'Enable monitoring';
+      let description = 'Do you want to start monitoring the camera at '+ cameraConfig.name +'?';
+      if(isDisconnectRequested){
+        title = 'Disable monitoring';
+        description = 'Do you want to stop monitoring the camera at '+ cameraConfig.name +'?';
+      }
+      Alert.alert(
+        title,
+        description,
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => this.toggleMonitoring(isDisconnectRequested)},
+        ]
+      );
+    }
+
     async deleteCamera(){
         const { cameraConfig, deleteCamera } = this.props;
         await RNSmartCam.deleteCamera(cameraConfig.id);
@@ -36,11 +64,18 @@ export default class CameraControl extends Component {
         ToastAndroid.showWithGravity('Camera deleted', ToastAndroid.SHORT, ToastAndroid.CENTER);
     }
     
-    async toggleMonitoring(){
+    async toggleMonitoring(isDisconnectRequested){
         const { cameraConfig } = this.props;
-        let camerConfigUpdate = Object.assign({}, cameraConfig);
-        camerConfigUpdate.disconnected = !cameraConfig.disconnected;
-        await RNSmartCam.togglCameraMonitoring(camerConfigUpdate);
+        this.setState({isLoading: true});
+        try{
+          let camerConfigUpdate = Object.assign({}, cameraConfig);
+          camerConfigUpdate.disconnected = isDisconnectRequested;
+          await RNSmartCam.togglCameraMonitoring(camerConfigUpdate);
+        }catch(err){
+          Logger.log('error toggling monitor status '+err);
+        }finally{
+          this.setState({isLoading: false});
+        }
     }
 
     render(){
@@ -52,22 +87,17 @@ export default class CameraControl extends Component {
         const monitoringIcon = !cameraConfig.disconnected && monitoringEnabled ? 'visibility' : 'visibility-off';
         return(
             <View>
+              <Spinner
+                visible={this.state.isLoading}
+                textContent={'Updating...'} />
                <Appbar style={styles.appBar}>
                 <Appbar.Action icon='settings' color={Theme.primary} onPress={() => this.editCamera()} />
-                <Appbar.Action icon={monitoringIcon} color={Theme.primary} onPress={() => this.toggleMonitoring()} />
+                <Appbar.Action icon={monitoringIcon} color={Theme.primary} onPress={() => this.onPressToggleMonitorButton()}/>
                 <Appbar.Action icon='delete' color={Theme.primary} onPress={() => this.onPressDeleteButton()} />
               </Appbar>
               <View style={styles.divider} />
             </View>
         )
-    }
-
-    isMonitoringEnabled(cameraConfig){
-      let monitoringEnabled = cameraConfig.notifyPersonDetect || cameraConfig.recordPersonDetect
-                || cameraConfig.notifyAnimalDetect || cameraConfig.recordAnimalDetect
-                || cameraConfig.notifyVehicleDetect || cameraConfig.recordVehicleDetect
-                || cameraConfig.testModeEnabled;
-      return monitoringEnabled;
     }
 }
 
