@@ -21,24 +21,23 @@ public class MonitoringRunnable implements Runnable {
 
     private static final Logger LOGGER = new Logger();
     private CameraConfig cameraConfig;
-    private DetectionResultProcessor detectionResultProcessor;
-    private ObjectDetectionService objectDetectionService;
     private Context context;
     private FFmpegFrameExtractor ffmpegFrameExtractor;
+    private ImageProcessor imageProcessor;
     private String imageFilePath;
     private Timer ffmpegTimer = new Timer("ffmpegCheckTimer");
     private Timer imageProcessTimer = new Timer("imageProcessTimer");
-    private volatile long previousLastModified;
+
     private AtomicBoolean running = new AtomicBoolean(false);
+    private AtomicBoolean pauseProcessing = new AtomicBoolean(false);
 
     public MonitoringRunnable(CameraConfig cameraConfig, Context context) {
         try {
             this.cameraConfig = cameraConfig;
             this.context = context;
-            this.detectionResultProcessor = new DetectionResultProcessor();
             this.ffmpegFrameExtractor = new FFmpegFrameExtractor(context, cameraConfig);
-            this.objectDetectionService = new ObjectDetectionService(context.getAssets());
             this.imageFilePath = getImageFilePath();
+            this.imageProcessor = new ImageProcessor(context);
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
@@ -65,41 +64,6 @@ public class MonitoringRunnable implements Runnable {
         }
     }
 
-    private void processImage(final String file){
-        try{
-            ObjectDetectionResult objectDetectionResult = detectImage(file);
-            if(objectDetectionResult != null){
-                LOGGER.d("detected "+objectDetectionResult.getName());
-                FrameEvent frameEvent = new FrameEvent(cameraConfig, imageFilePath, context);
-                detectionResultProcessor.processObjectDetectionResult(frameEvent, objectDetectionResult);
-            }
-        } catch (Exception e) {
-            LOGGER.e(e, "Image process exception ");
-        }
-    }
-
-    @AddTrace(name = "imageProcessTrace")
-    public ObjectDetectionResult detectImage(final String filePath){
-        Bitmap bitmapOutput = BitmapFactory.decodeFile(filePath);
-        if(bitmapOutput == null){
-            return null;
-        }
-        Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmapOutput, AppConstants.TF_OD_API_INPUT_SIZE, AppConstants.TF_OD_API_INPUT_SIZE, false);
-        //conditionally call based on camera config
-        final ObjectDetectionResult objectDetectionResult = objectDetectionService.detectObjects(croppedBitmap);
-        return objectDetectionResult;
-    }
-
-    private String getImageFilePath(){
-        File imageFolder = new File(context.getFilesDir(), AppConstants.IMAGES_FOLDER);
-        if (!imageFolder.exists()) {
-            imageFolder.mkdirs();
-        }
-        String imageFolderPath = imageFolder.getAbsolutePath();
-        File imageFile = new File(imageFolderPath, "/" + cameraConfig.getId() + "-camera.png");
-        return imageFile.getAbsolutePath();
-    }
-
     private void startFFmpegCheckTimer(){
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -109,24 +73,17 @@ public class MonitoringRunnable implements Runnable {
                 }
             }
         };
-
         ffmpegTimer.schedule(timerTask, 60000, 30000);
     }
 
-    public void startImageProcessTimer(){
+    private void startImageProcessTimer(){
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 try{
                     if(running.get()){
-                        File imageFile = new File(imageFilePath);
-                        if(imageFile != null && imageFile.exists()){
-                            long lastModified = imageFile.lastModified();
-                            if(lastModified > previousLastModified){
-                                previousLastModified = lastModified;
-                                processImage(imageFilePath);
-                            }
-                        }
+                        FrameEvent frameEvent = new FrameEvent(cameraConfig, imageFilePath, context);
+                        imageProcessor.processImage(frameEvent);
                     }else{
                         this.cancel();
                     }
@@ -137,5 +94,15 @@ public class MonitoringRunnable implements Runnable {
         };
 
         imageProcessTimer.schedule(timerTask, 10000, 1000);
+    }
+
+    private String getImageFilePath(){
+        File imageFolder = new File(context.getFilesDir(), AppConstants.IMAGES_FOLDER);
+        if (!imageFolder.exists()) {
+            imageFolder.mkdirs();
+        }
+        String imageFolderPath = imageFolder.getAbsolutePath();
+        File imageFile = new File(imageFolderPath, "/" + cameraConfig.getId() + "-camera.png");
+        return imageFile.getAbsolutePath();
     }
 }
