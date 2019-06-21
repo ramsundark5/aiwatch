@@ -38,7 +38,7 @@ public class ImageProcessor {
             }
             ObjectDetectionResult objectDetectionResult = detectImage(frameEvent.getImageFilePath());
             if(objectDetectionResult != null){
-                LOGGER.d("detected "+objectDetectionResult.getName());
+                LOGGER.d("detected "+objectDetectionResult.getName() +" at camera "+frameEvent.getCameraConfig().getId());
                 pauseProcessing = detectionResultProcessor.processObjectDetectionResult(frameEvent, objectDetectionResult);
                 if(pauseProcessing){
                     LOGGER.d("Pause processing for camera " + frameEvent.getCameraConfig().getId());
