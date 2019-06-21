@@ -226,7 +226,9 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                 break;
             }
         }
-        LOGGER.i("Monitoring service is NOT running");
+        if(!isRunning){
+            LOGGER.i("Monitoring service is NOT running");
+        }
         promise.resolve(isRunning);
     }
 

@@ -63,8 +63,11 @@ class Settings extends Component{
               visible={isLoading}
               textContent={'Loading...'} />
             <List.Section>
-              <List.Item title="Store in Google Drive" right={() => this.renderGoogleAccountConnected()} />
-              <List.Item title="Enable Notification" right={() => this.renderNotificationEnabled()} />
+              <List.Item title="Enable cloud sync" 
+                  description="Required for remote viewing and notification"
+                  right={() => this.renderGoogleAccountConnected()} />
+              <List.Item title="Enable Notification"
+                  right={() => this.renderNotificationEnabled()} />
             </List.Section>
           </View>
       );
