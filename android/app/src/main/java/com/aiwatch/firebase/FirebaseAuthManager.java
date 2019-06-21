@@ -2,6 +2,8 @@ package com.aiwatch.firebase;
 
 import android.content.Context;
 import com.aiwatch.Logger;
+import com.aiwatch.media.db.Settings;
+import com.aiwatch.media.db.SettingsDao;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
@@ -22,6 +24,11 @@ public class FirebaseAuthManager {
     public FirebaseUser getFirebaseUser(Context context) {
         FirebaseUser firebaseUser = null;
         try{
+            SettingsDao settingsDao = new SettingsDao();
+            Settings settings = settingsDao.getSettings();
+            if(settings == null || !settings.isGoogleAccountConnected()){
+                return null;
+            }
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
             if(account != null){
                 LOGGER.d("firebaseAuthWithGoogle:" + account.getId());
@@ -32,7 +39,7 @@ public class FirebaseAuthManager {
                 firebaseUser = authResult.getUser();
             }
         }catch(Exception e){
-            LOGGER.e(e, "error getting firebaseauth user");
+            LOGGER.e(e, "Error getting firebaseauth user");
         }
         return firebaseUser;
     }

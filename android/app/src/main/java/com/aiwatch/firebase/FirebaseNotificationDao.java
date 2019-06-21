@@ -3,6 +3,8 @@ package com.aiwatch.firebase;
 import android.content.Context;
 import com.aiwatch.Logger;
 import com.aiwatch.media.db.AlarmEvent;
+import com.aiwatch.media.db.Settings;
+import com.aiwatch.media.db.SettingsDao;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.concurrent.ExecutorService;
@@ -22,6 +24,11 @@ public class FirebaseNotificationDao {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
             try {
+                SettingsDao settingsDao = new SettingsDao();
+                Settings settings = settingsDao.getSettings();
+                if(settings == null || !settings.isNotificationEnabled()){
+                    return;
+                }
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
                 if(firebaseUser != null){
                     String adInfoId = firebaseUserDataDao.getAdInfoId(context);
