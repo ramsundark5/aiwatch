@@ -13,6 +13,8 @@ import com.aiwatch.media.FrameEvent;
 import com.aiwatch.media.db.AlarmEvent;
 import com.aiwatch.media.db.AlarmEventDao;
 import com.aiwatch.media.db.CameraConfig;
+import com.google.common.net.MediaType;
+
 import org.greenrobot.essentials.io.FileUtils;
 import java.io.FileOutputStream;
 import java.util.Date;
@@ -43,25 +45,25 @@ public class DetectionResultProcessor {
             //first notify the event
             thumbnailPath = saveImage(frameEvent, objectDetectionResult);
             alarmEvent.setThumbnailPath(thumbnailPath);
-            //String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
-            //alarmEvent.setCloudImagePath(gdriveImagePath);
-            //NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
+            String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
+            alarmEvent.setCloudImagePath(gdriveImagePath);
+            NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
         }
         //now record
         if(shouldRecordVideo){
-            //videoPath = RecordingManager.recordToLocal(frameEvent);
-            //gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
+            videoPath = RecordingManager.recordToLocal(frameEvent);
+            gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
         }
         boolean isResultInteresting = shouldRecordVideo || shouldNotify;
 
         if(isResultInteresting){
             //store the results
-            /*alarmEvent.setVideoPath(videoPath);
+            alarmEvent.setVideoPath(videoPath);
             alarmEvent.setCloudVideoPath(gdriveVideoPath);
-            alarmEventDao.putEvent(alarmEvent);*/
+            alarmEventDao.putEvent(alarmEvent);
             //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
-            //firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
+            firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
         }
         return isResultInteresting;
     }

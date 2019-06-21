@@ -3,7 +3,7 @@ package com.aiwatch;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-
+import org.devio.rn.splashscreen.SplashScreen;
 import com.aiwatch.firebase.FirebaseUserDataDao;
 import com.facebook.react.ReactActivity;
 
@@ -13,6 +13,7 @@ public class MainActivity extends ReactActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.show(this);
         super.onCreate(null);
         startMonitoringService();
         registerFCMToken();

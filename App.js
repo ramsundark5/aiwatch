@@ -8,6 +8,7 @@ import Theme from './src/common/Theme';
 import { Provider } from 'react-redux';
 import { store } from './src/store/Store';
 import { useScreens } from 'react-native-screens';
+import SplashScreen from 'react-native-splash-screen';
 useScreens();
 
 const AppContainer = createAppContainer(
@@ -29,11 +30,24 @@ const AppContainer = createAppContainer(
 //prefix is used for deeplinking
 const prefix = 'https://aiwatch.live/';
 
-const AppContainerPortal = () => {
+/* const AppContainerPortal = () => {
   return(
     <Provider store={store}>
         <AppContainer uriPrefix={prefix}/>
     </Provider>
   )
+} */
+export default class App extends React.Component{
+
+  componentDidMount() {
+    SplashScreen.hide();
+  }
+
+  render(){
+    return(
+      <Provider store={store}>
+        <AppContainer uriPrefix={prefix}/>
+      </Provider>
+    )
+  }
 }
-export default AppContainerPortal;
