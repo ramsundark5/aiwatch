@@ -23,7 +23,8 @@ class EditCamera extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cameraConfig: {}
+      cameraConfig: {},
+      loading: false
     };
   }
 
@@ -45,8 +46,8 @@ class EditCamera extends Component {
     const { cameraConfig } = this.state;
     const { editCamera } = this.props;
     try{
-      let cameraId = await RNSmartCam.putCamera(cameraConfig);
-      const updatedCameraConfig = Object.assign({}, cameraConfig, { id: cameraId });
+      this.setState({loading: true});
+      let updatedCameraConfig = await RNSmartCam.putCamera(cameraConfig);
       this.setState({
         cameraConfig: updatedCameraConfig
       });
@@ -56,11 +57,13 @@ class EditCamera extends Component {
     }catch(err){
       ToastAndroid.showWithGravity("Error saving you changes. Try again", ToastAndroid.SHORT, ToastAndroid.CENTER);
       Logger.error(err);
+    }finally{
+      this.setState({loading: false});
     }
   }
 
   render() {
-    const { cameraConfig } = this.state;
+    const { cameraConfig, loading } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView 
@@ -83,7 +86,9 @@ class EditCamera extends Component {
           />
         </ScrollView>
         <View style={styles.footer}>
-          <Button mode='contained' color={Theme.primary} onPress={() => this.onSaveCameraConfig()}>
+          <Button mode='contained' color={Theme.primary} 
+              loading={loading}
+              onPress={() => this.onSaveCameraConfig()}>
             Save
           </Button>
         </View>
