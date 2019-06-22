@@ -2,10 +2,8 @@ package nl.bravobit.ffmpeg;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 
 import com.aiwatch.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,7 +114,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
         if (cmd.length != 0) {
             String[] ffmpegBinary = new String[]{FileUtils.getFFmpeg(context.provide()).getAbsolutePath()};
             String[] command = concatenate(ffmpegBinary, cmd);
-            FFcommandExecuteAsyncTask task = new FFcommandExecuteAsyncTask(command, environvenmentVars, timeout, ffmpegExecuteResponseHandler);
+            CustomFFcommandExecuteAsyncTask task = new CustomFFcommandExecuteAsyncTask(command, environvenmentVars, timeout, ffmpegExecuteResponseHandler);
             task.executeOnExecutor(Executors.newSingleThreadExecutor());
             return task;
         } else {
@@ -150,7 +148,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
         if (cmd.length != 0) {
             String[] ffmpegBinary = new String[]{FileUtils.getFFmpeg(context.provide()).getAbsolutePath()};
             String[] command = concatenate(ffmpegBinary, cmd);
-            FFcommandExecuteAsyncTask task = new FFcommandExecuteAsyncTask(command, null, timeout, fFcommandExecuteResponseHandler);
+            CustomFFcommandExecuteAsyncTask task = new CustomFFcommandExecuteAsyncTask(command, null, timeout, fFcommandExecuteResponseHandler);
             try {
                 CommandResult result = task.executeOnExecutor(Executors.newSingleThreadExecutor()).get();
                 killRunningProcesses(task);

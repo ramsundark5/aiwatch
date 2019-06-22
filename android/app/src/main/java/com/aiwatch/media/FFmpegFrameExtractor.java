@@ -44,7 +44,7 @@ public class FFmpegFrameExtractor {
             imageFile.delete();
         }
 
-        String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
+        String frameExtractCommand =  " -stimeout 10000 -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
         String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand;
         String[] ffmpegCommand = command.split("\\s+");
         ffTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
