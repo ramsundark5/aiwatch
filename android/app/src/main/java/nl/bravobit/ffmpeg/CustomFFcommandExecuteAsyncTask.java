@@ -1,7 +1,6 @@
 package nl.bravobit.ffmpeg;
 
 import android.os.AsyncTask;
-
 import com.aiwatch.Logger;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 
@@ -15,7 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, CommandResult> implements FFtask {
+public class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, CommandResult> implements FFtask {
     private static final Logger LOGGER = new Logger();
     private final String[] cmd;
     private Map<String, String> environment;
@@ -50,16 +49,18 @@ class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, CommandRes
             if (process == null) {
                 return CommandResult.getDummyFailureResponse();
             }
-            Log.d("Running publishing updates method");
+            LOGGER.d("Started ffmpeg process with pid " + process.toString());
             checkAndUpdateProcess();
             return CommandResult.getOutputFromProcess(process);
         } catch (TimeoutException e) {
-            Log.e("FFmpeg binary timed out", e);
+            LOGGER.e(e, "FFmpeg binary timed out");
             return new CommandResult(false, e.getMessage());
         } catch (Exception e) {
-            Log.e("Error running FFmpeg binary", e);
+            LOGGER.e(e, "Error running FFmpeg binary");
         } finally {
-            Util.destroyProcess(process);
+            LOGGER.i("destroying ffmpg process");
+            //Util.destroyProcess(process);
+            destroyProcess();
         }
         return CommandResult.getDummyFailureResponse();
     }
@@ -84,7 +85,7 @@ class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, CommandRes
         }
     }
 
-    private void checkAndUpdateProcess() throws TimeoutException, InterruptedException {
+    private void checkAndUpdateProcess() throws TimeoutException, ExecutionException, InterruptedException {
         while (!Util.isProcessCompleted(process)) {
 
             // checking if process is completed
@@ -97,35 +98,36 @@ class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, CommandRes
                 throw new TimeoutException("FFmpeg binary timed out");
             }
 
-            try {
-                SimpleTimeLimiter timeLimiter = SimpleTimeLimiter.create(Executors.newSingleThreadExecutor());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                String line = timeLimiter.callWithTimeout(reader::readLine, 10, TimeUnit.SECONDS);
-                if (line != null) {
-                    if (isCancelled()) {
-                        process.destroy();
-                        process.waitFor();
-                        return;
-                    }
+            readProgress();
+            LOGGER.i("finished ffmpeg processing");
+        }
+    }
 
-                    if (quitPending) {
-                        sendQ();
-                        process = null;
-                        return;
-                    }
-
-                    output += line + "\n";
-                    publishProgress(line);
-                    checkAndUpdateProcess();
-                }
-                LOGGER.i("finished ffmpeg processing");
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+    private void readProgress() throws InterruptedException, ExecutionException, TimeoutException {
+        SimpleTimeLimiter timeLimiter = SimpleTimeLimiter.create(Executors.newSingleThreadExecutor());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        String line = timeLimiter.callWithTimeout(reader::readLine, 10, TimeUnit.SECONDS);
+        if (line != null) {
+            if (isCancelled()) {
+                process.destroy();
+                process.waitFor();
+                return;
             }
+
+            if (quitPending) {
+                sendQ();
+                process = null;
+                return;
+            }
+
+            output += line + "\n";
+            publishProgress(line);
+            readProgress();
         }
     }
 
     public boolean isProcessCompleted() {
+        LOGGER.d("status for process pid is "+ process.toString());
         return Util.isProcessCompleted(process);
     }
 
@@ -145,7 +147,20 @@ class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, CommandRes
             outputStream.write("q\n".getBytes());
             outputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.e(e, "Error sending quit signal");
+        }
+    }
+
+    public void destroyProcess(){
+        if (process != null) {
+            try {
+                LOGGER.d("Starting destroy of ffmpeg process with pid " + process.toString());
+                process.destroy();
+                //Thread.sleep(2000);
+                LOGGER.d("Stopped ffmpeg process with pid " + process.toString());
+            } catch (Exception e) {
+                LOGGER.e(e, "Error destroying ffmpeg process");
+            }
         }
     }
 }

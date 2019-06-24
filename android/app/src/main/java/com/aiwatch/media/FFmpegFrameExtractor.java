@@ -8,15 +8,16 @@ import com.aiwatch.postprocess.NotificationManager;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import nl.bravobit.ffmpeg.CustomFFcommandExecuteAsyncTask;
 import nl.bravobit.ffmpeg.CustomFFmpeg;
 import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
-import nl.bravobit.ffmpeg.FFtask;
 
 public class FFmpegFrameExtractor {
 
     private static final Logger LOGGER = new Logger();
     private Context context;
-    private FFtask ffTask;
+    private CustomFFcommandExecuteAsyncTask ffTask;
     private CameraConfig cameraConfig;
 
     public FFmpegFrameExtractor(Context context, CameraConfig cameraConfig){
@@ -34,6 +35,7 @@ public class FFmpegFrameExtractor {
             return;
         }
         String videoUrl = cameraConfig.getVideoUrlWithAuth();
+        videoUrl = "rtsp://192.168.1.190:554/cam/realmonitor?channel=0";
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         boolean isffmpegSupported = ffmpeg.isSupported();
         LOGGER.i("ffmpeg supported "+isffmpegSupported);
@@ -44,34 +46,37 @@ public class FFmpegFrameExtractor {
             imageFile.delete();
         }
 
-        String frameExtractCommand =  " -stimeout 10000 -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
+        String frameExtractCommand =  " -stimeout 10000000 -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
         String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand;
         String[] ffmpegCommand = command.split("\\s+");
-        ffTask = ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
+        ffmpeg.setTimeout(10 * 1000); //10 seconds
+        ffTask = (CustomFFcommandExecuteAsyncTask) ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
             public void onStart() {
-                LOGGER.d("ffmpeg recording started. Thread is "+ Thread.currentThread().getName());
+                LOGGER.d("ffmpeg extraction started. Thread is "+ Thread.currentThread().getName());
                 notifyAndUpdateCameraStatus(false);
             }
 
             @Override
             public void onFinish() {
+                LOGGER.d("ffmpeg extraction finished");
                 notifyAndUpdateCameraStatus(true);
+                ffTask.destroyProcess();
             }
 
             @Override
             public void onSuccess(String message) {
-                LOGGER.d("ffmpeg recording success");
+                LOGGER.d("ffmpeg extraction success");
             }
 
             @Override
             public void onProgress(String message) {
-                LOGGER.v("ffmpeg recording in progress. Thread is "+ Thread.currentThread().getName()+ " camera is "+cameraConfig.getId());
+                LOGGER.v("ffmpeg extraction in progress. Thread is "+ Thread.currentThread().getName()+ " camera is "+cameraConfig.getId());
             }
 
             @Override
             public void onFailure(String message) {
-                LOGGER.e("ffmpeg recording failed " + message);
+                LOGGER.e("ffmpeg extraction failed " + message);
             }
         });
     }
@@ -93,11 +98,13 @@ public class FFmpegFrameExtractor {
         }
     }
 
-    public boolean isRunning(){
+    public boolean isStopped(){
         if(ffTask == null){
             return false;
         }
-        return !ffTask.isProcessCompleted();
+        boolean isfftaskCompleted = ffTask.isProcessCompleted();
+        LOGGER.d("is ffmpeg process stopped? "+isfftaskCompleted);
+        return isfftaskCompleted;
     }
 
     public boolean kill(){

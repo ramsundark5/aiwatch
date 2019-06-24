@@ -1,15 +1,10 @@
 package com.aiwatch.media;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import com.aiwatch.Logger;
-import com.aiwatch.ai.ObjectDetectionResult;
-import com.aiwatch.ai.ObjectDetectionService;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.common.AppConstants;
-import com.aiwatch.postprocess.DetectionResultProcessor;
-import com.google.firebase.perf.metrics.AddTrace;
 
 import java.io.File;
 import java.util.Timer;
@@ -68,7 +63,7 @@ public class MonitoringRunnable implements Runnable {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                if(!ffmpegFrameExtractor.isRunning()){
+                if(ffmpegFrameExtractor.isStopped()){
                     ffmpegFrameExtractor.start(imageFilePath);
                 }
             }
