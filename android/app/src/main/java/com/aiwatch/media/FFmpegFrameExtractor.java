@@ -35,7 +35,7 @@ public class FFmpegFrameExtractor {
             return;
         }
         String videoUrl = cameraConfig.getVideoUrlWithAuth();
-        videoUrl = "rtsp://192.168.1.190:554/cam/realmonitor?channel=0";
+        //videoUrl = "rtsp://192.168.1.190:554/cam/realmonitor?channel=0";
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         boolean isffmpegSupported = ffmpeg.isSupported();
         LOGGER.i("ffmpeg supported "+isffmpegSupported);

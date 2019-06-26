@@ -79,6 +79,7 @@ public class ImageProcessor {
                 pause = true;
             }
             if(!pause){
+                pauseProcessing = false;
                 LOGGER.d("Pause is over. Start processing again for camera "+cameraConfig.getId());
             }
         }
