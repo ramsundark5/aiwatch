@@ -152,6 +152,7 @@ dependencies {
 
     //ffmpeg
     implementation 'nl.bravobit:android-ffmpeg:1.1.5'
+    //implementation 'com.github.ramsundark5:FFmpeg-Android:bb5c5b7136e8b070cbdf3b3bacc5d93dd01c8aa5'
 
     //firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'

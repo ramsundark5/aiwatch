@@ -79,7 +79,7 @@ public class ObjectDetectionService {
                 default:
                     //result.setCameraName(Events.OTHER_DETECTED_EVENT.getCameraName());
                     //result.setConfidence(detection.getConfidence());
-                    LOGGER.d("detected " + detection.getTitle() + " with confidence "+detection.getConfidence());
+                    LOGGER.v("detected " + detection.getTitle() + " with confidence "+detection.getConfidence());
             }
             if(result.getName() != null && result.getConfidence() > DETECTION_CONFIDENCE_SENSITIVITY){
                 //break the for loop
