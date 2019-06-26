@@ -3,7 +3,6 @@ import { store } from '../store/Store';
 import { addEvents } from '../store/EventsStore';
 import { updateStatus } from '../store/CamerasStore';
 import RNSmartCam from '../native/RNSmartCam';
-
 class BackgroundListener{
 
     init(){

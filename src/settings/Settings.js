@@ -7,6 +7,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { updateSettings } from '../store/SettingsStore';
 import GoogleConnectStatus from './GoogleConnectStatus';
 import { connect } from 'react-redux';
+import InAppPurchase from './InAppPurchase';
 class Settings extends Component{
 
     static navigationOptions = {
@@ -69,6 +70,7 @@ class Settings extends Component{
               <List.Item title="Enable Notification"
                   right={() => this.renderNotificationEnabled()} />
             </List.Section>
+            <InAppPurchase {...this.props}/>
           </View>
       );
   }

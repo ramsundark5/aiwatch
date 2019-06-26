@@ -3,6 +3,7 @@ package com.aiwatch;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.dooboolab.RNIap.RNIapPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.bugsnag.BugsnagReactNative;
@@ -38,6 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNIapPackage(),
             new SplashScreenReactPackage(),
             new ReactNativeConfigPackage(),
             new ModuleRegistryAdapter(mModuleRegistryProvider),
