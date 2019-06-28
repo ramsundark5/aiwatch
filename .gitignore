@@ -70,4 +70,4 @@ credentials.json
 android/app/src/main/assets/fonts
 transcoder/
 android/app/release/
-android/gradle.properties
+#android/gradle.properties
