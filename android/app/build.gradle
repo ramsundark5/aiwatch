@@ -52,23 +52,16 @@ android {
         ]
         resValue "string", "build_config_package", "com.aiwatch"
     }
-    signingConfigs {
+    /*signingConfigs {
         release {
-            /*if (project.hasProperty('AIWATCH_UPLOAD_STORE_FILE')) {
+            if (project.hasProperty('AIWATCH_UPLOAD_STORE_FILE')) {
                 storeFile file(AIWATCH_UPLOAD_STORE_FILE)
                 storePassword AIWATCH_UPLOAD_STORE_PASSWORD
                 keyAlias AIWATCH_UPLOAD_KEY_ALIAS
                 keyPassword AIWATCH_UPLOAD_KEY_PASSWORD
-            }*/
-
-            if (project.hasProperty('AIWATCH_UPLOAD_STORE_FILE')) {
-                storeFile rootProject.file("app/" + project.findProperty('AIWATCH_UPLOAD_STORE_FILE') ?: "ANDROID_STORE_FILE_NOT_SET")
-                storePassword project.findProperty('AIWATCH_UPLOAD_STORE_PASSWORD') ?: "ANDROID_STORE_PASSWORD_NOT_SET"
-                keyAlias project.findProperty('AIWATCH_UPLOAD_KEY_ALIAS') ?: "ANDROID_KEY_ALIAS_NOT_SET"
-                keyPassword project.findProperty('AIWATCH_UPLOAD_KEY_PASSWORD') ?: "ANDROID_KEY_PASSWORD_NOT_SET"
             }
         }
-    }
+    }*/
 
     splits {
         abi {
@@ -81,14 +74,7 @@ android {
     buildTypes {
         release {
             minifyEnabled enableProguardInReleaseBuilds
-            if (project.hasProperty('AIWATCH_UPLOAD_STORE_FILE')) {
-                signingConfig signingConfigs.release
-            } else {
-                println '-------------------------------------------------'
-                println 'The AIWATCH_UPLOAD_STORE_FILE property was not set!'
-                println 'This release will not be signed by gradle!'
-                println '-------------------------------------------------'
-            }
+            //signingConfig signingConfigs.release
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
