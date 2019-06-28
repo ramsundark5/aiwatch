@@ -70,4 +70,5 @@ credentials.json
 android/app/src/main/assets/fonts
 transcoder/
 android/app/release/
+keystore.properties
 #android/gradle.properties

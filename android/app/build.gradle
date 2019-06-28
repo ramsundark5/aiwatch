@@ -1,6 +1,14 @@
 apply plugin: "com.android.application"
 apply plugin: 'io.fabric'
 
+def keystorePropertiesFile = rootProject.file("app/keystore.properties")
+
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 import com.android.build.OutputFile
 
 project.ext.react = [
@@ -52,16 +60,14 @@ android {
         ]
         resValue "string", "build_config_package", "com.aiwatch"
     }
-    /*signingConfigs {
+    signingConfigs {
         release {
-            if (project.hasProperty('AIWATCH_UPLOAD_STORE_FILE')) {
-                storeFile file(AIWATCH_UPLOAD_STORE_FILE)
-                storePassword AIWATCH_UPLOAD_STORE_PASSWORD
-                keyAlias AIWATCH_UPLOAD_KEY_ALIAS
-                keyPassword AIWATCH_UPLOAD_KEY_PASSWORD
-            }
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
-    }*/
+    }
 
     splits {
         abi {
@@ -74,7 +80,7 @@ android {
     buildTypes {
         release {
             minifyEnabled enableProguardInReleaseBuilds
-            //signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
