@@ -37,8 +37,8 @@ export default class InAppPurchase extends Component{
           } catch (err) {
             console.warn(err.code, err.message);
         }
-        const availableProducts = await RNIap.getProducts([NO_ADS_SKU]);
-        console.log('availableProducts ', availableProducts);
+        //const availableProducts = await RNIap.getProducts([NO_ADS_SKU]);
+        //console.log('availableProducts ', availableProducts);
         purchaseUpdateSubscription = purchaseUpdatedListener((purchase) => {
             this.handlePurchaseUpdate(purchase);
         });
@@ -94,7 +94,7 @@ export default class InAppPurchase extends Component{
             const purchases = await RNIap.getAvailablePurchases();
             purchases.forEach(purchase => {
                 if (purchase.productId == NO_ADS_SKU) {
-                    //this.setState({ premium: true });
+                    updateSettings({isNoAdsPurchased: true});
                 } 
             });
         } catch(err) {
