@@ -12,13 +12,14 @@ import java.util.List;
 public class MonitoringService extends AbstractForegroundService {
 
     private static final Logger LOGGER = new Logger();
-    private DetectionController detectionController;
+    private DetectionController detectionController = new DetectionController();
 
     @Override
     public void onCreate() {
         LOGGER.i("Creating new monitoring service instance. Thread is "+Thread.currentThread().getName());
-        detectionController = new DetectionController();
-        startMonitoring();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForgroundNotification();
+        }
     }
 
     @Override
@@ -51,8 +52,11 @@ public class MonitoringService extends AbstractForegroundService {
                     detectionController.stopDetecting(cameraId);
                     break;
                 default:
-                    LOGGER.i("unknown command sent to monitoring serivce "+ action);
+                    LOGGER.i("unknown command sent to monitoring service "+ action);
             }
+        }else{
+            //if action is null, its usually because we are creating the service
+            startMonitoring();
         }
         return START_STICKY;
     }
@@ -68,15 +72,18 @@ public class MonitoringService extends AbstractForegroundService {
         CameraConfigDao cameraConfigDao = new CameraConfigDao();
         List<CameraConfig> cameraConfigList = cameraConfigDao.getAllCameras();
         if(cameraConfigList == null || cameraConfigList.isEmpty()){
+            stopMonitoring();
             return;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForgroundNotification();
+        boolean isMonitoringStartedForAny = false;
+        for(CameraConfig cameraConfig : cameraConfigList){
+            boolean startedForCamera = detectionController.startDetection(cameraConfig, getApplicationContext());
+            isMonitoringStartedForAny = isMonitoringStartedForAny || startedForCamera;
         }
 
-        for(CameraConfig cameraConfig : cameraConfigList){
-            detectionController.startDetection(cameraConfig, getApplicationContext());
+        if(!isMonitoringStartedForAny){
+            stopMonitoring();
         }
     }
 

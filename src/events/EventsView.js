@@ -40,8 +40,9 @@ class EventsView extends React.Component {
     }
 
     async showAd(){
+        const { isNoAdsPurchased } = this.props;
         this._addSpinner('ads');
-        await AdMob.showAd();
+        await AdMob.showAd(isNoAdsPurchased);
         this._removeSpinner('ads');
     }
 
@@ -190,7 +191,8 @@ class EventsView extends React.Component {
 
 const mapStateToProps = state => ({
     events: state.events.events,
-    editMode: state.events.editMode
+    editMode: state.events.editMode,
+    isNoAdsPurchased: state.settings.isNoAdsPurchased
 });
   
 const connectedEventsView = connect(

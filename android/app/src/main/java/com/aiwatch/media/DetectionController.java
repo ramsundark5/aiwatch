@@ -17,12 +17,12 @@ public class DetectionController {
         cameraMap = new ConcurrentHashMap<>();
     }
 
-    public synchronized void startDetection(CameraConfig cameraConfig, final Context context) {
+    public synchronized boolean startDetection(CameraConfig cameraConfig, final Context context) {
         try {
             //cameraConfig.setVideoCodec(AV_CODEC_ID_H264);
             stopSelectedVideoProcessor(cameraConfig.getId());
             if(!cameraConfig.isMonitoringEnabled()){
-                return;
+                return false;
             }
             MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);
             ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -32,6 +32,7 @@ public class DetectionController {
         } catch (Exception e) {
             LOGGER.e("Exception starting detection "+e.getMessage());
         }
+        return true;
     }
 
     public synchronized void stopAllDetecting(){
