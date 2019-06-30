@@ -8,6 +8,7 @@ import { updateSettings } from '../store/SettingsStore';
 import GoogleConnectStatus from './GoogleConnectStatus';
 import { connect } from 'react-redux';
 import InAppPurchase from './InAppPurchase';
+import {LogView} from 'react-native-device-log';
 class Settings extends Component{
 
     static navigationOptions = {
@@ -71,6 +72,9 @@ class Settings extends Component{
                   right={() => this.renderNotificationEnabled()} />
             </List.Section>
             <InAppPurchase {...this.props}/>
+            <View style={{height: 600, paddingTop: 30}}>
+                <LogView inverted={false} multiExpanded={true} timeStampFormat='HH:mm:ss'></LogView>
+            </View>
           </View>
       );
   }

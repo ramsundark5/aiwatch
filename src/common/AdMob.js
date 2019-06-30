@@ -1,10 +1,10 @@
 import Logger from './Logger';
 import { AdMobInterstitial } from 'expo-ads-admob';
-import Config from 'react-native-config';
 
 class AdMob{
     async showAd(isRemoveAds){
         try{
+            Logger.log('AdMob isremovedAds flag value is '+isRemoveAds);
             if(isRemoveAds){
               return;  
             }
