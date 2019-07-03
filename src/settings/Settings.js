@@ -57,6 +57,11 @@ class Settings extends Component{
       }
     }
 
+    onShowDeviceLogsChange(value){
+      const { updateSettings } = this.props;
+      updateSettings({ showDeviceLogs: value });
+    }
+
     render(){
       const { isLoading } = this.props;
       return(
@@ -70,11 +75,12 @@ class Settings extends Component{
                   right={() => this.renderGoogleAccountConnected()} />
               <List.Item title="Enable Notification"
                   right={() => this.renderNotificationEnabled()} />
+              <List.Item title="Show Device Logs"
+                  description="Required for troubleshooting purpose"
+                  right={() => this.renderDeviceLogsEnabled()} />
             </List.Section>
             <InAppPurchase {...this.props}/>
-            <View style={{height: 600, paddingTop: 30}}>
-                <LogView inverted={false} multiExpanded={true} timeStampFormat='HH:mm:ss'></LogView>
-            </View>
+            {this.renderDeviceLogs()}
           </View>
       );
   }
@@ -95,6 +101,28 @@ class Settings extends Component{
         onValueChange={value => this.onNotificationEnabledChange(value)}
       />
     );
+  }
+
+  renderDeviceLogsEnabled() {
+    const { settings } = this.props;
+    return (
+      <Switch
+        value={settings.showDeviceLogs}
+        onValueChange={value => this.onShowDeviceLogsChange(value)}
+      />
+    );
+  }
+
+  renderDeviceLogs(){
+    const { settings } = this.props;
+    if(!settings.showDeviceLogs){
+      return null;
+    }
+    return(
+      <View style={{height: 600, paddingTop: 30}}>
+        <LogView inverted={false} multiExpanded={true} timeStampFormat='HH:mm:ss'></LogView>
+      </View>
+    )
   }
 }
 const mapStateToProps = state => ({

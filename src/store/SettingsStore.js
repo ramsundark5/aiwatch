@@ -7,7 +7,8 @@ const settingsSlice = createSlice({
       isGoogleAccountConnected: false,
       isNotificationEnabled: false,
       isNoAdsPurchased: false,
-      isLoading: false
+      isLoading: false,
+      showDeviceLogs: false
     },
       
     reducers: {
