@@ -16,6 +16,7 @@ class AdMob{
             //AdMobInterstitial.setTestDeviceID('EMULATOR');
             await AdMobInterstitial.requestAdAsync();
             await AdMobInterstitial.showAdAsync();
+            Logger.log('Ad shown for '+AD_UNIT_ID);
           }catch(err){
             Logger.error(err);
           }

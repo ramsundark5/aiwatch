@@ -20,7 +20,6 @@ const AppContainer = createAppContainer(
       SettingsTab: SettingsTabRoute
     },
     {
-      //initialRouteName: 'SettingsTab',
       barStyle: {backgroundColor: 'white'},
       activeColor: Theme.primary,
       activeTintColor: Theme.primary
@@ -31,13 +30,6 @@ const AppContainer = createAppContainer(
 //prefix is used for deeplinking
 const prefix = 'https://aiwatch.live/';
 
-/* const AppContainerPortal = () => {
-  return(
-    <Provider store={store}>
-        <AppContainer uriPrefix={prefix}/>
-    </Provider>
-  )
-} */
 export default class App extends React.Component{
 
   componentDidMount() {
@@ -63,19 +55,23 @@ function init() {
 
 function interceptLog(originalFn) {
   return function() {
-      const args = Array.prototype.slice.apply(arguments);
-      let result = '';
-      for (let i = 0; i < args.length; i++) {
-          const arg = args[i];
-          if (!arg || (typeof arg === 'string') || (typeof arg === 'number')) {
-              result += arg;
-          }
-          else {
-              result += JSON.stringify(arg);
-          }
+      try{
+        const args = Array.prototype.slice.apply(arguments);
+        let result = '';
+        for (let i = 0; i < args.length; i++) {
+            const arg = args[i];
+            if (!arg || (typeof arg === 'string') || (typeof arg === 'number')) {
+                result += arg;
+            }
+            else {
+                result += JSON.stringify(arg);
+            }
+        }
+        //originalFn.call(console, 'INTERCEPTED LOG: ' + result);
+        Logger.log(result);
+      }catch(err){
+        //swallow the exception
       }
-      //originalFn.call(console, 'INTERCEPTED LOG: ' + result);
-      Logger.log(result);
       return originalFn.apply(console, arguments);
   };
 }
