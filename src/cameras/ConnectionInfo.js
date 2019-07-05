@@ -3,7 +3,7 @@ import { ActivityIndicator, Button, List } from 'react-native-paper';
 import ConfigInput from './ConfigInput';
 import Theme from '../common/Theme';
 import RNSmartCam from '../native/RNSmartCam';
-import { Image, View, Text } from 'react-native';
+import { Alert, Image, Linking, View, Text } from 'react-native';
 import Logger from '../common/Logger';
 
 export default class ConnectionInfo extends Component {
@@ -42,14 +42,33 @@ export default class ConnectionInfo extends Component {
     }
   }
 
+  onPressURLFinderButton(){
+    Alert.alert(
+      'Open camera url finder in new browser window?',
+      'This will open ispyconnect.com to help find your camera url. '+
+      ' Press OK if you want to continue ',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => Linking.openURL('https://www.ispyconnect.com/sources.aspx')},
+      ]
+    );
+}
+
   render() {
     const { props, state } = this;
     return (
       <List.Accordion title="Connection Info" expanded={state.expanded} onPress={this.toggleExpand}>
         <ConfigInput {...props} label="Video URL" name="videoUrl" />
+        <Button color={Theme.primary} onPress={() => this.onPressURLFinderButton()} uppercase={false}>
+            Need help finding your video url?
+        </Button>
         <ConfigInput {...props} label="Username" name="username" />
         <ConfigInput {...props} label="Password" name="password" secureTextEntry={true}/>
-        <Button mode='outlined' color={Theme.primary} onPress={() => this.testConnection()}>
+        <Button color={Theme.primary} onPress={() => this.testConnection()}>
           Test Connection
         </Button>
         {this.renderTestImage()}
