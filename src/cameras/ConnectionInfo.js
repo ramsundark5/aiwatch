@@ -86,13 +86,6 @@ export default class ConnectionInfo extends Component {
         </View>
       )
     }
-    if(base64Image === 'undefined'){
-      return(
-        <View>
-          <Text>Failed to retrive image from camera. Is the url correct?</Text>
-        </View>
-      )
-    }
     if(base64Image){
       return(
         <View>
@@ -101,6 +94,10 @@ export default class ConnectionInfo extends Component {
         </View>
       )
     }
-    
+    return(
+      <View>
+        <Text>Failed to retrieve image from camera. Is the url correct?</Text>
+      </View>
+    )
   }
 }
