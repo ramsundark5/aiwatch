@@ -35,7 +35,6 @@ public class FFmpegFrameExtractor {
             return;
         }
         String videoUrl = cameraConfig.getVideoUrlWithAuth();
-        //videoUrl = "rtsp://192.168.1.190:554/cam/realmonitor?channel=0";
         CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         boolean isffmpegSupported = ffmpeg.isSupported();
         LOGGER.i("ffmpeg supported "+isffmpegSupported);
@@ -45,9 +44,10 @@ public class FFmpegFrameExtractor {
         if(imageFile.exists()){
             imageFile.delete();
         }
-
-        String frameExtractCommand =  " -stimeout 10000000 -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
-        String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand;
+        //String frameExtractCommand = " -vf fps=1 " + imageFile.getAbsolutePath();
+        //String frameExtractCommand = " -stimeout 10000000 -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
+        String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
+        String command = " -rtsp_transport tcp -i " + videoUrl + frameExtractCommand;
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.setTimeout(10 * 1000); //10 seconds
         ffTask = (CustomFFcommandExecuteAsyncTask) ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {

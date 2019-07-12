@@ -44,7 +44,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
         // check if arch is supported
         CpuArch cpuArch = CpuArchHelper.getCpuArch();
         if (cpuArch == CpuArch.NONE) {
-            Log.e("arch not supported");
+            LOGGER.e("arch not supported");
             return false;
         }
 
@@ -60,7 +60,7 @@ public class CustomFFmpeg implements FFbinaryInterface {
             if (cpuArch == CpuArch.x86) {
                 prefix = "x86/";
             }
-            Log.d("file does not exist, creating it...");
+            LOGGER.d("file does not exist, creating it...");
 
             try {
                 InputStream inputStream = context.provide().getAssets().open(prefix + "ffmpeg");
@@ -68,11 +68,11 @@ public class CustomFFmpeg implements FFbinaryInterface {
                     return false;
                 }
 
-                Log.d("successfully wrote ffmpeg file!");
+                LOGGER.d("successfully wrote ffmpeg file!");
 
                 settings.edit().putInt(KEY_PREF_VERSION, VERSION).apply();
             } catch (IOException e) {
-                Log.e("error while opening assets", e);
+                LOGGER.e(e, "error while opening assets");
                 return false;
             }
         }
@@ -84,27 +84,27 @@ public class CustomFFmpeg implements FFbinaryInterface {
                 try {
                     Runtime.getRuntime().exec("chmod -R 777 " + ffmpeg.getAbsolutePath()).waitFor();
                 } catch (InterruptedException e) {
-                    Log.e("interrupted exception", e);
+                    LOGGER.e(e, "interrupted exception");
                     return false;
                 } catch (IOException e) {
-                    Log.e("io exception", e);
+                    LOGGER.e(e, "io exception");
                     return false;
                 }
 
                 if (!ffmpeg.canExecute()) {
                     // our last hope!
                     if (!ffmpeg.setExecutable(true)) {
-                        Log.e("unable to make executable");
+                        LOGGER.e("unable to make executable");
                         return false;
                     }
                 }
             } catch (SecurityException e) {
-                Log.e("security exception", e);
+                LOGGER.e(e, "security exception");
                 return false;
             }
         }
 
-        Log.d("ffmpeg is ready!");
+        LOGGER.d("ffmpeg is ready!");
 
         return true;
     }
