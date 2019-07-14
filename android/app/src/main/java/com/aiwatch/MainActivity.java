@@ -2,7 +2,7 @@ package com.aiwatch;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+
 import org.devio.rn.splashscreen.SplashScreen;
 import com.aiwatch.firebase.FirebaseUserDataDao;
 import com.facebook.react.ReactActivity;
