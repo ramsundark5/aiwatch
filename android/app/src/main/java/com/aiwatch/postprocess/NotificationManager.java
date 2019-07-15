@@ -6,7 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.widget.Toast;
 
 import com.aiwatch.Logger;

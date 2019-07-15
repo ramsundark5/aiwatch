@@ -1,5 +1,4 @@
 import Logger from './Logger';
-import { AdMobInterstitial } from 'expo-ads-admob';
 
 class AdMob{
     async showAd(isRemoveAds){
@@ -12,10 +11,10 @@ class AdMob{
             if (__DEV__) {
               AD_UNIT_ID = 'ca-app-pub-3940256099942544/1033173712';
             }
-            AdMobInterstitial.setAdUnitID(AD_UNIT_ID); 
+            //AdMobInterstitial.setAdUnitID(AD_UNIT_ID); 
             //AdMobInterstitial.setTestDeviceID('EMULATOR');
-            await AdMobInterstitial.requestAdAsync();
-            await AdMobInterstitial.showAdAsync();
+            /* await AdMobInterstitial.requestAdAsync();
+            await AdMobInterstitial.showAdAsync(); */
             Logger.log('Ad shown for '+AD_UNIT_ID);
           }catch(err){
             Logger.error(err);

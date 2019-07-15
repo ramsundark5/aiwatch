@@ -141,6 +141,8 @@ crashlytics {
 }
 
 dependencies {
+    implementation project(':@react-native-community_netinfo')
+    implementation project(':react-native-admob')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.core:core:1.0.2'
@@ -174,14 +176,15 @@ dependencies {
     //implementation 'com.github.ramsundark5:FFmpeg-Android:bb5c5b7136e8b070cbdf3b3bacc5d93dd01c8aa5'
 
     //firebase
-    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-core:17.0.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.crashlytics.sdk.android:crashlytics-ndk:2.1.0'
-    implementation 'com.google.firebase:firebase-perf:17.0.2'
-    implementation 'com.google.firebase:firebase-messaging:18.0.0'
-    implementation 'com.google.firebase:firebase-auth:17.0.0'
-    implementation 'com.google.firebase:firebase-firestore:19.0.2'
-    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.firebase:firebase-perf:18.0.1'
+    implementation 'com.google.firebase:firebase-messaging:19.0.1'
+    implementation 'com.google.firebase:firebase-auth:18.1.0'
+    implementation 'com.google.firebase:firebase-firestore:20.1.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
 
     //react native projects
     implementation project(':react-native-screens')
@@ -194,10 +197,6 @@ dependencies {
     implementation project(':react-native-config')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-iap')
-    /*addUnimodulesDependencies([exclude: ['expo-face-detector', 'expo-app-loader-provider', 'expo-file-system', 'expo-permissions', 'unimodules-barcode-scanner-interface',
-    'unimodules-camera-interface', 'unimodules-face-detector-interface', 'unimodules-file-system-interface', 'unimodules-font-interface',
-    'unimodules-image-loader-interface', 'unimodules-permissions-interface', 'unimodules-react-native-adapter', 'unimodules-sensors-interface', 'unimodules-task-manager-interface']])
-*/
 }
 
 repositories {
