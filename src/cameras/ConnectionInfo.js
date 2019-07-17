@@ -36,7 +36,7 @@ export default class ConnectionInfo extends Component {
       this.setState({ base64Image: image });
     }catch(err){
       Logger.log('error loading test image');
-      Logger.error(err);
+      //Logger.error(err);
     }finally{
       this.setState({ isLoading: false });
     }

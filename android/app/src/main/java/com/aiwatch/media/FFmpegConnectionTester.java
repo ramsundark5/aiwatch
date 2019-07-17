@@ -25,7 +25,7 @@ public class FFmpegConnectionTester {
             CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
             String fileName = "test" + System.currentTimeMillis()+".jpg";
             outputFile = new File(context.getFilesDir(), fileName);
-            String frameExtractCommand =  " scale=300:300 -vframes 1 "+outputFile;
+            String frameExtractCommand =  " -s 300x300 -vframes 1 "+outputFile;
             String command = "-rtsp_transport tcp -i " + cameraConfig.getVideoUrlWithAuth() + frameExtractCommand;
             String[] ffmpegCommand = command.split("\\s+");
             ffmpeg.executeSync(ffmpegCommand, new ExecuteBinaryResponseHandler());
