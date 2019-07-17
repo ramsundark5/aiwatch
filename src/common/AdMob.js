@@ -1,4 +1,5 @@
 import Logger from './Logger';
+import { AdMobInterstitial } from 'react-native-admob';
 
 class AdMob{
     async showAd(isRemoveAds){
@@ -11,10 +12,11 @@ class AdMob{
             if (__DEV__) {
               AD_UNIT_ID = 'ca-app-pub-3940256099942544/1033173712';
             }
-            //AdMobInterstitial.setAdUnitID(AD_UNIT_ID); 
-            //AdMobInterstitial.setTestDeviceID('EMULATOR');
-            /* await AdMobInterstitial.requestAdAsync();
-            await AdMobInterstitial.showAdAsync(); */
+            AdMobInterstitial.setAdUnitID(AD_UNIT_ID); 
+            AdMobInterstitial.setTestDevices(['EMULATOR']);
+            //await AdMobInterstitial.requestAdAsync();
+            await AdMobInterstitial.requestAd();
+            await AdMobInterstitial.showAd();
             Logger.log('Ad shown for '+AD_UNIT_ID);
           }catch(err){
             Logger.error(err);
