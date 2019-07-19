@@ -34,6 +34,7 @@ export default class App extends React.Component{
 
   componentDidMount() {
     SplashScreen.hide();
+    //init();
   }
 
   render(){
@@ -43,4 +44,34 @@ export default class App extends React.Component{
       </Provider>
     )
   }
+}
+
+function init() {
+    console.log = interceptLog(console.log);
+    console.info = interceptLog(console.info);
+    console.error = interceptLog(console.error);
+    //console.debug = interceptLog(console.debug);
+}
+
+function interceptLog(originalFn) {
+  return function() {
+      try{
+        const args = Array.prototype.slice.apply(arguments);
+        let result = '';
+        for (let i = 0; i < args.length; i++) {
+            const arg = args[i];
+            if (!arg || (typeof arg === 'string') || (typeof arg === 'number')) {
+                result += arg;
+            }
+            else {
+                result += JSON.stringify(arg);
+            }
+        }
+        //originalFn.call(console, 'INTERCEPTED LOG: ' + result);
+        Logger.log(result);
+      }catch(err){
+        //swallow the exception
+      }
+      return originalFn.apply(console, arguments);
+  };
 }

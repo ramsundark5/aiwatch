@@ -23,6 +23,8 @@ public class FFmpegConnectionTester {
         File outputFile = null;
         try{
             CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
+            boolean isffmpegSupported = ffmpeg.isSupported();
+            LOGGER.i("ffmpeg supported "+isffmpegSupported);
             String fileName = "test" + System.currentTimeMillis()+".jpg";
             outputFile = new File(context.getFilesDir(), fileName);
             String frameExtractCommand =  " -s 300x300 -vframes 1 "+outputFile;

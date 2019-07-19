@@ -20,18 +20,26 @@ export default class CameraControl extends Component {
 
     onPressDeleteButton(){
         const { cameraConfig } = this.props;
-        Alert.alert(
-          'Delete Camera',
-          'Are you sure you want to delete the camera ' + cameraConfig.name.toUpperCase() +' ?',
-          [
-            {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            {text: 'OK', onPress: () => this.deleteCamera(cameraConfig)},
-          ]
-        );
+        try{
+          let camerName = cameraConfig.name;
+          if(camerName){
+            camerName = camerName.toUpperCase();
+          }
+          Alert.alert(
+            'Delete Camera',
+            'Are you sure you want to delete the camera ' + camerName +' ?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {text: 'OK', onPress: () => this.deleteCamera(cameraConfig)},
+            ]
+          );
+        }catch(err){
+          Logger.error(err);
+        }
     }
     
     onPressToggleMonitorButton(){

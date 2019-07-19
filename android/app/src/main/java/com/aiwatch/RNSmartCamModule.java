@@ -105,6 +105,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             reactContext.startService(intent);
 
             //return updated cameraconfig to UI
+            cameraConfig.setVideoUrlWithAuth(cameraConfig.getVideoUrlWithAuth());
             String jsonString = gson.toJson(cameraConfig);
             JSONObject updatedJsonObject = new JSONObject(jsonString);
             WritableMap cameraConfigMap = ConversionUtil.convertJsonToMap(updatedJsonObject);

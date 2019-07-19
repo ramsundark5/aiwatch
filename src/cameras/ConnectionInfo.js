@@ -6,12 +6,14 @@ import RNSmartCam from '../native/RNSmartCam';
 import { Alert, Image, Linking, View, Text } from 'react-native';
 import Logger from '../common/Logger';
 
+const initialMessage = 'An image from your camera will appear here on successful test.';
 export default class ConnectionInfo extends Component {
   
   state = {
     expanded: true,
     base64Image: undefined,
-    isLoading: false
+    isLoading: false,
+    testImageMessage: initialMessage
   };
 
   toggleExpand = () => {
@@ -33,9 +35,11 @@ export default class ConnectionInfo extends Component {
   async loadBase64Image(cameraConfig){
     try{
       let image = await RNSmartCam.testCameraConnection(cameraConfig);
-      this.setState({ base64Image: image });
+      this.setState({ base64Image: image, testImageMessage: initialMessage });
     }catch(err){
       Logger.log('error loading test image');
+      let testImageMessage = 'Failed to retrieve image from camera. Is the url correct?';
+      this.setState({testImageMessage: testImageMessage});
       //Logger.error(err);
     }finally{
       this.setState({ isLoading: false });
@@ -77,7 +81,7 @@ export default class ConnectionInfo extends Component {
   }
 
   renderTestImage(){
-    const { isLoading, base64Image } = this.state;
+    const { isLoading, base64Image, testImageMessage } = this.state;
     const imageUri = 'data:image/png;base64,'+base64Image;
     if(isLoading){
       return(
@@ -96,7 +100,7 @@ export default class ConnectionInfo extends Component {
     }
     return(
       <View>
-        <Text>Failed to retrieve image from camera. Is the url correct?</Text>
+        <Text>{testImageMessage}</Text>
       </View>
     )
   }

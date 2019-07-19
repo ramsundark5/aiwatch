@@ -19,14 +19,18 @@ export default class InAppPurchase extends Component{
     }
 
     componentWillMount() {
-        RNIap.endConnectionAndroid();
-        if (purchaseUpdateSubscription) {
-          purchaseUpdateSubscription.remove();
-          purchaseUpdateSubscription = null;
-        }
-       if (purchaseErrorSubscription) {
-          purchaseErrorSubscription.remove();
-          purchaseErrorSubscription = null;
+        try{
+            RNIap.endConnectionAndroid();
+            if (purchaseUpdateSubscription) {
+              purchaseUpdateSubscription.remove();
+              purchaseUpdateSubscription = null;
+            }
+           if (purchaseErrorSubscription) {
+              purchaseErrorSubscription.remove();
+              purchaseErrorSubscription = null;
+            }
+        }catch(err){
+            Logger.error(err);
         }
     }
 
@@ -85,7 +89,7 @@ export default class InAppPurchase extends Component{
             });
         } catch(err) {
             // standardized err.code and err.message available
-            console.warn(err.code, err.message);
+            Logger.error(err.message);
         }
     }
 
