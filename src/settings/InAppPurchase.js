@@ -37,12 +37,14 @@ export default class InAppPurchase extends Component{
     async init(){
         try {
             const result = await RNIap.initConnection();
-            console.log('result', result);
+            Logger.log('IAP initialized ', result);
+            //you have to first fetch products before buying
+            const availableProducts = await RNIap.getProducts([NO_ADS_SKU]);
+            Logger.log('availableProducts ', availableProducts);
+            this.loadPurchases();
           } catch (err) {
             console.warn(err.code, err.message);
         }
-        //const availableProducts = await RNIap.getProducts([NO_ADS_SKU]);
-        //console.log('availableProducts ', availableProducts);
         purchaseUpdateSubscription = purchaseUpdatedListener((purchase) => {
             this.handlePurchaseUpdate(purchase);
         });
@@ -55,15 +57,16 @@ export default class InAppPurchase extends Component{
         if (purchase.purchaseStateAndroid === 1 && !purchase.isAcknowledgedAndroid) {
             try {
               const ackResult = await acknowledgePurchaseAndroid(purchase.purchaseToken);
-              console.log('ackResult', ackResult);
-              BackgroundListener.getPurchases();
+              Logger.log('purchase ackResult', ackResult);
+              this.loadPurchases();
             } catch (ackErr) {
-              console.warn('ackErr', ackErr);
+              Logger.warn('purchase ackErr', ackErr);
             }
         }
     }
 
-    async getPurchases(){
+    async loadPurchases(){
+        const { updateSettings } = this.props;
         try {
             const purchases = await RNIap.getAvailablePurchases();
             purchases.forEach(purchase => {
@@ -90,19 +93,6 @@ export default class InAppPurchase extends Component{
         } catch(err) {
             // standardized err.code and err.message available
             Logger.error(err.message);
-        }
-    }
-
-    async getPurchases(){
-        try {
-            const purchases = await RNIap.getAvailablePurchases();
-            purchases.forEach(purchase => {
-                if (purchase.productId == NO_ADS_SKU) {
-                    updateSettings({isNoAdsPurchased: true});
-                } 
-            });
-        } catch(err) {
-          console.warn(err); // standardized err.code and err.message available
         }
     }
 
