@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Button, List, Text } from 'react-native-paper';
 import RNIap, {
     purchaseUpdatedListener,
     purchaseErrorListener,
@@ -113,9 +113,30 @@ export default class InAppPurchase extends Component{
             )
         }
         return(
-            <View>
+            <View style={styles.premiumStyle}>
                 <Button onPress={() => this.buyProduct(NO_ADS_SKU)}>Go Premium $3.99</Button>
+                {this.renderFeatureText('Remove ads')}
+                {this.renderFeatureText('Alexa integration (coming soon)')}
+                {this.renderFeatureText('Region of interest (coming soon)')}
             </View>
         )
     }
+
+    renderFeatureText(text){
+        return(
+            <Button uppercase={false} icon="check" color="black">
+                {text}
+            </Button>
+        )
+    }
 }
+
+const styles = StyleSheet.create({
+    premiumStyle: {
+      //textAlign: 'center',
+      //alignItems: 'center'
+      paddingLeft: '20%',
+      justifyContent: 'space-around',
+      alignItems: 'flex-start'
+    },
+  });
