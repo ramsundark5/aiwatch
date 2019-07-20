@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 import { Switch } from 'react-native-paper';
+import { ToastAndroid } from 'react-native';
 import Logger from '../common/Logger';
 
 export default class GoogleConnectStatus extends Component{ 

@@ -8,7 +8,7 @@ buildscript {
         targetSdkVersion = 28
         supportLibVersion = "28.0.0"
         objectboxVersion = '2.3.4'
-        googlePlayServicesAuthVersion = '16.0.1'
+        googlePlayServicesAuthVersion = '17.0.0'
     }
     repositories {
         google()
