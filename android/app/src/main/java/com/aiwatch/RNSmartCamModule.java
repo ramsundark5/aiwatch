@@ -193,6 +193,11 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             JSONObject updatedJsonObject = new JSONObject(jsonString);
             WritableMap settingsMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
             promise.resolve(settingsMap);
+
+            //resync if google account is connected
+            if(settings.isGoogleAccountConnected()){
+                getFirebaseUpdates();
+            }
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());
