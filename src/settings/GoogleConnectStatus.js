@@ -55,7 +55,10 @@ export default class GoogleConnectStatus extends Component{
           await GoogleSignin.revokeAccess();
           updateSettings({ isGoogleAccountConnected: false });
         }catch(err){
-          Logger.error(err);
+          Logger.log(err);
+          if(err.message ==="SIGN_IN_REQUIRED"){
+            updateSettings({ isGoogleAccountConnected: false });
+          }
         }
     }
 

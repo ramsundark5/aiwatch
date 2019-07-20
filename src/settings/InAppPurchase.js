@@ -101,7 +101,7 @@ export default class InAppPurchase extends Component{
         let isNoAdsPurchased = settings.isNoAdsPurchased;
         if(isNoAdsPurchased){
             return(
-                <View>
+                <View style={{paddingLeft: 10}}>
                     <Text>Current License: Premium</Text>
                 </View>
             )
