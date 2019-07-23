@@ -32,7 +32,6 @@ public class DetectionResultProcessor {
     }
 
     public boolean processObjectDetectionResult(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
-        boolean shouldRecordVideo = RecordingManager.shouldStartRecording(objectDetectionResult, frameEvent.getCameraConfig());
         String videoPath = null;
         String gdriveVideoPath = null;
         String thumbnailPath = null;
@@ -40,10 +39,13 @@ public class DetectionResultProcessor {
         String notificationMessage = objectDetectionResult.getMessage() + " at "+ cameraConfig.getName();
         AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), notificationMessage, null, thumbnailPath, UUID.randomUUID().toString());
         alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
+        boolean shouldRecordVideo = RecordingManager.shouldStartRecording(objectDetectionResult, frameEvent.getCameraConfig());
         boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
+        if(shouldNotify || shouldRecordVideo){
+            thumbnailPath = saveImage(frameEvent, objectDetectionResult);
+        }
         if(shouldNotify){
             //first notify the event
-            thumbnailPath = saveImage(frameEvent, objectDetectionResult);
             alarmEvent.setThumbnailPath(thumbnailPath);
             String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
             alarmEvent.setCloudImagePath(gdriveImagePath);

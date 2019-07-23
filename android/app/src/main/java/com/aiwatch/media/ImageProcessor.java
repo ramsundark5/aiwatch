@@ -20,6 +20,7 @@ public class ImageProcessor {
     private DetectionResultProcessor detectionResultProcessor;
     private ObjectDetectionService objectDetectionService;
     private volatile long previousLastModified;
+    private volatile long pauseStartTime;
     private volatile boolean pauseProcessing = false;
 
     public ImageProcessor(Context context) {
@@ -41,6 +42,7 @@ public class ImageProcessor {
                 LOGGER.d("detected "+objectDetectionResult.getName() +" at camera "+frameEvent.getCameraConfig().getId());
                 pauseProcessing = detectionResultProcessor.processObjectDetectionResult(frameEvent, objectDetectionResult);
                 if(pauseProcessing){
+                    pauseStartTime = System.currentTimeMillis();
                     LOGGER.d("Pause processing for camera " + frameEvent.getCameraConfig().getId());
                     LOGGER.d("Processing will begin after " + getWaitPeriod(frameEvent.getCameraConfig()) + " seconds");
                 }
@@ -72,7 +74,7 @@ public class ImageProcessor {
         boolean pause = false;
         if(pauseProcessing){
             long currentTime = System.currentTimeMillis();
-            long timeSinceLastProcessing = currentTime - previousLastModified;
+            long timeSinceLastProcessing = currentTime - pauseStartTime;
             long elapsedTimeInSeconds = timeSinceLastProcessing/1000;
             long waitPeriod = getWaitPeriod(cameraConfig);
             if(elapsedTimeInSeconds <= waitPeriod){
@@ -80,6 +82,7 @@ public class ImageProcessor {
             }
             if(!pause){
                 pauseProcessing = false;
+                pauseStartTime = 0;
                 LOGGER.d("Pause is over. Start processing again for camera "+cameraConfig.getId());
             }
         }

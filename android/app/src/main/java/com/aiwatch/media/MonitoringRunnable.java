@@ -88,7 +88,7 @@ public class MonitoringRunnable implements Runnable {
             }
         };
 
-        imageProcessTimer.schedule(timerTask, 10000, 1000);
+        imageProcessTimer.schedule(timerTask, 5000, 500);
     }
 
     private String getImageFilePath(){
