@@ -70,7 +70,7 @@ public class MonitoringRunnable implements Runnable {
                 oldMediaCleaner.cleanupMedia(context);
             }
         };
-        ffmpegTimer.schedule(timerTask, TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(30));
+        ffmpegTimer.schedule(timerTask, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(30));
     }
 
     private void startImageProcessTimer(){

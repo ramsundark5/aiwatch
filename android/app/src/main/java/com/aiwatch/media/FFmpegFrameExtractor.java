@@ -32,7 +32,7 @@ public class FFmpegFrameExtractor {
             return;
         }
         if(!cameraConfig.isMonitoringEnabled()){
-            LOGGER.d("all monitoring flags are turned off. Skipping monitorinng for camera "+cameraConfig.getId());
+            LOGGER.d("all monitoring flags are turned off. Skipping monitorinng for camera " + cameraConfig.getId());
             return;
         }
         String videoUrl = cameraConfig.getVideoUrlWithAuth();
@@ -50,8 +50,7 @@ public class FFmpegFrameExtractor {
             videoFolder.mkdirs();
         }
         String videoPath = videoFolder.getAbsolutePath();
-        //String frameExtractCommand = " -vf fps=1 " + imageFile.getAbsolutePath();
-        String videoSegmentPrefix = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 ";
+        String videoSegmentPrefix = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time " + AppConstants.PRE_RECORDING_BUFFER + " -segment_format_options movflags=+faststart -reset_timestamps 1 ";
         String recordCommand =  videoSegmentPrefix + videoPath + "/" + cameraConfig.getId() +"-%Y%m%d_%H:%M:%S.mp4 ";
         String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
         //String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();

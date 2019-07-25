@@ -11,6 +11,7 @@ public class OldMediaCleaner {
     private static final Logger LOGGER = new Logger();
 
     public void cleanupMedia(Context context){
+        LOGGER.d("Starting old files cleanup");
         try{
             File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
             File[] filesToBeDeleted = videoFolder.listFiles(file -> {
@@ -24,7 +25,9 @@ public class OldMediaCleaner {
 
             for(File file: filesToBeDeleted){
                 file.delete();
+                LOGGER.d("Deleted old file "+file.getAbsolutePath());
             }
+            LOGGER.d("Completed old files cleanup");
         }catch (Exception e){
             LOGGER.e(e, "Error deleting old files");
         }

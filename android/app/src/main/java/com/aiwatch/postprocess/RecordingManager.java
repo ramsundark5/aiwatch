@@ -64,7 +64,7 @@ public class RecordingManager {
             String inputFilePath = inputFileList.getAbsolutePath();
             String recordCommand = " -f concat -i " + inputFilePath + " -c copy " + filePath;
             String[] ffmpegCommand = recordCommand.split("\\s+");
-            String response = ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler() );
+            String response = ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler("video merging") );
             LOGGER.d("record to local returned "+ response);
             return filePath;
         }catch (Exception e){

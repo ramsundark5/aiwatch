@@ -30,7 +30,7 @@ public class FFmpegConnectionTester {
             String frameExtractCommand =  " -s 300x300 -vframes 1 "+outputFile;
             String command = "-rtsp_transport tcp -i " + cameraConfig.getVideoUrlWithAuth() + frameExtractCommand;
             String[] ffmpegCommand = command.split("\\s+");
-            ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler());
+            ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler("connection tester"));
             Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
             base64image = imageToBase64(bitmapOutput);
         }catch(Exception e){
