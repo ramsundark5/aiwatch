@@ -2,6 +2,7 @@ package nl.bravobit.ffmpeg;
 
 import android.os.AsyncTask;
 import com.aiwatch.Logger;
+import com.aiwatch.common.AppConstants;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 
 import java.io.BufferedReader;
@@ -106,7 +107,7 @@ public class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, Com
     private void readProgress() throws InterruptedException, ExecutionException, TimeoutException {
         SimpleTimeLimiter timeLimiter = SimpleTimeLimiter.create(Executors.newSingleThreadExecutor());
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        String line = timeLimiter.callWithTimeout(reader::readLine, 10, TimeUnit.SECONDS);
+        String line = timeLimiter.callWithTimeout(reader::readLine, AppConstants.FFMPEG_COMMAND_TIMEOUT, TimeUnit.SECONDS);
         if (line != null) {
             if (isCancelled()) {
                 process.destroy();

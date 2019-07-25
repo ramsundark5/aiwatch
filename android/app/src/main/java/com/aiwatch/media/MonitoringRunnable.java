@@ -9,6 +9,7 @@ import com.aiwatch.common.AppConstants;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -20,11 +21,10 @@ public class MonitoringRunnable implements Runnable {
     private FFmpegFrameExtractor ffmpegFrameExtractor;
     private ImageProcessor imageProcessor;
     private String imageFilePath;
+    private OldMediaCleaner oldMediaCleaner;
     private Timer ffmpegTimer = new Timer("ffmpegCheckTimer");
     private Timer imageProcessTimer = new Timer("imageProcessTimer");
-
     private AtomicBoolean running = new AtomicBoolean(false);
-    private AtomicBoolean pauseProcessing = new AtomicBoolean(false);
 
     public MonitoringRunnable(CameraConfig cameraConfig, Context context) {
         try {
@@ -33,6 +33,7 @@ public class MonitoringRunnable implements Runnable {
             this.ffmpegFrameExtractor = new FFmpegFrameExtractor(context, cameraConfig);
             this.imageFilePath = getImageFilePath();
             this.imageProcessor = new ImageProcessor(context);
+            this.oldMediaCleaner = new OldMediaCleaner();
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
@@ -66,9 +67,10 @@ public class MonitoringRunnable implements Runnable {
                 if(ffmpegFrameExtractor.isStopped()){
                     ffmpegFrameExtractor.start(imageFilePath);
                 }
+                oldMediaCleaner.cleanupMedia(context);
             }
         };
-        ffmpegTimer.schedule(timerTask, 60000, 30000);
+        ffmpegTimer.schedule(timerTask, TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(30));
     }
 
     private void startImageProcessTimer(){
@@ -87,8 +89,7 @@ public class MonitoringRunnable implements Runnable {
                 }
             }
         };
-
-        imageProcessTimer.schedule(timerTask, 5000, 500);
+        imageProcessTimer.schedule(timerTask, TimeUnit.SECONDS.toMillis(10), 500);
     }
 
     private String getImageFilePath(){

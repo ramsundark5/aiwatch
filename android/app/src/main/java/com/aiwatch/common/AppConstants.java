@@ -33,4 +33,7 @@ public class AppConstants {
     public static final String ADD_ALARM_EVENT                  = "ADD_ALARM_EVENT";
     public static final String UPDATE_ALARM_EVENT               = "UPDATE_ALARM_EVENT";
     public static final String DELETE_ALARM_EVENT               = "DELETE_ALARM_EVENT";
+
+    public static final long FFMPEG_COMMAND_TIMEOUT             = 80; //in seconds
+    public static final int PRE_RECORDING_BUFFER                = 10; //in seconds
 }

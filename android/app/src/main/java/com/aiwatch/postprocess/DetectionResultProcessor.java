@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
+import com.aiwatch.common.AppConstants;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.media.FrameEvent;
 import com.aiwatch.media.db.AlarmEvent;
@@ -41,7 +42,8 @@ public class DetectionResultProcessor {
         alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
         boolean shouldRecordVideo = RecordingManager.shouldStartRecording(objectDetectionResult, frameEvent.getCameraConfig());
         boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
-        if(shouldNotify || shouldRecordVideo){
+        boolean isResultInteresting = shouldRecordVideo || shouldNotify;
+        if(isResultInteresting){
             thumbnailPath = saveImage(frameEvent, objectDetectionResult);
         }
         if(shouldNotify){
@@ -53,10 +55,15 @@ public class DetectionResultProcessor {
         }
         //now record
         if(shouldRecordVideo){
+            long waitTimeForRecording = cameraConfig.getRecordingDuration() + AppConstants.PRE_RECORDING_BUFFER;
+            try {
+                Thread.sleep(waitTimeForRecording);
+            } catch (InterruptedException e) {
+               LOGGER.e(e, "Error trying to wait till recording finishes");
+            }
             videoPath = RecordingManager.recordToLocal(frameEvent);
             gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
         }
-        boolean isResultInteresting = shouldRecordVideo || shouldNotify;
 
         if(isResultInteresting){
             //store the results

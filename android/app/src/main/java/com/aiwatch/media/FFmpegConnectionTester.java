@@ -12,7 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
+import nl.bravobit.ffmpeg.CustomResponseHandler;
 
 public class FFmpegConnectionTester {
 
@@ -30,7 +30,7 @@ public class FFmpegConnectionTester {
             String frameExtractCommand =  " -s 300x300 -vframes 1 "+outputFile;
             String command = "-rtsp_transport tcp -i " + cameraConfig.getVideoUrlWithAuth() + frameExtractCommand;
             String[] ffmpegCommand = command.split("\\s+");
-            ffmpeg.executeSync(ffmpegCommand, new ExecuteBinaryResponseHandler());
+            ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler());
             Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
             base64image = imageToBase64(bitmapOutput);
         }catch(Exception e){

@@ -2,6 +2,7 @@ package com.aiwatch.media;
 
 import android.content.Context;
 import com.aiwatch.Logger;
+import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
@@ -44,12 +45,19 @@ public class FFmpegFrameExtractor {
         if(imageFile.exists()){
             imageFile.delete();
         }
+        File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
+        if (!videoFolder.exists()) {
+            videoFolder.mkdirs();
+        }
+        String videoPath = videoFolder.getAbsolutePath();
         //String frameExtractCommand = " -vf fps=1 " + imageFile.getAbsolutePath();
+        String videoSegmentPrefix = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time 30 -segment_format_options movflags=+faststart -reset_timestamps 1 ";
+        String recordCommand =  videoSegmentPrefix + videoPath + "/" + cameraConfig.getId() +"-%Y%m%d_%H:%M:%S.mp4 ";
         String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
         //String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
-        String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand;
+        String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand + recordCommand;
         String[] ffmpegCommand = command.split("\\s+");
-        ffmpeg.setTimeout(10 * 1000); //10 seconds
+        ffmpeg.setTimeout(AppConstants.FFMPEG_COMMAND_TIMEOUT * 1000); //80 seconds
         ffTask = (CustomFFcommandExecuteAsyncTask) ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
             @Override
             public void onStart() {
