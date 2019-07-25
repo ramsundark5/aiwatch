@@ -55,7 +55,7 @@ public class DetectionResultProcessor {
         }
         //now record
         if(shouldRecordVideo){
-            long waitTimeForRecording = cameraConfig.getRecordingDuration() + AppConstants.PRE_RECORDING_BUFFER;
+            long waitTimeForRecording = cameraConfig.getRecordingDuration() + ( 2 * AppConstants.PRE_RECORDING_BUFFER );
             try {
                 Thread.sleep(waitTimeForRecording);
             } catch (InterruptedException e) {

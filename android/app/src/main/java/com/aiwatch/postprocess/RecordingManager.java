@@ -22,6 +22,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import nl.bravobit.ffmpeg.CustomFFmpeg;
 import nl.bravobit.ffmpeg.CustomResponseHandler;
@@ -49,34 +51,26 @@ public class RecordingManager {
 
     public static String recordToLocal(FrameEvent frameEvent){
         String filePath = null;
-        File inputFileList = getInputFileList(frameEvent);
         try{
-            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
-            if (ffmpeg.isSupported()) {
-                LOGGER.d("FFmpeg is supported");
-            } else {
-                LOGGER.e("FFmpeg is not supported");
-            }
+            File[] inputFileList = getInputFileList(frameEvent);
             filePath = getFilePathToRecord(frameEvent, DEFAULT_VIDEO_EXTENSION);
-            if(inputFileList == null || inputFileList.length() < 1){
+            if(inputFileList == null || inputFileList.length < 1){
                 //nothing to process
                 return null;
             }
-            String inputFilePath = inputFileList.getAbsolutePath();
-            String recordCommand = " -f concat -safe 0 -i " + inputFilePath + " -c copy " + filePath;
-            String[] ffmpegCommand = recordCommand.split("\\s+");
-            String response = ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler("video merging") );
-            LOGGER.d("record to local returned "+ response);
+            List<String> inputPathsList = new ArrayList<>();
+            for(File inputFile : inputFileList){
+                inputPathsList.add(inputFile.getAbsolutePath());
+            }
+            String[] inputVideoPaths = inputPathsList.toArray(new String[0]);
+            VideoMerger videoMerger = new VideoMerger();
+            videoMerger.appendVideo(inputVideoPaths, filePath);
             File outpuFile = new File(filePath);
             if(outpuFile == null || !outpuFile.exists() || outpuFile.length() < 1){
                 filePath = null;
             }
         }catch (Exception e){
             LOGGER.e("Error merging video "+ e.getMessage());
-        }finally {
-            if(inputFileList != null && inputFileList.exists()){
-                inputFileList.delete();
-            }
         }
         return filePath;
     }
@@ -125,65 +119,34 @@ public class RecordingManager {
         return outputFile.getAbsolutePath();
     }
 
-    private static File getInputFileList(FrameEvent frameEvent){
-        File inputFileList = null;
+    private static File[] getInputFileList(FrameEvent frameEvent){
         try{
             File videoFolder = new File(frameEvent.getContext().getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
 
+            final long currentTime = System.currentTimeMillis();
+            int recordingDuration = cameraConfig.getRecordingDuration();
+            if(recordingDuration <= 1){
+                recordingDuration = 15;
+            }
+            long startDurationInSeconds = recordingDuration + ( 2 * AppConstants.PRE_RECORDING_BUFFER);
+            final long startTime = currentTime - (startDurationInSeconds * 1000);
+            final long endTime = currentTime - (AppConstants.PRE_RECORDING_BUFFER * 1000);
             File[] inputFiles = videoFolder.listFiles(file -> {
-                int recordingDuration = cameraConfig.getRecordingDuration();
-                if(recordingDuration <= 1){
-                    recordingDuration = 15;
-                }
-                long currentTime = System.currentTimeMillis();
-                long startTime = recordingDuration + AppConstants.PRE_RECORDING_BUFFER;
-                long endTime = currentTime - ( 2 * AppConstants.PRE_RECORDING_BUFFER );
-
                 String cameraIdPrefix = cameraConfig.getId() + "-";
                 long lastModified = file.lastModified();
-                long timeElapsed = currentTime - lastModified;
                 boolean isFileBelongToCamera = file.getName().startsWith(cameraIdPrefix);
                 boolean isFileBelongToTimeRange = false;
-                if( timeElapsed > startTime && timeElapsed < endTime){
+                if( lastModified > startTime && lastModified < endTime){
                     isFileBelongToTimeRange = true;
                 }
                 return isFileBelongToCamera && isFileBelongToTimeRange;
             });
-            inputFileList = File.createTempFile(UUID.randomUUID().toString(), ".txt");
-            generateList(inputFiles, inputFileList);
+            return inputFiles;
         }catch(Exception e){
             LOGGER.e(e, "Error generating inout file list");
         }
-        return inputFileList;
-    }
-
-    /**
-     * Generate an ffmpeg file list
-     * @param inputs Input files for ffmpeg
-     * @return output File
-     */
-    private static File generateList(File[] inputs, File outputFile) {
-        Writer writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
-            for (File input: inputs) {
-                writer.write("file '" + input.getAbsolutePath() + "'\n");
-                LOGGER.d( "Writing to list file: file '" + input + "'");
-            }
-            LOGGER.d( "Wrote list file to " + outputFile.getAbsolutePath());
-        } catch (IOException e) {
-            LOGGER.e(e, "Error generating list for merging");
-            return null;
-        }  finally {
-            try {
-                if (writer != null)
-                    writer.close();
-            } catch (IOException ex) {
-                LOGGER.e(ex, "Error closing resource after video merging");
-            }
-        }
-        return outputFile;
+        return null;
     }
 }
 

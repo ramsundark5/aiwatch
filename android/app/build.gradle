@@ -140,8 +140,6 @@ crashlytics {
 }
 
 dependencies {
-    implementation project(':@react-native-community_netinfo')
-    implementation project(':react-native-admob')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.core:core:1.0.2'
@@ -166,6 +164,8 @@ dependencies {
     }
     implementation 'org.apache.commons:commons-collections4:4.3'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.mp4parser:muxer:1.9.39'
+
 
     //tflite
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
@@ -196,6 +196,8 @@ dependencies {
     implementation project(':react-native-config')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-iap')
+    implementation project(':@react-native-community_netinfo')
+    implementation project(':react-native-admob')
 }
 
 repositories {
