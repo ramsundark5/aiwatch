@@ -62,7 +62,9 @@ public class DetectionResultProcessor {
                LOGGER.e(e, "Error trying to wait till recording finishes");
             }
             videoPath = RecordingManager.recordToLocal(frameEvent);
-            gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
+            if(videoPath != null){
+                gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
+            }
         }
 
         if(isResultInteresting){

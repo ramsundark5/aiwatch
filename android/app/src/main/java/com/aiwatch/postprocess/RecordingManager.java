@@ -48,6 +48,7 @@ public class RecordingManager {
     }
 
     public static String recordToLocal(FrameEvent frameEvent){
+        String filePath = null;
         File inputFileList = getInputFileList(frameEvent);
         try{
             CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(frameEvent.getContext());
@@ -56,17 +57,20 @@ public class RecordingManager {
             } else {
                 LOGGER.e("FFmpeg is not supported");
             }
-            String filePath = getFilePathToRecord(frameEvent, DEFAULT_VIDEO_EXTENSION);
-            if(inputFileList == null){
+            filePath = getFilePathToRecord(frameEvent, DEFAULT_VIDEO_EXTENSION);
+            if(inputFileList == null || inputFileList.length() < 1){
                 //nothing to process
                 return null;
             }
             String inputFilePath = inputFileList.getAbsolutePath();
-            String recordCommand = " -f concat -i " + inputFilePath + " -c copy " + filePath;
+            String recordCommand = " -f concat -safe 0 -i " + inputFilePath + " -c copy " + filePath;
             String[] ffmpegCommand = recordCommand.split("\\s+");
             String response = ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler("video merging") );
             LOGGER.d("record to local returned "+ response);
-            return filePath;
+            File outpuFile = new File(filePath);
+            if(outpuFile == null || !outpuFile.exists() || outpuFile.length() < 1){
+                filePath = null;
+            }
         }catch (Exception e){
             LOGGER.e("Error merging video "+ e.getMessage());
         }finally {
@@ -74,7 +78,7 @@ public class RecordingManager {
                 inputFileList.delete();
             }
         }
-        return null;
+        return filePath;
     }
 
     public static String saveToGdrive(Context context, long cameraId, String inputFilePath, String mimeType, String extension){
@@ -132,11 +136,16 @@ public class RecordingManager {
                 if(recordingDuration <= 1){
                     recordingDuration = 15;
                 }
+                long currentTime = System.currentTimeMillis();
+                long startTime = recordingDuration + AppConstants.PRE_RECORDING_BUFFER;
+                long endTime = currentTime - ( 2 * AppConstants.PRE_RECORDING_BUFFER );
+
                 String cameraIdPrefix = cameraConfig.getId() + "-";
                 long lastModified = file.lastModified();
+                long timeElapsed = currentTime - lastModified;
                 boolean isFileBelongToCamera = file.getName().startsWith(cameraIdPrefix);
                 boolean isFileBelongToTimeRange = false;
-                if(System.currentTimeMillis() - lastModified > (recordingDuration + AppConstants.PRE_RECORDING_BUFFER)){
+                if( timeElapsed > startTime && timeElapsed < endTime){
                     isFileBelongToTimeRange = true;
                 }
                 return isFileBelongToCamera && isFileBelongToTimeRange;
