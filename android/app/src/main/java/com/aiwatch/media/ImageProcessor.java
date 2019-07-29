@@ -103,8 +103,9 @@ public class ImageProcessor {
     }
 
     private long getWaitPeriod(CameraConfig cameraConfig){
-        long waitPeriod = cameraConfig.getWaitPeriodAfterDetection();
-        if(cameraConfig.isTestModeEnabled()){
+        long waitPeriodInMins = cameraConfig.getWaitPeriodAfterDetection();
+        long waitPeriod = waitPeriodInMins * 60;
+        if(cameraConfig.isTestModeEnabled() || waitPeriod < 30){
             waitPeriod = 45;
         }
         return waitPeriod;

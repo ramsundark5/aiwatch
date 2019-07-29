@@ -17,7 +17,6 @@ import com.aiwatch.media.db.CameraConfig;
 import com.google.common.net.MediaType;
 
 import org.greenrobot.essentials.io.FileUtils;
-import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.UUID;
 
@@ -82,23 +81,23 @@ public class DetectionResultProcessor {
     private String saveImage(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
         try {
             String inputFilePath = frameEvent.getImageFilePath();
-            String outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".jpg");
+            String outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".png");
             FileUtils.copyFile(inputFilePath, outputFilePath);
-            RectF location = objectDetectionResult.getLocation();
+            /*RectF location = objectDetectionResult.getLocation();
             if(location != null){
                 FileOutputStream fos=new FileOutputStream(outputFilePath);
                 Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFilePath);
                 //if bounding box needed, comment out the above line and uncomment the below ones
                 drawBoundingBox(bitmapOutput, location);
-                bitmapOutput.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                bitmapOutput.compress(Bitmap.CompressFormat.PNG, 90, fos);
                 fos.flush();
                 fos.close();
-            }
+            }*/
             LOGGER.d("image filepath is " + outputFilePath);
             return outputFilePath;
         }
         catch (Exception e) {
-            LOGGER.e(e.getMessage());
+            LOGGER.e(e, e.getMessage());
         }
         return null;
     }
