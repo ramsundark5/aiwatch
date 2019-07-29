@@ -15,6 +15,7 @@ import com.aiwatch.firebase.FirebaseAlarmEventManager;
 import com.aiwatch.firebase.FirebaseAuthManager;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseCameraManager;
+import com.aiwatch.firebase.FirebaseSyncManager;
 import com.aiwatch.media.FFmpegConnectionTester;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -184,6 +185,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
             Settings settings = gson.fromJson(jsonObject.toString(), Settings.class);
             SettingsDao settingsDao = new SettingsDao();
+            Settings settingsBeforeSave = settingsDao.getSettings();
             settingsDao.putSettings(settings);
             if (settings.getId() == 0) {
                 throw new Exception("Error trying to save settings. Please try again.");
@@ -194,9 +196,11 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             WritableMap settingsMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
             promise.resolve(settingsMap);
 
-            //resync if google account is connected
-            if(settings.isGoogleAccountConnected()){
+            //resync if google account just got connected
+            if(settings.isGoogleAccountConnected() && !settingsBeforeSave.isGoogleAccountConnected()){
                 getFirebaseUpdates();
+                FirebaseSyncManager firebaseSyncManager = new FirebaseSyncManager();
+                firebaseSyncManager.sync(reactContext);
             }
         } catch (Exception e) {
             promise.reject(e);
