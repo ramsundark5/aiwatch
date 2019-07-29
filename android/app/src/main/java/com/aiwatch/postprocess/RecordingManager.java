@@ -13,20 +13,11 @@ import com.aiwatch.media.db.CameraConfig;
 import com.aiwatch.media.db.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.google.common.net.MediaType;
-
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.CustomResponseHandler;
 
 public class RecordingManager {
 
