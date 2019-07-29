@@ -25,7 +25,7 @@
     },
     {
       "id": "2:4322453221154582630",
-      "lastPropertyId": "20:7606328243045271318",
+      "lastPropertyId": "22:5590112732721634530",
       "name": "CameraConfig",
       "properties": [
         {
@@ -107,6 +107,14 @@
         {
           "id": "20:7606328243045271318",
           "name": "lastModified"
+        },
+        {
+          "id": "21:4754032640434830999",
+          "name": "videoUrlWithAuth"
+        },
+        {
+          "id": "22:5590112732721634530",
+          "name": "monitoringEnabled"
         }
       ],
       "relations": []

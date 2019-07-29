@@ -51,7 +51,7 @@ class Settings extends Component{
       const { updateSettings } = this.props;
       updateSettings({ isLoading: true });
       try{
-        updateSettings({ notificationEnabled: value });
+        updateSettings({ isNotificationEnabled: value });
       }finally{
         updateSettings({ isLoading: false });
       }
@@ -97,7 +97,7 @@ class Settings extends Component{
     const { settings } = this.props;
     return (
       <Switch
-        value={settings.notificationEnabled}
+        value={settings.isNotificationEnabled}
         onValueChange={value => this.onNotificationEnabledChange(value)}
       />
     );

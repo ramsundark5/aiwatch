@@ -9,7 +9,8 @@ public class Settings {
     @Id
     private long id;
     private boolean isGoogleAccountConnected;
-    private boolean notificationEnabled;
+    private boolean isNotificationEnabled;
+    private boolean isNoAdsPurchased;
 
     public long getId() {
         return id;
@@ -28,10 +29,18 @@ public class Settings {
     }
 
     public boolean isNotificationEnabled() {
-        return notificationEnabled;
+        return isNotificationEnabled;
     }
 
     public void setNotificationEnabled(boolean notificationEnabled) {
-        this.notificationEnabled = notificationEnabled;
+        isNotificationEnabled = notificationEnabled;
+    }
+
+    public boolean isNoAdsPurchased() {
+        return isNoAdsPurchased;
+    }
+
+    public void setNoAdsPurchased(boolean noAdsPurchased) {
+        isNoAdsPurchased = noAdsPurchased;
     }
 }

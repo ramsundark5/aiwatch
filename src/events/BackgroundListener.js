@@ -2,7 +2,9 @@ import { NativeEventEmitter } from 'react-native';
 import { store } from '../store/Store';
 import { addEvents } from '../store/EventsStore';
 import { updateStatus } from '../store/CamerasStore';
+import { updateSettings } from '../store/SettingsStore';
 import RNSmartCam from '../native/RNSmartCam';
+import Logger from '../common/Logger';
 class BackgroundListener{
 
     init(){
@@ -16,6 +18,8 @@ class BackgroundListener{
             'STATUS_CHANGED_EVENT_JS_EVENT',
             this.handleCameraStatusChange
         );
+
+        this.loadSettings();
     }
 
     handleNewDetectionEvent = (event) => {
@@ -24,6 +28,15 @@ class BackgroundListener{
 
     handleCameraStatusChange = (event) => {
         store.dispatch(updateStatus(event));
+    }
+
+    async loadSettings(){
+        try{
+            let settings = await RNSmartCam.getSettings();
+            store.dispatch(updateSettings(settings));
+        }catch(err){
+            Logger.log(err);
+        }
     }
 }
 
