@@ -23,16 +23,16 @@ export default class RTSPVideoPlayer extends Component {
           "--realrtsp-caching=" + 150
         ]}
         endingViewText={{
-          endingText: "end",
-          reloadBtnText: "reload",
-          nextBtnText: "next"
+          endingText: "End",
+          reloadBtnText: "Reload",
+          nextBtnText: "Next"
         }}
         errorViewText={{
-          errorText: "error",
-          reloadBtnText: "reload"
+          errorText: "Error",
+          reloadBtnText: "Reload"
         }}
         vipEndViewText={{
-          vipEndText: "end",
+          vipEndText: "End",
           boughtBtnText: "Please buy and watch now to buy"
         }}
       />
