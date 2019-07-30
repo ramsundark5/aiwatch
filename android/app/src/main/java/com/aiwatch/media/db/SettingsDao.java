@@ -8,6 +8,9 @@ public class SettingsDao {
 
     public Settings putSettings(Settings settings){
         Box<Settings> settingsBox = ObjectBox.get().boxFor(Settings.class);
+        //remove all existing entries
+        settingsBox.removeAll();
+
         settingsBox.put(settings);
         return settings;
     }
