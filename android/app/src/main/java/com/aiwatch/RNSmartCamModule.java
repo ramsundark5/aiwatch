@@ -198,9 +198,9 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
             //resync if google account just got connected
             if(settings.isGoogleAccountConnected() && !settingsBeforeSave.isGoogleAccountConnected()){
-                getFirebaseUpdates();
                 FirebaseSyncManager firebaseSyncManager = new FirebaseSyncManager();
                 firebaseSyncManager.sync(reactContext);
+                getFirebaseUpdates();
             }
         } catch (Exception e) {
             promise.reject(e);
@@ -299,6 +299,19 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         }
     }
 
+
+    @ReactMethod
+    public void sync(final Promise promise) {
+        try{
+            FirebaseSyncManager firebaseSyncManager = new FirebaseSyncManager();
+            firebaseSyncManager.sync(reactContext);
+            getFirebaseUpdates();
+        }catch(Exception e){
+            LOGGER.e(e, e.getMessage());
+        } finally {
+            promise.resolve("sync completed");
+        }
+    }
 
     private void getFirebaseUpdates(){
         ExecutorService executorService = Executors.newSingleThreadExecutor();

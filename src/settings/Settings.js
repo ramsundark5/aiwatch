@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import RNSmartCam from '../native/RNSmartCam';
-import { List, Switch } from 'react-native-paper';
+import { List, Switch, Button } from 'react-native-paper';
+import Theme from '../common/Theme';
 import { withNavigation } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { updateSettings } from '../store/SettingsStore';
@@ -9,7 +10,12 @@ import GoogleConnectStatus from './GoogleConnectStatus';
 import { connect } from 'react-redux';
 import InAppPurchase from './InAppPurchase';
 import {LogView} from 'react-native-device-log';
+import Logger from '../common/Logger';
 class Settings extends Component{
+
+    state = {
+      syncing: false
+    }
 
     static navigationOptions = {
       headerTitle: 'Settings',
@@ -62,6 +68,17 @@ class Settings extends Component{
       updateSettings({ showDeviceLogs: value });
     }
 
+    async onSyncPress(){
+      try{
+        this.setState({syncing: true});
+        await RNSmartCam.sync();
+      }catch(err){
+        Logger.log('error sycing to firebase' + err);
+      }finally{
+        this.setState({syncing: false});
+      }
+    }
+
     render(){
       const { isLoading } = this.props;
       return(
@@ -79,6 +96,7 @@ class Settings extends Component{
                   description="Required for troubleshooting purpose"
                   right={() => this.renderDeviceLogsEnabled()} />
             </List.Section>
+            {this.renderSyncButton()}
             <InAppPurchase {...this.props}/>
             {this.renderDeviceLogs()}
           </View>
@@ -122,6 +140,19 @@ class Settings extends Component{
       <View style={{height: 600, paddingTop: 30}}>
         <LogView inverted={false} multiExpanded={true} timeStampFormat='HH:mm:ss'></LogView>
       </View>
+    )
+  }
+
+  renderSyncButton(){
+    const { settings } = this.props;
+    const { syncing } = this.state;
+    if(!settings.isGoogleAccountConnected){
+      return null;
+    }
+    return(
+      <Button style={{marginLeft: 30, marginRight: 30}} mode='outlined' color={Theme.primary} loading={syncing} onPress={() => this.onSyncPress()}>
+        Sync Configs
+      </Button>
     )
   }
 }
