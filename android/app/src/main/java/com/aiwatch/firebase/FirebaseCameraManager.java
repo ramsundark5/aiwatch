@@ -80,6 +80,7 @@ public class FirebaseCameraManager {
         existingCameraConfig.setName(updatedCameraConfig.getName());
         existingCameraConfig.setUsername(updatedCameraConfig.getUsername());
         existingCameraConfig.setLastModified(updatedCameraConfig.getLastModified());
+        existingCameraConfig.setUuid(updatedCameraConfig.getUuid());
         //existingCameraConfig.setPassword(updatedCameraConfig.getPassword());
         existingCameraConfig.setVideoCodec(updatedCameraConfig.getVideoCodec());
         cameraConfigDao.putCamera(existingCameraConfig);

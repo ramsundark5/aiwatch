@@ -34,7 +34,7 @@ export default class MonitorInfo extends Component {
 
         <List.Section title='Recording settings'>
           <List.Item title='Record Duration (seconds)' 
-                right={() => this.renderPicker('recordingDuration', [5, 15, 30, 60])}/>
+                right={() => this.renderPicker('recordingDuration', [15, 30, 45, 60])}/>
           <List.Item title='Wait Duration (mins)'  
                 right={() => this.renderPicker('waitPeriodAfterDetection', [1, 5, 10, 15, 30])}/>
         </List.Section>
