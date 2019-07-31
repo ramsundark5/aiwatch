@@ -28,7 +28,7 @@ public class FirebaseAlarmEventDao {
                 db.collection("users")
                         .document(firebaseUser.getUid())
                         .collection("events")
-                        .document(String.valueOf(alarmEvent.getId()))
+                        .document(String.valueOf(alarmEvent.getUuid()))
                         .set(alarmEvent)
                         .addOnSuccessListener(documentReference -> LOGGER.d("Alarmevent added to firebase"))
                         .addOnFailureListener(e -> LOGGER.e(e, "Failed adding alarmevent to firebase"));
@@ -39,7 +39,7 @@ public class FirebaseAlarmEventDao {
         });
     }
 
-    public void deleteEvents(Context context, List<Object> eventIdList){
+    public void deleteEvents(Context context, List<AlarmEvent> eventIdList){
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
@@ -52,9 +52,8 @@ public class FirebaseAlarmEventDao {
                 CollectionReference eventCollectionRef = db.collection("users")
                         .document(firebaseUser.getUid())
                         .collection("events");
-                for(Object eventIdObject: eventIdList){
-                    String eventId = (String) eventIdObject;
-                    eventCollectionRef.document(eventId)
+                for(AlarmEvent alarmEvent: eventIdList){
+                    eventCollectionRef.document(alarmEvent.getUuid())
                             .delete()
                             .addOnSuccessListener(documentReference -> LOGGER.d("Alarmevent deleted from firebase"))
                             .addOnFailureListener(e -> LOGGER.e(e, "Failed deleting alarmevent from firebase"));

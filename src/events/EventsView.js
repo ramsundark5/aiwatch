@@ -168,7 +168,7 @@ class EventsView extends React.Component {
         }
         return(
           <View style={styles.deleteButtonStyle}>
-            <Button icon="delete" mode="outlined" onPress={() => this.deleteEvents()}>
+            <Button icon="delete" mode="contained" onPress={() => this.deleteEvents()}>
               Delete
             </Button>
           </View>

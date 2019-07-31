@@ -39,6 +39,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -160,19 +161,21 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void deleteEvents(ReadableArray eventIdJsArray, final Promise promise) {
-        if (eventIdJsArray == null || eventIdJsArray.size() <= 0) {
+    public void deleteEvents(ReadableArray eventsJsArray, final Promise promise) {
+        if (eventsJsArray == null || eventsJsArray.size() <= 0) {
             promise.resolve("nothing to delete");
         }
         try {
             AlarmEventDao alarmEventDao = new AlarmEventDao();
-            List<Object> eventIdList = eventIdJsArray.toArrayList();
-            for (Object eventId : eventIdList) {
-                alarmEventDao.deleteEvent(((Double) (eventId)).longValue());
+            JSONArray eventsJsonArray = ConversionUtil.convertArrayToJson(eventsJsArray);
+            TypeToken<List<AlarmEvent>> alarmEventTypeToken = new TypeToken<List<AlarmEvent>>(){};
+            List<AlarmEvent> eventList = gson.fromJson(eventsJsonArray.toString(), alarmEventTypeToken.getType());
+            for (AlarmEvent alarmEvent : eventList) {
+                alarmEventDao.deleteEvent(alarmEvent.getId());
             }
             LOGGER.d("Events deleted");
             promise.resolve("Events deleted");
-            firebaseAlarmEventDao.deleteEvents(reactContext, eventIdList);
+            firebaseAlarmEventDao.deleteEvents(reactContext, eventList);
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());

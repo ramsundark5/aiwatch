@@ -58,7 +58,7 @@ public class FFmpegFrameExtractor {
         if(videoUrl != null && !videoUrl.startsWith("rtsp")){
             rtspPrefix = "";
         }
-        String command = rtspPrefix + " -i " + videoUrl + frameExtractCommand + recordCommand;
+        String command = rtspPrefix + "-i " + videoUrl + frameExtractCommand + recordCommand;
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.setTimeout(AppConstants.FFMPEG_COMMAND_TIMEOUT * 1000); //80 seconds
         ffTask = (CustomFFcommandExecuteAsyncTask) ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
