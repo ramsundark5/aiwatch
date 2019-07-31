@@ -28,7 +28,12 @@ public class FFmpegConnectionTester {
             String fileName = "test" + System.currentTimeMillis()+".jpg";
             outputFile = new File(context.getFilesDir(), fileName);
             String frameExtractCommand =  " -s 300x300 -vframes 1 "+outputFile;
-            String command = "-rtsp_transport tcp -i " + cameraConfig.getVideoUrlWithAuth() + frameExtractCommand;
+            String videoUrl = cameraConfig.getVideoUrlWithAuth();
+            String rtspPrefix = "-rtsp_transport tcp ";
+            if(videoUrl != null && !videoUrl.startsWith("rtsp")){
+                rtspPrefix = "";
+            }
+            String command = rtspPrefix + "-i " + videoUrl + frameExtractCommand;
             String[] ffmpegCommand = command.split("\\s+");
             ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler("connection tester"));
             Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFile.getAbsolutePath());

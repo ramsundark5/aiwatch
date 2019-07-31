@@ -19,7 +19,7 @@ Todo
 - [x] Notification icons
 - [x] Sync events and camera config
 - [x] Splash screen
-- [ ] Test with non-rtsp url
+- [x] Test with non-rtsp url
 - [ ] Face recognition
 - [ ] Smartthings integration or IFTTT
 

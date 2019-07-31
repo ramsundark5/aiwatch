@@ -116,9 +116,11 @@ public class GDriveServiceHelper {
     }
 
     public void downloadFile(String fileId, String outputFilePath) throws IOException {
-        OutputStream out = new FileOutputStream(outputFilePath);
-        mDriveService.files().get(fileId)
-                .executeMediaAndDownloadTo(out);
+        if(fileId != null){
+            OutputStream out = new FileOutputStream(outputFilePath);
+            mDriveService.files().get(fileId)
+                    .executeMediaAndDownloadTo(out);
+        }
     }
 
     public Task<Void> deleteFolderFile(String fileId) throws IOException {

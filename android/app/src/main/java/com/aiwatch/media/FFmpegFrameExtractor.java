@@ -54,7 +54,11 @@ public class FFmpegFrameExtractor {
         String recordCommand =  videoSegmentPrefix + videoPath + "/" + cameraConfig.getId() +"-%Y%m%d_%H:%M:%S.mp4 ";
         String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
         //String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
-        String command = "-rtsp_transport tcp -i " + videoUrl + frameExtractCommand + recordCommand;
+        String rtspPrefix = "-rtsp_transport tcp ";
+        if(videoUrl != null && !videoUrl.startsWith("rtsp")){
+            rtspPrefix = "";
+        }
+        String command = rtspPrefix + " -i " + videoUrl + frameExtractCommand + recordCommand;
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.setTimeout(AppConstants.FFMPEG_COMMAND_TIMEOUT * 1000); //80 seconds
         ffTask = (CustomFFcommandExecuteAsyncTask) ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {

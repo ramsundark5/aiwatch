@@ -87,10 +87,14 @@ public class FirebaseAlarmEventManager {
             String filePath = getFilePathToRecord(alarmEvent, context);
             String imageDownloadPath = filePath + RecordingManager.DEFAULT_IMAGE_EXTENSION;
             String videoDownloadPath = filePath + RecordingManager.DEFAULT_VIDEO_EXTENSION;
-            gDriveServiceHelper.downloadFile(alarmEvent.getCloudImagePath(), imageDownloadPath);
-            alarmEvent.setThumbnailPath(imageDownloadPath);
-            gDriveServiceHelper.downloadFile(alarmEvent.getCloudVideoPath(), videoDownloadPath);
-            alarmEvent.setVideoPath(videoDownloadPath);
+            if(alarmEvent.getCloudImagePath() != null && !alarmEvent.getCloudImagePath().isEmpty()){
+                gDriveServiceHelper.downloadFile(alarmEvent.getCloudImagePath(), imageDownloadPath);
+                alarmEvent.setThumbnailPath(imageDownloadPath);
+            }
+            if(alarmEvent.getCloudVideoPath() != null && !alarmEvent.getCloudVideoPath().isEmpty()){
+                gDriveServiceHelper.downloadFile(alarmEvent.getCloudVideoPath(), videoDownloadPath);
+                alarmEvent.setVideoPath(videoDownloadPath);
+            }
         }catch(Exception e){
             LOGGER.e(e, "Error downloading file from gdrive");
         }
