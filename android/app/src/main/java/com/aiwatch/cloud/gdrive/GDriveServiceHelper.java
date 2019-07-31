@@ -36,13 +36,13 @@ import java.util.List;
 public class GDriveServiceHelper {
     private static final Logger LOGGER = new Logger();
     private final Drive mDriveService;
-    public static String TYPE_AUDIO = "application/vnd.google-apps.audio";
-    public static String TYPE_GOOGLE_DRIVE_FILE = "application/vnd.google-apps.file";
-    public static String TYPE_GOOGLE_DRIVE_FOLDER = "application/vnd.google-apps.folder";
-    public static String TYPE_PHOTO = "application/vnd.google-apps.photo";
-    public static String TYPE_UNKNOWN = "application/vnd.google-apps.unknown";
-    public static String TYPE_VIDEO = "application/vnd.google-apps.video";
-    public static String APP_FOLDER_NAME = "aiwatch";
+    public static final String TYPE_AUDIO = "application/vnd.google-apps.audio";
+    public static final String TYPE_GOOGLE_DRIVE_FILE = "application/vnd.google-apps.file";
+    public static final String TYPE_GOOGLE_DRIVE_FOLDER = "application/vnd.google-apps.folder";
+    public static final String TYPE_PHOTO = "application/vnd.google-apps.photo";
+    public static final String TYPE_UNKNOWN = "application/vnd.google-apps.unknown";
+    public static final String TYPE_VIDEO = "application/vnd.google-apps.video";
+    public static final String APP_FOLDER_NAME = "aiwatch";
 
     public GDriveServiceHelper(Drive driveService) {
         mDriveService = driveService;
@@ -51,6 +51,7 @@ public class GDriveServiceHelper {
     public String createFolder(String folderName, String parentFolderId, boolean isAppFolder) {
         List<String> parent;
         String folderId;
+        LOGGER.d("Ready to create folder " + folderName);
         if (parentFolderId == null) {
             String parentFolderName = isAppFolder ? "root" : APP_FOLDER_NAME;
             parent = Collections.singletonList(parentFolderName);
@@ -75,7 +76,7 @@ public class GDriveServiceHelper {
             folderId = googleFile.getId();
         }catch(IOException ioe){
             //ignore exception if folder already exists
-            LOGGER.e("error creating folder "+ioe);
+            LOGGER.e(ioe, "error creating folder ");
         }
         return folderId;
     }
@@ -84,6 +85,7 @@ public class GDriveServiceHelper {
         String folderId = null;
         try{
             String query = "mimeType = '" + TYPE_GOOGLE_DRIVE_FOLDER + "' and name = '" + folderName + "' and trashed = false";
+            LOGGER.d("gdrive query used "+query);
             if(parentFolderId != null && !parentFolderId.equals("root")){
                 query = query + " and '" + parentFolderId + "' in parents";
             }
@@ -93,7 +95,7 @@ public class GDriveServiceHelper {
                 folderId = files.getFiles().get(0).getId();
             }
         }catch(Exception e){
-            LOGGER.e("Exception getting folderId "+e.getMessage());
+            LOGGER.e(e, "Exception getting folderId ");
         }
         return folderId;
     }

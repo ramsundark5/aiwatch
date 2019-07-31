@@ -37,19 +37,25 @@ class Settings extends Component{
       this.focusListener.remove();
     }
 
-    componentDidUpdate(prevProps){
+    async componentDidUpdate(prevProps){
       const prevSettings  = prevProps.settings;
       const currentSettings = this.props.settings;
       if (currentSettings.isGoogleAccountConnected !== prevSettings.isGoogleAccountConnected 
         || currentSettings.isNotificationEnabled !== prevSettings.isNotificationEnabled 
         || currentSettings.isNoAdsPurchased !== prevSettings.isNoAdsPurchased ) {
-          RNSmartCam.putSettings(this.props.settings);
+          try{
+            let updatedSettings = await RNSmartCam.putSettings(currentSettings);
+            console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));
+          }catch(err){
+            console.log('Error saving settings to db ' + err);
+          }
       }
     }
 
     async loadSettings(){
       const { updateSettings } = this.props;
       let settings = await RNSmartCam.getSettings();
+      console.log('settings from db '+ JSON.stringify(settings));
       updateSettings(settings);
     }
 

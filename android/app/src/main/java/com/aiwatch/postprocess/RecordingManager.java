@@ -61,7 +61,7 @@ public class RecordingManager {
                 filePath = null;
             }
         }catch (Exception e){
-            LOGGER.e("Error merging video "+ e.getMessage());
+            LOGGER.e(e, "Error merging video "+ e.getMessage());
         }
         return filePath;
     }
@@ -93,7 +93,7 @@ public class RecordingManager {
             com.google.api.services.drive.model.File uploadedFileMetadata = gDriveServiceHelper.uploadFile(fileName, monthFolderId, inputFilePath, mimeType);
             return uploadedFileMetadata.getId();
         }catch(Exception e){
-            LOGGER.e("error saving to gdrive "+e);
+            LOGGER.e(e, "error saving to gdrive ");
             NotificationManager.sendStringNotification(context, "Cannot upload to Google Drive. Reconnect your account from settings screen.");
         }
         return null;

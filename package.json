@@ -6,7 +6,7 @@
     "postinstall": "npx jetify",
     "start": "react-native start",
     "test": "jest",
-    "release": "cd android && ./gradlew bundleRelease",
+    "release": "cd android && ./gradlew clean bundleRelease",
     "run-release": "react-native run-android --variant=release",
     "lint": "eslint .",
     "jetify": "npx jetify"
