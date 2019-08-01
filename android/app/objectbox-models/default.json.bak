@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "3:2617017062261545181",
+      "lastPropertyId": "5:6208499642025117182",
       "name": "Settings",
       "properties": [
         {
@@ -17,8 +17,12 @@
           "name": "isGoogleAccountConnected"
         },
         {
-          "id": "3:2617017062261545181",
-          "name": "notificationEnabled"
+          "id": "4:5735739598123656470",
+          "name": "isNotificationEnabled"
+        },
+        {
+          "id": "5:6208499642025117182",
+          "name": "isNoAdsPurchased"
         }
       ],
       "relations": []
@@ -188,7 +192,9 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    2617017062261545181
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

@@ -8,11 +8,13 @@ import java.util.Date;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Unique;
 
 @Entity
 public class CameraConfig implements Serializable {
     @Id
     private long id;
+    @Unique
     private String uuid;
     private String name;
     private String brand;

@@ -57,7 +57,7 @@ public class FirebaseAlarmEventManager {
                 AlarmEvent existingAlarmEvent = alarmEventDao.getEventByUUID(alarmEvent.getUuid());
                 switch (dc.getType()) {
                     case ADDED:
-                        if(alarmEvent == null){
+                        if(existingAlarmEvent == null){
                             //alarm event doesn't exist, so add it
                             addNewAlarmEvent(alarmEvent, context);
                         }

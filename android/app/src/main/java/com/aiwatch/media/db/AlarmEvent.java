@@ -2,16 +2,17 @@ package com.aiwatch.media.db;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Unique;
 
 @Entity
 public class AlarmEvent implements Serializable {
 
     @Id
     private long id;
+    @Unique
     private String uuid;
     private String cameraName;
     private long cameraId;
