@@ -54,12 +54,15 @@ public class FirebaseAlarmEventManager {
             }
             try{
                 AlarmEvent alarmEvent = alarmEventSnapshot.toObject(AlarmEvent.class);
+                AlarmEvent existingAlarmEvent = alarmEventDao.getEventByUUID(alarmEvent.getUuid());
                 switch (dc.getType()) {
                     case ADDED:
-                        addNewAlarmEvent(alarmEvent, context);
+                        if(alarmEvent == null){
+                            //alarm event doesn't exist, so add it
+                            addNewAlarmEvent(alarmEvent, context);
+                        }
                         break;
                     case REMOVED:
-                        AlarmEvent existingAlarmEvent = alarmEventDao.getEventByUUID(alarmEvent.getUuid());
                         if(existingAlarmEvent != null){
                             alarmEventDao.deleteEvent(existingAlarmEvent.getId());
                         }

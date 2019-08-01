@@ -9,9 +9,9 @@ export default class EventIcon extends PureComponent{
     render(){
         const { event } = this.props;
         let iconName = 'directions-walk';
-        if(event.message === 'VEHICLE_DETECTED_EVENT'){
+        if(event.message && event.message.toLowerCase().includes('vehicle')){
             iconName = 'directions-car';
-        }else if(event.message === 'ANIMAL_DETECTED_EVENT'){
+        }else if(event.message && event.message.toLowerCase().includes('animal')){
             iconName = 'pets';
         }
         return(
