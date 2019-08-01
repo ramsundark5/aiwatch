@@ -2,7 +2,7 @@ package com.aiwatch.firebase;
 
 import android.content.Context;
 import com.aiwatch.Logger;
-import com.aiwatch.media.db.Settings;
+import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

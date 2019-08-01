@@ -1,6 +1,6 @@
 package com.aiwatch.media;
 import android.content.Context;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 
 public class FrameEvent {
 

@@ -2,7 +2,7 @@ package com.aiwatch.firebase;
 
 import com.aiwatch.Logger;
 import com.aiwatch.R;
-import com.aiwatch.media.db.AlarmEvent;
+import com.aiwatch.models.AlarmEvent;
 import com.aiwatch.postprocess.NotificationManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

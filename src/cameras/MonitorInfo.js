@@ -34,9 +34,9 @@ export default class MonitorInfo extends Component {
 
         <List.Section title='Recording settings'>
           <List.Item title='Record Duration (seconds)' 
-                right={() => this.renderPicker('recordingDuration', [15, 30, 45, 60])}/>
+                right={() => this.renderPicker('recordingDuration', [10, 15, 30, 45, 60], 15)}/>
           <List.Item title='Wait Duration (mins)'  
-                right={() => this.renderPicker('waitPeriodAfterDetection', [1, 5, 10, 15, 30])}/>
+                right={() => this.renderPicker('waitPeriodAfterDetection', [1, 5, 10, 15, 30], 5)}/>
         </List.Section>
 
         <List.Section title='Test Mode'>
@@ -57,11 +57,13 @@ export default class MonitorInfo extends Component {
     );
   }
 
-  renderPicker(name, options){
+  renderPicker(name, options, defaultValue){
     const { props } = this;
+    const valueFromDB = props.cameraConfig[name];
+    const pickerValue = valueFromDB ? valueFromDB : defaultValue;
     return(
       <Picker
-        selectedValue={props.cameraConfig[name]}
+        selectedValue={pickerValue}
         style={{height: 50, width: 100}}
         onValueChange={value => props.onConfigChange(name, value)} >
         {options.map((option, index) => (

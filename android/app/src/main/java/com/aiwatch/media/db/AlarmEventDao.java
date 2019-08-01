@@ -1,5 +1,8 @@
 package com.aiwatch.media.db;
 
+import com.aiwatch.models.AlarmEvent;
+import com.aiwatch.models.AlarmEvent_;
+
 import java.util.Date;
 import java.util.List;
 

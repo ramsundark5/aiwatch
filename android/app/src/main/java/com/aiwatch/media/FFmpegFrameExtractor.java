@@ -3,7 +3,7 @@ package com.aiwatch.media;
 import android.content.Context;
 import com.aiwatch.Logger;
 import com.aiwatch.common.AppConstants;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
 import java.io.File;

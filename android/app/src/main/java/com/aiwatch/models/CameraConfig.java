@@ -1,4 +1,4 @@
-package com.aiwatch.media.db;
+package com.aiwatch.models;
 
 import com.google.common.base.Strings;
 import com.google.firebase.firestore.Exclude;

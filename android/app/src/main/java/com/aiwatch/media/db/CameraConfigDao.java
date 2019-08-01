@@ -1,6 +1,9 @@
 package com.aiwatch.media.db;
 
 import com.aiwatch.Logger;
+import com.aiwatch.models.CameraConfig;
+import com.aiwatch.models.CameraConfig_;
+
 import java.util.List;
 import io.objectbox.Box;
 

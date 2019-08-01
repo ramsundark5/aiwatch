@@ -2,7 +2,7 @@ package com.aiwatch.firebase;
 
 import android.content.Context;
 import com.aiwatch.Logger;
-import com.aiwatch.media.db.AlarmEvent;
+import com.aiwatch.models.AlarmEvent;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;

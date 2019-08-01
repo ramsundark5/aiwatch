@@ -1,5 +1,7 @@
 package com.aiwatch.media.db;
 
+import com.aiwatch.models.Settings;
+
 import java.util.List;
 
 import io.objectbox.Box;

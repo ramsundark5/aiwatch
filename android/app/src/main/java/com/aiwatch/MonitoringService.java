@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.DetectionController;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 
 import java.util.List;

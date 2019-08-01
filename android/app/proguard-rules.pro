@@ -7,3 +7,4 @@
 -keep class android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }
 -keep class com.google.api.** {*;}
+-keep class com.aiwatch.models.** {*;}

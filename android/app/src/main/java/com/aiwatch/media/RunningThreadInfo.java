@@ -1,6 +1,6 @@
 package com.aiwatch.media;
 
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 import java.util.concurrent.ExecutorService;
 
 public class RunningThreadInfo {

@@ -2,7 +2,7 @@ package com.aiwatch.media;
 
 import android.content.Context;
 import com.aiwatch.Logger;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;

@@ -1,7 +1,6 @@
 package com.aiwatch.postprocess;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,9 +10,9 @@ import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.media.FrameEvent;
-import com.aiwatch.media.db.AlarmEvent;
+import com.aiwatch.models.AlarmEvent;
 import com.aiwatch.media.db.AlarmEventDao;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 import com.google.common.net.MediaType;
 
 import org.greenrobot.essentials.io.FileUtils;

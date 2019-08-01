@@ -4,7 +4,7 @@ import android.content.Context;
 import com.aiwatch.Logger;
 import com.aiwatch.cloud.gdrive.GDriveServiceHelper;
 import com.aiwatch.cloud.gdrive.GdriveManager;
-import com.aiwatch.media.db.AlarmEvent;
+import com.aiwatch.models.AlarmEvent;
 import com.aiwatch.media.db.AlarmEventDao;
 import com.aiwatch.postprocess.RecordingManager;
 import com.google.android.gms.tasks.Task;

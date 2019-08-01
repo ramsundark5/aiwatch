@@ -2,6 +2,7 @@ package com.aiwatch.firebase;
 
 import android.content.Context;
 import com.aiwatch.Logger;
+import com.aiwatch.models.FirebaseUserData;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.tasks.Task;

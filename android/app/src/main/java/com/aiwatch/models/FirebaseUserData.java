@@ -1,4 +1,4 @@
-package com.aiwatch.firebase;
+package com.aiwatch.models;
 
 import java.util.Date;
 import java.util.Map;

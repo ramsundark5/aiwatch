@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import com.aiwatch.Logger;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

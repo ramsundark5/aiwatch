@@ -3,7 +3,7 @@ package com.aiwatch.firebase;
 import android.content.Context;
 
 import com.aiwatch.Logger;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.concurrent.ExecutorService;

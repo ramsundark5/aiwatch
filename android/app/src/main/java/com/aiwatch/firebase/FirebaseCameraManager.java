@@ -1,7 +1,7 @@
 package com.aiwatch.firebase;
 
 import com.aiwatch.Logger;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;

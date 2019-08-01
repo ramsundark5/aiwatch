@@ -1,4 +1,4 @@
-package com.aiwatch.media.db;
+package com.aiwatch.models;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;

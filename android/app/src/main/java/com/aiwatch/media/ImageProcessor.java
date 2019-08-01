@@ -8,7 +8,7 @@ import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.ai.ObjectDetectionService;
 import com.aiwatch.common.AppConstants;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.CameraConfig;
 import com.aiwatch.postprocess.DetectionResultProcessor;
 import com.google.firebase.perf.metrics.AddTrace;
 

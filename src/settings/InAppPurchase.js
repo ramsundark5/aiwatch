@@ -110,8 +110,8 @@ export default class InAppPurchase extends Component{
             <View style={styles.premiumStyle}>
                 <Button onPress={() => this.buyProduct(NO_ADS_SKU)}>Go Premium $3.99</Button>
                 {this.renderFeatureText('Remove ads')}
+                {this.renderFeatureText('Continous Video Recording (coming soon)')}
                 {this.renderFeatureText('Alexa integration (coming soon)')}
-                {this.renderFeatureText('Region of interest (coming soon)')}
             </View>
         )
     }

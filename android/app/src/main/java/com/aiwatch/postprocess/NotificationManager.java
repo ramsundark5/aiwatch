@@ -18,8 +18,8 @@ import com.aiwatch.media.FrameEvent;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.aiwatch.ai.Events;
 import com.aiwatch.ai.ObjectDetectionResult;
-import com.aiwatch.media.db.AlarmEvent;
-import com.aiwatch.media.db.CameraConfig;
+import com.aiwatch.models.AlarmEvent;
+import com.aiwatch.models.CameraConfig;
 
 public class NotificationManager {
 

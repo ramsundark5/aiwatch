@@ -3,6 +3,7 @@ package com.aiwatch.media.db;
 import android.content.Context;
 
 import com.aiwatch.Logger;
+import com.aiwatch.models.MyObjectBox;
 
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
