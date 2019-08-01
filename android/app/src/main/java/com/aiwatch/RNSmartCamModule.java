@@ -16,6 +16,7 @@ import com.aiwatch.firebase.FirebaseAuthManager;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseCameraManager;
 import com.aiwatch.firebase.FirebaseSyncManager;
+import com.aiwatch.firebase.FirebaseUserDataDao;
 import com.aiwatch.media.FFmpegConnectionTester;
 import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -188,6 +189,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
             Settings settings = gson.fromJson(jsonObject.toString(), Settings.class);
             SettingsDao settingsDao = new SettingsDao();
+            FirebaseUserDataDao firebaseUserDataDao = new FirebaseUserDataDao();
             Settings settingsBeforeSave = settingsDao.getSettings();
             settingsDao.putSettings(settings);
             if (settings.getId() == 0) {
@@ -204,6 +206,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                 FirebaseSyncManager firebaseSyncManager = new FirebaseSyncManager();
                 firebaseSyncManager.sync(reactContext);
                 getFirebaseUpdates();
+                firebaseUserDataDao.registerFCMToken(reactContext);
             }
         } catch (Exception e) {
             promise.reject(e);

@@ -51,6 +51,8 @@ public class FirebaseUserDataDao {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
                 if(firebaseUser != null){
                     sendTokenToDB(firebaseUser, context, token);
+                }else{
+                    LOGGER.d("Firebase not connected. No data sent to firebase.");
                 }
             } catch (Exception e) {
                 LOGGER.e(e, "Error registering token");
@@ -78,6 +80,7 @@ public class FirebaseUserDataDao {
         }
         String adInfoId = getAdInfoId(context);
         deviceTokens.put(adInfoId, token);
+        firebaseUserData.setEmail(firebaseUser.getEmail());
         firebaseUserData.setDeviceTokens(deviceTokens);
         firebaseUserData.setLastUpdated(new Date());
         return firebaseUserData;
