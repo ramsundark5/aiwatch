@@ -198,6 +198,7 @@ dependencies {
     implementation project(':react-native-iap')
     implementation project(':@react-native-community_netinfo')
     implementation project(':react-native-admob')
+    implementation project(':react-native-svg')
 }
 
 repositories {

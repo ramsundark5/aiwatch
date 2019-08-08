@@ -33,6 +33,7 @@
     "react-native-screens": "^1.0.0-alpha.23",
     "react-native-slider": "^0.11.0",
     "react-native-splash-screen": "^3.2.0",
+    "react-native-svg": "^9.6.2",
     "react-native-vector-icons": "^6.6.0",
     "react-native-yz-vlcplayer": "ramsundark5/react-native-yz-vlcplayer#master",
     "react-navigation": "^3.11.1",

@@ -36,11 +36,13 @@ class CameraView extends Component {
 
   onAddCamera(){
     const uuid = AiwatchUtil.uuidv4();
-    this.props.navigation.navigate('EditCamera', {
+   /*  this.props.navigation.navigate('EditCamera', {
       cameraConfig: {
         uuid: uuid
       }
-    });
+    }); */
+
+    this.props.navigation.navigate('RegionOfInterest');
   }
 
   onPlayVideoFullScreen(videoUrl){

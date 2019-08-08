@@ -10,7 +10,7 @@ import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.bugsnag.BugsnagReactNative;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
-
+import com.horcrux.svg.SvgPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
 import com.aiwatch.media.db.ObjectBox;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -34,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new SvgPackage(),
             new NetInfoPackage(),
             new RNAdMobPackage(),
             new RNIapPackage(),

@@ -72,6 +72,9 @@
 		4F298E024F9541248971FE7D /* libRNAdMobManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67AB41F6632543708E900A60 /* libRNAdMobManager.a */; };
 		99701B2BD8B7475188BFE287 /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0765829E655F477BB0759C64 /* libRNCNetInfo.a */; };
 		98997B92F4694165A81EAD84 /* libRNCNetInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 152B646D1F804EBBB79F15A1 /* libRNCNetInfo-tvOS.a */; };
+		900A4CB840FF42FEAD15F546 /* libRNCustomCrop.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E015DC9A0F144F78C9DDFDD /* libRNCustomCrop.a */; };
+		E065EADCB45443F998C26E28 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B573BF8F43343D784F53C1A /* libRNSVG.a */; };
+		F1E7BB377C9E439D86DD11D0 /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 220D89E76B6E4B62A801F448 /* libRNSVG-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -424,6 +427,11 @@
 		0EEF13468C3F4E9693E69741 /* RNCNetInfo.xcodeproj */ = {isa = PBXFileReference; name = "RNCNetInfo.xcodeproj"; path = "../node_modules/@react-native-community/netinfo/ios/RNCNetInfo.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		0765829E655F477BB0759C64 /* libRNCNetInfo.a */ = {isa = PBXFileReference; name = "libRNCNetInfo.a"; path = "libRNCNetInfo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		152B646D1F804EBBB79F15A1 /* libRNCNetInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNCNetInfo-tvOS.a"; path = "libRNCNetInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		5EDD142AC2464F0290CCA6BC /* RNCustomCrop.xcodeproj */ = {isa = PBXFileReference; name = "RNCustomCrop.xcodeproj"; path = "../node_modules/react-native-perspective-image-cropper/ios/RNCustomCrop.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		3E015DC9A0F144F78C9DDFDD /* libRNCustomCrop.a */ = {isa = PBXFileReference; name = "libRNCustomCrop.a"; path = "libRNCustomCrop.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		4D908C6D66134BCDAA3CC07D /* RNSVG.xcodeproj */ = {isa = PBXFileReference; name = "RNSVG.xcodeproj"; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		4B573BF8F43343D784F53C1A /* libRNSVG.a */ = {isa = PBXFileReference; name = "libRNSVG.a"; path = "libRNSVG.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		220D89E76B6E4B62A801F448 /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; name = "libRNSVG-tvOS.a"; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -465,6 +473,8 @@
 				60E140DC38FA497BB13CBE5F /* libRNIap.a in Frameworks */,
 				4F298E024F9541248971FE7D /* libRNAdMobManager.a in Frameworks */,
 				99701B2BD8B7475188BFE287 /* libRNCNetInfo.a in Frameworks */,
+				900A4CB840FF42FEAD15F546 /* libRNCustomCrop.a in Frameworks */,
+				E065EADCB45443F998C26E28 /* libRNSVG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +495,7 @@
 				5E29DCD6B2514BC48AF7C482 /* libRNVectorIcons-tvOS.a in Frameworks */,
 				16AF51D3093D4C8588C939DA /* libReactNativeConfig-tvOS.a in Frameworks */,
 				98997B92F4694165A81EAD84 /* libRNCNetInfo-tvOS.a in Frameworks */,
+				F1E7BB377C9E439D86DD11D0 /* libRNSVG-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -671,6 +682,8 @@
 				BE0DF923E9544509A2DCE714 /* RNIap.xcodeproj */,
 				E302A98E95AD4D07870E5C07 /* RNAdMobManager.xcodeproj */,
 				0EEF13468C3F4E9693E69741 /* RNCNetInfo.xcodeproj */,
+				5EDD142AC2464F0290CCA6BC /* RNCustomCrop.xcodeproj */,
+				4D908C6D66134BCDAA3CC07D /* RNSVG.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1342,6 +1355,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1357,6 +1373,8 @@
 					"$(SRCROOT)/../node_modules/react-native-iap/ios",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
+					"$(SRCROOT)/../node_modules/react-native-perspective-image-cropper/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Debug;
@@ -1381,6 +1399,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1396,6 +1417,8 @@
 					"$(SRCROOT)/../node_modules/react-native-iap/ios",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
+					"$(SRCROOT)/../node_modules/react-native-perspective-image-cropper/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Release;
@@ -1430,6 +1453,8 @@
 					"$(SRCROOT)/../node_modules/react-native-iap/ios",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
+					"$(SRCROOT)/../node_modules/react-native-perspective-image-cropper/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Debug;
@@ -1463,6 +1488,8 @@
 					"$(SRCROOT)/../node_modules/react-native-iap/ios",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
+					"$(SRCROOT)/../node_modules/react-native-perspective-image-cropper/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Release;
@@ -1495,6 +1522,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1510,6 +1540,8 @@
 					"$(SRCROOT)/../node_modules/react-native-iap/ios",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
+					"$(SRCROOT)/../node_modules/react-native-perspective-image-cropper/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Debug;
@@ -1542,6 +1574,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1557,6 +1592,8 @@
 					"$(SRCROOT)/../node_modules/react-native-iap/ios",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
+					"$(SRCROOT)/../node_modules/react-native-perspective-image-cropper/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Release;
@@ -1588,6 +1625,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1603,6 +1643,8 @@
 					"$(SRCROOT)/../node_modules/react-native-iap/ios",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
+					"$(SRCROOT)/../node_modules/react-native-perspective-image-cropper/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Debug;
@@ -1634,6 +1676,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1649,6 +1694,8 @@
 					"$(SRCROOT)/../node_modules/react-native-iap/ios",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
+					"$(SRCROOT)/../node_modules/react-native-perspective-image-cropper/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 			};
 			name = Release;
