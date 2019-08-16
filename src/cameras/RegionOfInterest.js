@@ -1,12 +1,8 @@
 import CustomCrop from '../common/CustomCrop';
 import React, { Component } from 'react';
-import { View, Image, TouchableOpacity, Text } from 'react-native';
+import { View, Image } from 'react-native';
 
 export default class RegionOfInterest extends Component{
-
-    state = {
-        
-    }
 
     componentWillMount() {
       this.init();
@@ -30,15 +26,12 @@ export default class RegionOfInterest extends Component{
         console.log('Error loading sample image' + err);
       }
     }
+
     updateImage(image, newCoordinates) {
         this.setState({
           image,
           rectangleCoordinates: newCoordinates
         });
-    }
-    
-    crop() {
-        //this.customCrop.crop();
     }
     
     render() {

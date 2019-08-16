@@ -6,7 +6,6 @@ import {
     View,
     Animated,
 } from 'react-native';
-import RNSmartCam from '../native/RNSmartCam';
 import Svg, { Polygon } from 'react-native-svg';
 
 const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
@@ -105,7 +104,7 @@ class CustomCrop extends Component {
         });
     }
 
-    crop() {
+    selectROI() {
         const coordinates = {
             topLeft: this.viewCoordinatesToImageCoordinates(this.state.topLeft),
             topRight: this.viewCoordinatesToImageCoordinates(
@@ -120,11 +119,6 @@ class CustomCrop extends Component {
             height: this.state.height,
             width: this.state.width,
         };
-        RNSmartCam.crop(
-            coordinates,
-            this.state.image,
-            (err, res) => this.props.updateImage(res.image, coordinates),
-        );
     }
 
     updateOverlayString() {
