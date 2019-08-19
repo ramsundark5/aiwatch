@@ -1,6 +1,7 @@
 package com.aiwatch.postprocess;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,6 +17,8 @@ import com.aiwatch.models.CameraConfig;
 import com.google.common.net.MediaType;
 
 import org.greenrobot.essentials.io.FileUtils;
+
+import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.UUID;
 
@@ -78,11 +81,12 @@ public class DetectionResultProcessor {
     }
 
     private String saveImage(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
+        String outputFilePath = null;
         try {
             String inputFilePath = frameEvent.getImageFilePath();
-            String outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".png");
+            outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".png");
             FileUtils.copyFile(inputFilePath, outputFilePath);
-            /*RectF location = objectDetectionResult.getLocation();
+            RectF location = objectDetectionResult.getLocation();
             if(location != null){
                 FileOutputStream fos=new FileOutputStream(outputFilePath);
                 Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFilePath);
@@ -91,14 +95,13 @@ public class DetectionResultProcessor {
                 bitmapOutput.compress(Bitmap.CompressFormat.PNG, 90, fos);
                 fos.flush();
                 fos.close();
-            }*/
+            }
             LOGGER.d("image filepath is " + outputFilePath);
-            return outputFilePath;
         }
         catch (Exception e) {
             LOGGER.e(e, e.getMessage());
         }
-        return null;
+        return outputFilePath;
     }
 
     private void drawBoundingBox(Bitmap bitmap, RectF location){

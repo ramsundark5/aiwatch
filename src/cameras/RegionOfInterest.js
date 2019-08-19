@@ -1,14 +1,61 @@
 import CustomCrop from '../common/CustomCrop';
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import { ActivityIndicator, Button } from 'react-native-paper';
+import { View, Image, Text } from 'react-native';
+import Logger from '../common/Logger';
+import RNSmartCam from '../native/RNSmartCam';
 
 export default class RegionOfInterest extends Component{
+
+    static navigationOptions = {
+      headerTitle: 'Region of Interest',
+      headerTintColor: Theme.primary,
+      headerTitleStyle: {
+        fontSize: 16,
+        fontWeight: 'normal',
+      }
+    };
+
+    state = {
+      base64Image: undefined,
+      isLoading: false,
+      testImageMessage: ''
+    };
 
     componentWillMount() {
       this.init();
     }
     
     init(){
+      const cameraConfig = this.props.navigation.getParam('cameraConfig', {});
+      if(cameraConfig && cameraConfig.videoUrl){
+        this.setState({ isLoading: true });
+        requestAnimationFrame(() => {
+          this.loadBase64Image(cameraConfig);
+        });
+      }
+    }
+  
+    async loadBase64Image(cameraConfig){
+      try{
+        let base64Image = await RNSmartCam.testCameraConnection(cameraConfig);
+        const imageUri = 'data:image/png;base64,'+base64Image;
+        this.setState({
+          imageWidth: 300,
+          imageHeight: 300,
+          base64Image: imageUri,
+          testImageMessage: null
+        });
+      }catch(err){
+        Logger.log('error loading test image');
+        let testImageMessage = 'Failed to retrieve image from camera. Is the url correct?';
+        this.setState({testImageMessage: testImageMessage});
+      }finally{
+        this.setState({ isLoading: false });
+      }
+    }
+
+    init2(){
       try{
         //const imageUri = 'https://i.pinimg.com/originals/39/42/a1/3942a180299d5b9587c2aa8e09d91ecf.jpg';
         console.log('loading sample image');
@@ -19,7 +66,7 @@ export default class RegionOfInterest extends Component{
           this.setState({
             imageWidth: image.width,
             imageHeight: image.height,
-            initialImage: image.uri,
+            base64Image: image.uri,
           });
         //});
       }catch(err){
@@ -35,21 +82,50 @@ export default class RegionOfInterest extends Component{
     }
     
     render() {
-        return (
-          <View>
-            <CustomCrop
-              updateImage={this.updateImage.bind(this)}
-              rectangleCoordinates={this.state.rectangleCoordinates}
-              initialImage={this.state.initialImage}
-              height={this.state.imageHeight}
-              width={this.state.imageWidth}
-              ref={ref => (this.customCrop = ref)}
-              overlayColor="rgba(18,190,210, 1)"
-              overlayStrokeColor="rgba(20,190,210, 1)"
-              handlerColor="rgba(20,150,160, 1)"
-              enablePanStrict={false}
-            />
+
+      const { isLoading, base64Image, testImageMessage } = this.state;
+      if(isLoading){
+        return(
+          <View style={{height: 150}}>
+            <ActivityIndicator animating={true} size={36} style={{flex: 1, justifyContent: 'center'}}/>
           </View>
-        );
+        )
+      }
+      if(base64Image){
+        return this.renderROIOverlay();
+      }
+      return(
+        <View>
+          <Text>{testImageMessage}</Text>
+        </View>
+      )
+    }
+
+    onSaveROI(){
+      console.log(this.state.rectangleCoordinates);
+    }
+
+    renderROIOverlay(){
+      return (
+        <View style={{flex: 1}}>
+          <CustomCrop
+            updateImage={this.updateImage.bind(this)}
+            rectangleCoordinates={this.state.rectangleCoordinates}
+            initialImage={this.state.base64Image}
+            height={300}
+            width={300}
+            ref={ref => (this.customCrop = ref)}
+            overlayColor="rgba(18,190,210, 1)"
+            overlayStrokeColor="rgba(20,190,210, 1)"
+            handlerColor="rgba(20,150,160, 1)"
+            enablePanStrict={false}
+          />
+          <View style={{width: '100%', paddingTop: 20}}>
+            <Button mode='outlined' color={Theme.primary} onPress={() => this.onSaveROI()}>
+              Save
+            </Button>
+          </View>
+        </View>
+      );
     }
 }

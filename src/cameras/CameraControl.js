@@ -65,6 +65,13 @@ export default class CameraControl extends Component {
       );
     }
 
+    onPressROIButton(){
+      const { cameraConfig, navigation } = this.props;
+      navigation.navigate('RegionOfInterest', {
+        cameraConfig: cameraConfig
+      });
+    }
+
     async deleteCamera(){
         const { cameraConfig, deleteCamera } = this.props;
         await RNSmartCam.deleteCamera(cameraConfig.id);
@@ -100,6 +107,7 @@ export default class CameraControl extends Component {
                 textContent={'Updating...'} />
                <Appbar style={styles.appBar}>
                 <Appbar.Action icon='settings' color={Theme.primary} onPress={() => this.editCamera()} />
+                <Appbar.Action icon='crop' color={Theme.primary} onPress={() => this.onPressROIButton()}/>
                 <Appbar.Action icon={monitoringIcon} color={Theme.primary} onPress={() => this.onPressToggleMonitorButton()}/>
                 <Appbar.Action icon='delete' color={Theme.primary} onPress={() => this.onPressDeleteButton()} />
               </Appbar>

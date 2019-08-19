@@ -38,7 +38,7 @@ class CustomCrop extends Component {
                           props.rectangleCoordinates.topRight,
                           true,
                       )
-                    : { x: Dimensions.get('window').width - 100, y: 100 },
+                    : { x: props.width - 100, y: 100 },
             ),
             bottomLeft: new Animated.ValueXY(
                 props.rectangleCoordinates
@@ -46,7 +46,7 @@ class CustomCrop extends Component {
                           props.rectangleCoordinates.bottomLeft,
                           true,
                       )
-                    : { x: 100, y: this.state.viewHeight - 200 },
+                    : { x: 100, y: props.height - 100 },
             ),
             bottomRight: new Animated.ValueXY(
                 props.rectangleCoordinates
@@ -55,8 +55,8 @@ class CustomCrop extends Component {
                           true,
                       )
                     : {
-                          x: Dimensions.get('window').width - 100,
-                          y: this.state.viewHeight - 200,
+                          x: props.width - 100,
+                          y: props.height - 100,
                       },
             ),
         };
@@ -151,120 +151,57 @@ class CustomCrop extends Component {
 
     render() {
         return (
-            <View
-                style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                }}
-            >
+            <View style={styles(this.props).container}>
                 <View
-                    style={[
-                        s(this.props).cropContainer,
-                        { height: this.state.viewHeight },
-                    ]}
-                >
+                    style={[styles(this.props).cropContainer,]}>
                     <Image
-                        style={[
-                            s(this.props).image,
-                            { height: this.state.viewHeight },
-                        ]}
+                        style={[styles(this.props).image]}
                         resizeMode="contain"
                         source={{ uri: this.state.image }}
                     />
                     <Svg
                         height={this.state.viewHeight}
                         width={Dimensions.get('window').width}
-                        style={{ position: 'absolute', left: 0, top: 0 }}
-                    >
+                        style={{ position: 'absolute', left: 0, top: 0 }}>
                         <AnimatedPolygon
                             ref={(ref) => (this.polygon = ref)}
                             fill={this.props.overlayColor || 'blue'}
                             fillOpacity={this.props.overlayOpacity || 0.5}
                             stroke={this.props.overlayStrokeColor || 'blue'}
                             points={this.state.overlayPositions}
-                            strokeWidth={this.props.overlayStrokeWidth || 3}
-                        />
+                            strokeWidth={this.props.overlayStrokeWidth || 3}/>
                     </Svg>
                     <Animated.View
                         {...this.panResponderTopLeft.panHandlers}
                         style={[
                             this.state.topLeft.getLayout(),
-                            s(this.props).handler,
-                        ]}
-                    >
-                        <View
-                            style={[
-                                s(this.props).handlerI,
-                                { left: -10, top: -10 },
-                            ]}
-                        />
-                        <View
-                            style={[
-                                s(this.props).handlerRound,
-                                { left: 31, top: 31 },
-                            ]}
-                        />
+                            styles(this.props).handler,
+                        ]}>
+                        <View style={styles(this.props).handlerRound}/>
                     </Animated.View>
                     <Animated.View
                         {...this.panResponderTopRight.panHandlers}
                         style={[
                             this.state.topRight.getLayout(),
-                            s(this.props).handler,
-                        ]}
-                    >
-                        <View
-                            style={[
-                                s(this.props).handlerI,
-                                { left: 10, top: -10 },
-                            ]}
-                        />
-                        <View
-                            style={[
-                                s(this.props).handlerRound,
-                                { right: 31, top: 31 },
-                            ]}
-                        />
+                            styles(this.props).handler,
+                        ]}>
+                        <View style={styles(this.props).handlerRound}/>
                     </Animated.View>
                     <Animated.View
                         {...this.panResponderBottomLeft.panHandlers}
                         style={[
                             this.state.bottomLeft.getLayout(),
-                            s(this.props).handler,
-                        ]}
-                    >
-                        <View
-                            style={[
-                                s(this.props).handlerI,
-                                { left: -10, top: 10 },
-                            ]}
-                        />
-                        <View
-                            style={[
-                                s(this.props).handlerRound,
-                                { left: 31, bottom: 31 },
-                            ]}
-                        />
+                            styles(this.props).handler,
+                        ]}>
+                        <View style={styles(this.props).handlerRound}/>
                     </Animated.View>
                     <Animated.View
                         {...this.panResponderBottomRight.panHandlers}
                         style={[
                             this.state.bottomRight.getLayout(),
-                            s(this.props).handler,
-                        ]}
-                    >
-                        <View
-                            style={[
-                                s(this.props).handlerI,
-                                { left: 10, top: 10 },
-                            ]}
-                        />
-                        <View
-                            style={[
-                                s(this.props).handlerRound,
-                                { right: 31, bottom: 31 },
-                            ]}
-                        />
+                            styles(this.props).handler,
+                        ]}>
+                        <View style={styles(this.props).handlerRound}/>
                     </Animated.View>
                 </View>
             </View>
@@ -272,7 +209,13 @@ class CustomCrop extends Component {
     }
 }
 
-const s = (props) => ({
+const styles = (props) => ({
+    container: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     handlerI: {
         borderRadius: 0,
         height: 20,
@@ -280,22 +223,22 @@ const s = (props) => ({
         backgroundColor: props.handlerColor || 'blue',
     },
     handlerRound: {
-        width: 39,
+        width: 29,
         position: 'absolute',
-        height: 39,
+        height: 29,
         borderRadius: 100,
         backgroundColor: props.handlerColor || 'blue',
     },
     image: {
-        width: Dimensions.get('window').width,
-        position: 'absolute',
+        width: props.width,
+        height: props.height,
     },
     bottomButton: {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'blue',
-        width: 70,
-        height: 70,
+        width: 40,
+        height: 40,
         borderRadius: 100,
     },
     handler: {
@@ -309,10 +252,7 @@ const s = (props) => ({
         position: 'absolute',
     },
     cropContainer: {
-        position: 'absolute',
-        left: 0,
-        width: Dimensions.get('window').width,
-        top: 0,
+       
     },
 });
 
