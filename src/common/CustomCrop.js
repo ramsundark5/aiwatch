@@ -119,6 +119,7 @@ class CustomCrop extends Component {
             height: this.state.height,
             width: this.state.width,
         };
+        return coordinates;
     }
 
     updateOverlayString() {
@@ -135,17 +136,17 @@ class CustomCrop extends Component {
 
     imageCoordinatesToViewCoordinates(corner) {
         return {
-            x: (corner.x * Dimensions.get('window').width) / this.state.width,
-            y: (corner.y * this.state.viewHeight) / this.state.height,
+            x: (corner.x * this.props.width) / this.state.width,
+            y: (corner.y * this.props.height) / this.state.height,
         };
     }
 
     viewCoordinatesToImageCoordinates(corner) {
         return {
             x:
-                (corner.x._value / Dimensions.get('window').width) *
+                (corner.x._value / this.props.width) *
                 this.state.width,
-            y: (corner.y._value / this.state.viewHeight) * this.state.height,
+            y: (corner.y._value / this.props.height) * this.state.height,
         };
     }
 

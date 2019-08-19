@@ -55,25 +55,6 @@ export default class RegionOfInterest extends Component{
       }
     }
 
-    init2(){
-      try{
-        //const imageUri = 'https://i.pinimg.com/originals/39/42/a1/3942a180299d5b9587c2aa8e09d91ecf.jpg';
-        console.log('loading sample image');
-        const url = require('./inputsample.jpg');
-        const image = Image.resolveAssetSource(url);
-        console.log('loaded sample image' + image);
-        //Image.getSize(image.uri, (width, height) => {
-          this.setState({
-            imageWidth: image.width,
-            imageHeight: image.height,
-            base64Image: image.uri,
-          });
-        //});
-      }catch(err){
-        console.log('Error loading sample image' + err);
-      }
-    }
-
     updateImage(image, newCoordinates) {
         this.setState({
           image,
@@ -81,8 +62,12 @@ export default class RegionOfInterest extends Component{
         });
     }
     
+    onSaveROI(){
+      const coordinates = this.customCrop.selectROI()
+      console.log(coordinates);
+    }
+    
     render() {
-
       const { isLoading, base64Image, testImageMessage } = this.state;
       if(isLoading){
         return(
@@ -99,10 +84,6 @@ export default class RegionOfInterest extends Component{
           <Text>{testImageMessage}</Text>
         </View>
       )
-    }
-
-    onSaveROI(){
-      console.log(this.state.rectangleCoordinates);
     }
 
     renderROIOverlay(){
