@@ -41,9 +41,10 @@ public class DetectionResultProcessor {
         String notificationMessage = objectDetectionResult.getMessage() + " at "+ cameraConfig.getName();
         AlarmEvent alarmEvent = new AlarmEvent(cameraConfig.getId(), cameraConfig.getName(), new Date(), notificationMessage, null, thumbnailPath, UUID.randomUUID().toString());
         alarmEvent.setDetectionConfidence(objectDetectionResult.getConfidence());
+        boolean withinROI = isWithinROI(cameraConfig, objectDetectionResult.getLocation());
         boolean shouldRecordVideo = RecordingManager.shouldStartRecording(objectDetectionResult, frameEvent.getCameraConfig());
         boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
-        boolean isResultInteresting = shouldRecordVideo || shouldNotify;
+        boolean isResultInteresting = withinROI && (shouldRecordVideo || shouldNotify);
         if(isResultInteresting){
             thumbnailPath = saveImage(frameEvent, objectDetectionResult);
         }
@@ -87,14 +88,16 @@ public class DetectionResultProcessor {
             outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".png");
             FileUtils.copyFile(inputFilePath, outputFilePath);
             RectF location = objectDetectionResult.getLocation();
+
+            //draw bounding boxes
             if(location != null){
-                FileOutputStream fos=new FileOutputStream(outputFilePath);
-                Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFilePath);
-                //if bounding box needed, comment out the above line and uncomment the below ones
-                drawBoundingBox(bitmapOutput, location);
-                bitmapOutput.compress(Bitmap.CompressFormat.PNG, 90, fos);
-                fos.flush();
-                fos.close();
+                try{
+                    drawBoundingBox(outputFilePath, location);
+                }catch(Exception e){
+                    LOGGER.e(e, "Error drawing bounding boxes");
+                    //restore the original file
+                    FileUtils.copyFile(inputFilePath, outputFilePath);
+                }
             }
             LOGGER.d("image filepath is " + outputFilePath);
         }
@@ -104,22 +107,37 @@ public class DetectionResultProcessor {
         return outputFilePath;
     }
 
-    private void drawBoundingBox(Bitmap bitmap, RectF location){
-        final Canvas canvas = new Canvas(bitmap);
+    private void drawBoundingBox(final String outputFilePath, final RectF location) throws Exception {
+        Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFilePath).copy(Bitmap.Config.ARGB_8888, true);
+        final Canvas canvas = new Canvas(bitmapOutput);
         final Paint paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2.0f);
         canvas.drawRect(location, paint);
+
+        FileOutputStream fos=new FileOutputStream(outputFilePath);
+        bitmapOutput.compress(Bitmap.CompressFormat.PNG, 90, fos);
+        fos.flush();
+        fos.close();
+    }
+
+    private boolean isWithinROI(final CameraConfig cameraConfig, final RectF location){
+        if(location == null){
+            return false;
+        }
+        RectF roi = new RectF(cameraConfig.getTopLeftX(), cameraConfig.getTopLeftY(), cameraConfig.getBottomRightX(), cameraConfig.getBottomRightY());
+        boolean intersect = roi.intersect(location);
+        return intersect;
     }
 
     private Bitmap cropBitmap(Bitmap bitmapOutput, RectF location){
         Bitmap croppedBitmap = Bitmap.createBitmap(
-                        bitmapOutput,
-                        ((int) location.left),
-                        ((int) location.top),
-                        ((int) location.width()),
-                        ((int) location.height()));
+                bitmapOutput,
+                ((int) location.left),
+                ((int) location.top),
+                ((int) location.width()),
+                ((int) location.height()));
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(croppedBitmap, 128, 128, true);
         return croppedBitmap;
     }

@@ -42,14 +42,14 @@ public class CameraConfig implements Serializable {
     private boolean disconnected;
     private Date lastModified;
 
-    private float topLeftX;
-    private float topLeftY;
-    private float topRightX;
-    private float topRightY;
-    private float bottomLeftX;
-    private float bottomLeftY;
-    private float bottomRightX;
-    private float bottomRightY;
+    private float topLeftX = 0;
+    private float topLeftY = 0;
+    private float topRightX = 300;
+    private float topRightY = 0;
+    private float bottomLeftX =0 ;
+    private float bottomLeftY = 300;
+    private float bottomRightX = 300;
+    private float bottomRightY = 300;
 
     private boolean monitoringEnabled;
 

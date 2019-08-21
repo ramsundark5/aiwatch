@@ -23,16 +23,16 @@ class CustomCrop extends Component {
         };
 
         const rect = props.rectangleCoordinates;
-        const topLeft = rect && rect.topLeftX
+        const topLeft = rect && rect.topLeftX > -10
                 ? this.imageCoordinatesToViewCoordinates({x: rect.topLeftX, y: rect.topLeftY}, true)
                 : { x: 100, y: 100 };
-        const topRight = rect && rect.topRightX
+        const topRight = rect && rect.topRightX > -10
                 ? this.imageCoordinatesToViewCoordinates({x: rect.topRightX, y: rect.topRightY}, true)
                 : { x: props.width - 100, y: 100 };
-        const bottomLeft = rect && rect.bottomLeftX
+        const bottomLeft = rect && rect.bottomLeftX > -10
                 ? this.imageCoordinatesToViewCoordinates({x: rect.bottomLeftX, y: rect.bottomLeftY}, true)
                 : { x: 100, y: props.height - 100 };
-        const bottomRight = rect && rect.bottomRightX
+        const bottomRight = rect && rect.bottomRightX > -10
                 ? this.imageCoordinatesToViewCoordinates({x: rect.bottomRightX, y: rect.bottomRightY}, true)
                 : { x: props.width - 100, y: props.height - 100};
 
