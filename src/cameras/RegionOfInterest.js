@@ -1,11 +1,13 @@
 import CustomCrop from '../common/CustomCrop';
 import React, { Component } from 'react';
 import { ActivityIndicator, Button } from 'react-native-paper';
-import { View, Image, Text } from 'react-native';
+import { View, ToastAndroid, Text } from 'react-native';
 import Logger from '../common/Logger';
+import { editCamera } from '../store/CamerasStore';
+import { connect } from 'react-redux';
 import RNSmartCam from '../native/RNSmartCam';
 
-export default class RegionOfInterest extends Component{
+class RegionOfInterest extends Component{
 
     static navigationOptions = {
       headerTitle: 'Region of Interest',
@@ -22,7 +24,7 @@ export default class RegionOfInterest extends Component{
       testImageMessage: ''
     };
 
-    componentWillMount() {
+    componentDidMount() {
       this.init();
     }
     
@@ -62,11 +64,31 @@ export default class RegionOfInterest extends Component{
         });
     }
     
-    onSaveROI(){
-      const coordinates = this.customCrop.selectROI()
-      console.log(coordinates);
+    async onSaveROI(){
+      const { editCamera } = this.props;
+      try{
+        const coordinates = this.customCrop.selectROI();
+        const cameraConfig = this.props.navigation.getParam('cameraConfig', {});
+        let cameraConfigWithROI = {...cameraConfig};
+
+        cameraConfigWithROI.topLeftX = coordinates.topLeft.x;
+        cameraConfigWithROI.topLeftY = coordinates.topLeft.y;
+        cameraConfigWithROI.topRightX = coordinates.topRight.x;
+        cameraConfigWithROI.topRightY = coordinates.topRight.y;
+        cameraConfigWithROI.bottomLeftX = coordinates.bottomLeft.x;
+        cameraConfigWithROI.bottomLeftY = coordinates.bottomLeft.y;
+        cameraConfigWithROI.bottomRightX = coordinates.bottomRight.x;
+        cameraConfigWithROI.bottomRightY = coordinates.bottomRight.y;
+
+        let updatedCameraConfig = await RNSmartCam.putCamera(cameraConfigWithROI);
+        editCamera(updatedCameraConfig);
+        //this.props.navigation.goBack();
+        ToastAndroid.showWithGravity("Changes saved successfully", ToastAndroid.SHORT, ToastAndroid.CENTER);
+      }catch(err){
+        Logger.log('error saving roi '+err);
+      }
     }
-    
+
     render() {
       const { isLoading, base64Image, testImageMessage } = this.state;
       if(isLoading){
@@ -87,11 +109,12 @@ export default class RegionOfInterest extends Component{
     }
 
     renderROIOverlay(){
+      const cameraConfig = this.props.navigation.getParam('cameraConfig', {});
       return (
         <View style={{flex: 1}}>
           <CustomCrop
             updateImage={this.updateImage.bind(this)}
-            rectangleCoordinates={this.state.rectangleCoordinates}
+            rectangleCoordinates={cameraConfig}
             initialImage={this.state.base64Image}
             height={300}
             width={300}
@@ -110,3 +133,8 @@ export default class RegionOfInterest extends Component{
       );
     }
 }
+
+export default connect(
+  null,
+  { editCamera }
+)(RegionOfInterest);

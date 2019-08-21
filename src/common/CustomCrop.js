@@ -22,43 +22,26 @@ class CustomCrop extends Component {
             moving: false,
         };
 
+        const rect = props.rectangleCoordinates;
+        const topLeft = rect && rect.topLeftX
+                ? this.imageCoordinatesToViewCoordinates({x: rect.topLeftX, y: rect.topLeftY}, true)
+                : { x: 100, y: 100 };
+        const topRight = rect && rect.topRightX
+                ? this.imageCoordinatesToViewCoordinates({x: rect.topRightX, y: rect.topRightY}, true)
+                : { x: props.width - 100, y: 100 };
+        const bottomLeft = rect && rect.bottomLeftX
+                ? this.imageCoordinatesToViewCoordinates({x: rect.bottomLeftX, y: rect.bottomLeftY}, true)
+                : { x: 100, y: props.height - 100 };
+        const bottomRight = rect && rect.bottomRightX
+                ? this.imageCoordinatesToViewCoordinates({x: rect.bottomRightX, y: rect.bottomRightY}, true)
+                : { x: props.width - 100, y: props.height - 100};
+
         this.state = {
             ...this.state,
-            topLeft: new Animated.ValueXY(
-                props.rectangleCoordinates
-                    ? this.imageCoordinatesToViewCoordinates(
-                          props.rectangleCoordinates.topLeft,
-                          true,
-                      )
-                    : { x: 100, y: 100 },
-            ),
-            topRight: new Animated.ValueXY(
-                props.rectangleCoordinates
-                    ? this.imageCoordinatesToViewCoordinates(
-                          props.rectangleCoordinates.topRight,
-                          true,
-                      )
-                    : { x: props.width - 100, y: 100 },
-            ),
-            bottomLeft: new Animated.ValueXY(
-                props.rectangleCoordinates
-                    ? this.imageCoordinatesToViewCoordinates(
-                          props.rectangleCoordinates.bottomLeft,
-                          true,
-                      )
-                    : { x: 100, y: props.height - 100 },
-            ),
-            bottomRight: new Animated.ValueXY(
-                props.rectangleCoordinates
-                    ? this.imageCoordinatesToViewCoordinates(
-                          props.rectangleCoordinates.bottomRight,
-                          true,
-                      )
-                    : {
-                          x: props.width - 100,
-                          y: props.height - 100,
-                      },
-            ),
+            topLeft: new Animated.ValueXY(topLeft),
+            topRight: new Animated.ValueXY(topRight),
+            bottomLeft: new Animated.ValueXY(bottomLeft),
+            bottomRight: new Animated.ValueXY(bottomRight)
         };
         this.state = {
             ...this.state,
@@ -158,8 +141,7 @@ class CustomCrop extends Component {
                     <Image
                         style={[styles(this.props).image]}
                         resizeMode="contain"
-                        source={{ uri: this.state.image }}
-                    />
+                        source={{ uri: this.state.image }}/>
                     <Svg
                         height={this.state.viewHeight}
                         width={Dimensions.get('window').width}

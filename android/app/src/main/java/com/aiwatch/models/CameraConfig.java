@@ -9,6 +9,7 @@ import java.util.Date;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Unique;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class CameraConfig implements Serializable {
@@ -40,6 +41,16 @@ public class CameraConfig implements Serializable {
     private boolean testModeEnabled;
     private boolean disconnected;
     private Date lastModified;
+
+    private float topLeftX;
+    private float topLeftY;
+    private float topRightX;
+    private float topRightY;
+    private float bottomLeftX;
+    private float bottomLeftY;
+    private float bottomRightX;
+    private float bottomRightY;
+
     private boolean monitoringEnabled;
 
     public long getId() {
@@ -200,6 +211,70 @@ public class CameraConfig implements Serializable {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public float getTopLeftX() {
+        return topLeftX;
+    }
+
+    public void setTopLeftX(float topLeftX) {
+        this.topLeftX = topLeftX;
+    }
+
+    public float getTopLeftY() {
+        return topLeftY;
+    }
+
+    public void setTopLeftY(float topLeftY) {
+        this.topLeftY = topLeftY;
+    }
+
+    public float getTopRightX() {
+        return topRightX;
+    }
+
+    public void setTopRightX(float topRightX) {
+        this.topRightX = topRightX;
+    }
+
+    public float getTopRightY() {
+        return topRightY;
+    }
+
+    public void setTopRightY(float topRightY) {
+        this.topRightY = topRightY;
+    }
+
+    public float getBottomLeftX() {
+        return bottomLeftX;
+    }
+
+    public void setBottomLeftX(float bottomLeftX) {
+        this.bottomLeftX = bottomLeftX;
+    }
+
+    public float getBottomLeftY() {
+        return bottomLeftY;
+    }
+
+    public void setBottomLeftY(float bottomLeftY) {
+        this.bottomLeftY = bottomLeftY;
+    }
+
+    public float getBottomRightX() {
+        return bottomRightX;
+    }
+
+    public void setBottomRightX(float bottomRightX) {
+        this.bottomRightX = bottomRightX;
+    }
+
+    public float getBottomRightY() {
+        return bottomRightY;
+    }
+
+    public void setBottomRightY(float bottomRightY) {
+        this.bottomRightY = bottomRightY;
     }
 
     @Exclude
