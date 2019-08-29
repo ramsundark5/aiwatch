@@ -19,6 +19,7 @@
     "react": "16.8.6",
     "react-native": "0.60.3",
     "react-native-admob": "git+https://github.com/MTTenterprise/react-native-admob",
+    "react-native-app-auth": "^4.4.0",
     "react-native-calendars": "^1.198.0",
     "react-native-config": "^0.11.7",
     "react-native-device-log": "git+https://github.com/ramsundark5/react-native-device-log",

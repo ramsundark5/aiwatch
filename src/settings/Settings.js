@@ -11,6 +11,8 @@ import { connect } from 'react-redux';
 import InAppPurchase from './InAppPurchase';
 import {LogView} from 'react-native-device-log';
 import Logger from '../common/Logger';
+import SmartthingsIntegration from './SmartthingsIntegration';
+
 class Settings extends Component{
 
     state = {
@@ -85,6 +87,10 @@ class Settings extends Component{
       }
     }
 
+    async onConnectSmartthimgs(){
+      await SmartthingsIntegration.getOauthToken();
+    }
+
     render(){
       const { isLoading } = this.props;
       return(
@@ -103,6 +109,7 @@ class Settings extends Component{
                   right={() => this.renderDeviceLogsEnabled()} />
             </List.Section>
             {this.renderSyncButton()}
+            {this.renderSmartthingsButton()}
             <InAppPurchase {...this.props}/>
             {this.renderDeviceLogs()}
           </View>
@@ -158,6 +165,14 @@ class Settings extends Component{
     return(
       <Button style={{marginLeft: 30, marginRight: 30}} mode='outlined' color={Theme.primary} loading={syncing} onPress={() => this.onSyncPress()}>
         Sync Configs
+      </Button>
+    )
+  }
+
+  renderSmartthingsButton(){
+    return(
+      <Button style={{marginLeft: 30, marginRight: 30}} mode='outlined' color={Theme.primary} onPress={() => this.onConnectSmartthimgs()}>
+        Connect Smartthings
       </Button>
     )
   }

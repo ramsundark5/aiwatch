@@ -3,6 +3,7 @@ package com.aiwatch;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnappauth.RNAppAuthPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.sbugert.rnadmob.RNAdMobPackage;
 import com.dooboolab.RNIap.RNIapPackage;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNAppAuthPackage(),
             new SvgPackage(),
             new NetInfoPackage(),
             new RNAdMobPackage(),
