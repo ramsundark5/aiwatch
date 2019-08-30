@@ -27,10 +27,12 @@ public class DetectionResultProcessor {
     private static final Logger LOGGER = new Logger();
     private AlarmEventDao alarmEventDao;
     private FirebaseAlarmEventDao firebaseAlarmEventDao;
+    private SmartthingsNotificationManager smartthingsNotificationManager;
 
     public DetectionResultProcessor(){
         this.alarmEventDao = new AlarmEventDao();
         this.firebaseAlarmEventDao = new FirebaseAlarmEventDao();
+        this.smartthingsNotificationManager = new SmartthingsNotificationManager();
     }
 
     public boolean processObjectDetectionResult(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
@@ -76,6 +78,7 @@ public class DetectionResultProcessor {
             alarmEventDao.putEvent(alarmEvent);
             //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
+            smartthingsNotificationManager.notifyHub();
             firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
         }
         return isResultInteresting;
@@ -123,6 +126,9 @@ public class DetectionResultProcessor {
     }
 
     private boolean isWithinROI(final CameraConfig cameraConfig, final RectF location){
+        if(cameraConfig.isTestModeEnabled()){
+            return true;
+        }
         if(location == null){
             return false;
         }

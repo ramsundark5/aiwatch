@@ -33,7 +33,9 @@ export default class SmartthingsIntegration extends Component{
       const { updateSettings } = this.props;
       updateSettings({ isLoading: true });
       try{
-        const result = await this.getOauthToken();
+        let result = await this.getOauthToken();
+        const smartAppEndpoint = await this.getSmartAppEndpoint(result);
+        result['smartAppEndpoint'] = smartAppEndpoint;
         let updatedSettings = await RNSmartCam.saveSmartthingsAccessToken(result);
         updateSettings(updatedSettings);
         console.log('smartthings token saved successfully');
@@ -54,6 +56,27 @@ export default class SmartthingsIntegration extends Component{
         } catch (error) {
             console.log(error);
         }
+    }
+
+    async getSmartAppEndpoint(authhData){
+      var url = 'https://graph.api.smartthings.com/api/smartapps/endpoints';
+      try{
+        const bearer = 'Bearer ' + authhData.accessToken;
+        const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': bearer
+                }
+        });
+        const jsonBody = await response.json();
+        console.log('smartapp endpoint response is '+JSON.stringify(jsonBody));
+        const endpoint = jsonBody[0].uri;
+        console.log('smartapp endpoint is '+endpoint);
+        return endpoint;
+      }catch(err){
+        console.log('error getting smartapp endpoint '+err);
+        return null;
+      }
     }
 
     render(){

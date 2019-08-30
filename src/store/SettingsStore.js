@@ -9,6 +9,7 @@ const settingsSlice = createSlice({
       isNoAdsPurchased: false,
       smartthingsAccessToken: null,
       smartthingsAccessTokenExpiry: null,
+      smartAppEndpoint: null,
       isLoading: false,
       showDeviceLogs: false
     },

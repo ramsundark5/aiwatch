@@ -314,9 +314,11 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             SettingsDao settingsDao = new SettingsDao();
             Settings settings = settingsDao.getSettings();
             String accessToken = readableMap.getString("accessToken");
+            String smartAppEndpoint = readableMap.getString("smartAppEndpoint");
             String expirationDateStr = readableMap.getString("accessTokenExpirationDate");
             Date expirationDate = convertStringToDate(expirationDateStr);
             settings.setSmartthingsAccessToken(accessToken);
+            settings.setSmartAppEndpoint(smartAppEndpoint);
             settings.setSmartthingsAccessTokenExpiry(expirationDate);
             settingsDao.putSettings(settings);
 

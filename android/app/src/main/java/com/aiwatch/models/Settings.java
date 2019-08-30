@@ -14,6 +14,7 @@ public class Settings {
     private boolean isNotificationEnabled;
     private boolean isNoAdsPurchased;
     private String smartthingsAccessToken;
+    private String smartAppEndpoint;
     private Date smartthingsAccessTokenExpiry;
 
     public long getId() {
@@ -62,5 +63,13 @@ public class Settings {
 
     public void setSmartthingsAccessTokenExpiry(Date smartthingsAccessTokenExpiry) {
         this.smartthingsAccessTokenExpiry = smartthingsAccessTokenExpiry;
+    }
+
+    public String getSmartAppEndpoint() {
+        return smartAppEndpoint;
+    }
+
+    public void setSmartAppEndpoint(String smartAppEndpoint) {
+        this.smartAppEndpoint = smartAppEndpoint;
     }
 }
