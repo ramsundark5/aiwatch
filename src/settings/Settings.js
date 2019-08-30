@@ -89,21 +89,6 @@ class Settings extends Component{
       }
     }
 
-    async onConnectSmartthimgs(){
-      const { updateSettings } = this.props;
-      updateSettings({ isLoading: true });
-      try{
-        const result = await SmartthingsIntegration.getOauthToken();
-        let updatedSettings = await RNSmartCam.saveSmartthingsAccessToken(result);
-        updateSettings(updatedSettings);
-        console.log('smartthings token saved successfully');
-      }catch(err){
-        Logger.log('error saving smartthings token' + err);
-      }finally{
-        updateSettings({ isLoading: false });
-      }
-    }
-
     render(){
       const { isLoading } = this.props;
       return(
@@ -117,12 +102,14 @@ class Settings extends Component{
                   right={() => this.renderGoogleAccountConnected()} />
               <List.Item title="Enable Notification"
                   right={() => this.renderNotificationEnabled()} />
+              <List.Item title="Connect Smartthings"
+                  description="Integrate with your smartthings hub"
+                  right={() => this.renderSmartthingsEnabled()} />
               <List.Item title="Show Device Logs"
                   description="Required for troubleshooting purpose"
                   right={() => this.renderDeviceLogsEnabled()} />
             </List.Section>
             {this.renderSyncButton()}
-            {this.renderSmartthingsButton()}
             <InAppPurchase {...this.props}/>
             {this.renderDeviceLogs()}
           </View>
@@ -133,6 +120,14 @@ class Settings extends Component{
     const { settings, updateSettings } = this.props;
     return (
       <GoogleConnectStatus isGoogleAccountConnected={settings.isGoogleAccountConnected}
+          updateSettings={updateSettings}/>
+    );
+  }
+
+  renderSmartthingsEnabled(){
+    const { settings, updateSettings } = this.props;
+    return (
+      <SmartthingsIntegration smartthingsAccessToken={settings.smartthingsAccessToken}
           updateSettings={updateSettings}/>
     );
   }
@@ -178,14 +173,6 @@ class Settings extends Component{
     return(
       <Button style={{marginLeft: 30, marginRight: 30}} mode='outlined' color={Theme.primary} loading={syncing} onPress={() => this.onSyncPress()}>
         Sync Configs
-      </Button>
-    )
-  }
-
-  renderSmartthingsButton(){
-    return(
-      <Button style={{marginLeft: 30, marginRight: 30}} mode='outlined' color={Theme.primary} onPress={() => this.onConnectSmartthimgs()}>
-        Connect Smartthings
       </Button>
     )
   }

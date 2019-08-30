@@ -1,4 +1,8 @@
+import React, { Component } from 'react';
 import { authorize } from 'react-native-app-auth';
+import { Switch } from 'react-native-paper';
+import Logger from '../common/Logger';
+import RNSmartCam from '../native/RNSmartCam';
 
 // base config
 const config = {
@@ -12,7 +16,34 @@ const config = {
   scopes: ['app'],
 };
 
-class SmartthingsIntegration{
+export default class SmartthingsIntegration extends Component{
+
+    onChangeConnectStatus(requestConnect){
+      const { updateSettings } = this.props;
+
+      if(!requestConnect){
+        //remove access tokens from local db
+        updateSettings({ smartthingsAccessToken: null, smartthingsAccessTokenExpiry: null });
+      }else{
+        this.onConnectSmartthimgs();
+      }
+    }
+
+    async onConnectSmartthimgs(){
+      const { updateSettings } = this.props;
+      updateSettings({ isLoading: true });
+      try{
+        const result = await this.getOauthToken();
+        let updatedSettings = await RNSmartCam.saveSmartthingsAccessToken(result);
+        updateSettings(updatedSettings);
+        console.log('smartthings token saved successfully');
+      }catch(err){
+        Logger.log('error saving smartthings token' + err);
+      }finally{
+        updateSettings({ isLoading: false });
+      }
+    }
+
     async getOauthToken(){
         try {
             console.log('starting authorize');
@@ -24,6 +55,15 @@ class SmartthingsIntegration{
             console.log(error);
         }
     }
-}
 
-export default new SmartthingsIntegration();
+    render(){
+      const { smartthingsAccessToken } = this.props;
+      let isSmartthingsConnected = smartthingsAccessToken ? true : false ;
+      return (
+        <Switch
+          value={isSmartthingsConnected}
+          onValueChange={value => this.onChangeConnectStatus(value)}
+        />
+      );
+    }
+}
