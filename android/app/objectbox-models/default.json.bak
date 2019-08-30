@@ -29,7 +29,7 @@
     },
     {
       "id": "2:4322453221154582630",
-      "lastPropertyId": "22:5590112732721634530",
+      "lastPropertyId": "30:4119470238636819387",
       "name": "CameraConfig",
       "properties": [
         {
@@ -120,6 +120,38 @@
         {
           "id": "22:5590112732721634530",
           "name": "monitoringEnabled"
+        },
+        {
+          "id": "23:3836201538859353195",
+          "name": "topLeftX"
+        },
+        {
+          "id": "24:7998497363715239719",
+          "name": "topLeftY"
+        },
+        {
+          "id": "25:3118730306228333719",
+          "name": "topRightX"
+        },
+        {
+          "id": "26:3774968306279005181",
+          "name": "topRightY"
+        },
+        {
+          "id": "27:3728234352441275406",
+          "name": "bottomLeftX"
+        },
+        {
+          "id": "28:1843025361527258016",
+          "name": "bottomLeftY"
+        },
+        {
+          "id": "29:8529822382354522404",
+          "name": "bottomRightX"
+        },
+        {
+          "id": "30:4119470238636819387",
+          "name": "bottomRightY"
         }
       ],
       "relations": []

@@ -44,7 +44,9 @@ class Settings extends Component{
       const currentSettings = this.props.settings;
       if (currentSettings.isGoogleAccountConnected !== prevSettings.isGoogleAccountConnected 
         || currentSettings.isNotificationEnabled !== prevSettings.isNotificationEnabled 
-        || currentSettings.isNoAdsPurchased !== prevSettings.isNoAdsPurchased ) {
+        || currentSettings.isNoAdsPurchased !== prevSettings.isNoAdsPurchased
+        || currentSettings.smartthingsAccessToken !== prevSettings.smartthingsAccessToken
+        || currentSettings.smartthingsRefreshToken !== prevSettings.smartthingsRefreshToken ) {
           try{
             let updatedSettings = await RNSmartCam.putSettings(currentSettings);
             console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));
@@ -88,7 +90,18 @@ class Settings extends Component{
     }
 
     async onConnectSmartthimgs(){
-      await SmartthingsIntegration.getOauthToken();
+      const { updateSettings } = this.props;
+      updateSettings({ isLoading: true });
+      try{
+        const result = await SmartthingsIntegration.getOauthToken();
+        let updatedSettings = await RNSmartCam.saveSmartthingsAccessToken(result);
+        updateSettings(updatedSettings);
+        console.log('smartthings token saved successfully');
+      }catch(err){
+        Logger.log('error saving smartthings token' + err);
+      }finally{
+        updateSettings({ isLoading: false });
+      }
     }
 
     render(){

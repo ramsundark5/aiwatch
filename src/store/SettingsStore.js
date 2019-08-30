@@ -7,6 +7,8 @@ const settingsSlice = createSlice({
       isGoogleAccountConnected: false,
       isNotificationEnabled: false,
       isNoAdsPurchased: false,
+      smartthingsAccessToken: null,
+      smartthingsRefreshToken: null,
       isLoading: false,
       showDeviceLogs: false
     },

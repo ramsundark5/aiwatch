@@ -1,5 +1,7 @@
 package com.aiwatch.models;
 
+import java.util.Date;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
@@ -11,6 +13,8 @@ public class Settings {
     private boolean isGoogleAccountConnected;
     private boolean isNotificationEnabled;
     private boolean isNoAdsPurchased;
+    private String smartthingsAccessToken;
+    private Date smartthingsRefreshToken;
 
     public long getId() {
         return id;
@@ -42,5 +46,21 @@ public class Settings {
 
     public void setNoAdsPurchased(boolean noAdsPurchased) {
         isNoAdsPurchased = noAdsPurchased;
+    }
+
+    public String getSmartthingsAccessToken() {
+        return smartthingsAccessToken;
+    }
+
+    public void setSmartthingsAccessToken(String smartthingsAccessToken) {
+        this.smartthingsAccessToken = smartthingsAccessToken;
+    }
+
+    public Date getSmartthingsRefreshToken() {
+        return smartthingsRefreshToken;
+    }
+
+    public void setSmartthingsRefreshToken(Date smartthingsRefreshToken) {
+        this.smartthingsRefreshToken = smartthingsRefreshToken;
     }
 }

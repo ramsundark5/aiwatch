@@ -14,11 +14,11 @@ const config = {
 
 class SmartthingsIntegration{
     async getOauthToken(){
-        // use the client to make the auth request and receive the authState
         try {
             console.log('starting authorize');
             const result = await authorize(config);
-            console.log('result '+result);
+            console.log('smartthings token '+JSON.stringify(result));
+            return result;
             // result includes accessToken, accessTokenExpirationDate and refreshToken
         } catch (error) {
             console.log(error);

@@ -305,6 +305,24 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void saveSmartthingsAccessToken(final ReadableMap readableMap, final Promise promise) {
+        try{
+            SettingsDao settingsDao = new SettingsDao();
+            Settings settings = settingsDao.getSettings();
+            settings.setSmartthingsAccessToken(readableMap.getString(""));
+            settings.setSmartthingsAccessToken(readableMap.getString(""));
+            settingsDao.putSettings(settings);
+
+            String jsonString = gson.toJson(settings);
+            JSONObject updatedJsonObject = new JSONObject(jsonString);
+            WritableMap settingsMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
+            promise.resolve(settingsMap);
+        }catch(Exception e){
+            LOGGER.e(e, e.getMessage());
+            promise.reject(e);
+        }
+    }
 
     @ReactMethod
     public void sync(final Promise promise) {
