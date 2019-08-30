@@ -45,8 +45,11 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -310,8 +313,11 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         try{
             SettingsDao settingsDao = new SettingsDao();
             Settings settings = settingsDao.getSettings();
-            settings.setSmartthingsAccessToken(readableMap.getString(""));
-            settings.setSmartthingsAccessToken(readableMap.getString(""));
+            String accessToken = readableMap.getString("accessToken");
+            String expirationDateStr = readableMap.getString("accessTokenExpirationDate");
+            Date expirationDate = convertStringToDate(expirationDateStr);
+            settings.setSmartthingsAccessToken(accessToken);
+            settings.setSmartthingsAccessTokenExpiry(expirationDate);
             settingsDao.putSettings(settings);
 
             String jsonString = gson.toJson(settings);
@@ -353,6 +359,18 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                 LOGGER.e(e, "Error getting updates from firebase");
             }
         });
+    }
+
+    private Date convertStringToDate(String dateInString){
+        Date formattedDate = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            formattedDate = formatter.parse(dateInString);
+        } catch (Exception e) {
+            LOGGER.d("error parsing smartthings expiration date");
+        }
+        return formattedDate;
     }
 
     public class LocalBroadcastReceiver extends BroadcastReceiver {

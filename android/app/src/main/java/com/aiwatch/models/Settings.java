@@ -14,7 +14,7 @@ public class Settings {
     private boolean isNotificationEnabled;
     private boolean isNoAdsPurchased;
     private String smartthingsAccessToken;
-    private Date smartthingsRefreshToken;
+    private Date smartthingsAccessTokenExpiry;
 
     public long getId() {
         return id;
@@ -56,11 +56,11 @@ public class Settings {
         this.smartthingsAccessToken = smartthingsAccessToken;
     }
 
-    public Date getSmartthingsRefreshToken() {
-        return smartthingsRefreshToken;
+    public Date getSmartthingsAccessTokenExpiry() {
+        return smartthingsAccessTokenExpiry;
     }
 
-    public void setSmartthingsRefreshToken(Date smartthingsRefreshToken) {
-        this.smartthingsRefreshToken = smartthingsRefreshToken;
+    public void setSmartthingsAccessTokenExpiry(Date smartthingsAccessTokenExpiry) {
+        this.smartthingsAccessTokenExpiry = smartthingsAccessTokenExpiry;
     }
 }

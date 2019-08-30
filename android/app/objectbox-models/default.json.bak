@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "5:6208499642025117182",
+      "lastPropertyId": "8:1805163227029846080",
       "name": "Settings",
       "properties": [
         {
@@ -23,6 +23,18 @@
         {
           "id": "5:6208499642025117182",
           "name": "isNoAdsPurchased"
+        },
+        {
+          "id": "6:3593102763125314876",
+          "name": "smartthingsAccessToken"
+        },
+        {
+          "id": "7:5223133838071279555",
+          "name": "smartthingsRefreshToken"
+        },
+        {
+          "id": "8:1805163227029846080",
+          "name": "smartthingsAccessTokenExpiry"
         }
       ],
       "relations": []

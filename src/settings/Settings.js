@@ -46,7 +46,7 @@ class Settings extends Component{
         || currentSettings.isNotificationEnabled !== prevSettings.isNotificationEnabled 
         || currentSettings.isNoAdsPurchased !== prevSettings.isNoAdsPurchased
         || currentSettings.smartthingsAccessToken !== prevSettings.smartthingsAccessToken
-        || currentSettings.smartthingsRefreshToken !== prevSettings.smartthingsRefreshToken ) {
+        || currentSettings.smartthingsAccessTokenExpiry !== prevSettings.smartthingsAccessTokenExpiry ) {
           try{
             let updatedSettings = await RNSmartCam.putSettings(currentSettings);
             console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "7:5223133838071279555",
+      "lastPropertyId": "8:1805163227029846080",
       "name": "Settings",
       "properties": [
         {
@@ -29,8 +29,8 @@
           "name": "smartthingsAccessToken"
         },
         {
-          "id": "7:5223133838071279555",
-          "name": "smartthingsRefreshToken"
+          "id": "8:1805163227029846080",
+          "name": "smartthingsAccessTokenExpiry"
         }
       ],
       "relations": []
@@ -235,7 +235,8 @@
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
-    2617017062261545181
+    2617017062261545181,
+    5223133838071279555
   ],
   "retiredRelationUids": [],
   "version": 1
