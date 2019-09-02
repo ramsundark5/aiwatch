@@ -346,7 +346,6 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         }
     }
 
-
     @ReactMethod
     public void discover(final Promise promise) {
         try{
