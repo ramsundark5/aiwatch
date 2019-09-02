@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Switch } from 'react-native-paper';
-import DialogInput from 'react-native-dialog-input';
+import DialogInput from '../common/DialogInput';
 
 export default class AlexaIntegration extends Component{
 
