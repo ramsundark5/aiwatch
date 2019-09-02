@@ -1,21 +1,13 @@
 import React, { Component } from 'react';
+import { View } from 'react-native';
 import { Switch } from 'react-native-paper';
-import Logger from '../common/Logger';
-import RNSmartCam from '../native/RNSmartCam';
+import DialogInput from 'react-native-dialog-input';
 
-// base config
-const config = {
-  serviceConfiguration:{
-    authorizationEndpoint: 'https://graph.api.smartthings.com/oauth/authorize',
-    tokenEndpoint: 'https://graph.api.smartthings.com/oauth/token'
-  },
-  clientId: '5c9baee2-daa5-46ff-abc0-2cdceeb284ea',
-  clientSecret: 'f6a70c01-410d-46dd-95a0-94b7ad76f8b2',
-  redirectUrl: 'com.aiwatch.oauth:/oauthredirect',
-  scopes: ['app'],
-};
+export default class AlexaIntegration extends Component{
 
-export default class SmartthingsIntegration extends Component{
+    state = {
+      showTokenInput: false,
+    }
 
     onChangeConnectStatus(requestConnect){
       const { updateSettings } = this.props;
@@ -24,35 +16,42 @@ export default class SmartthingsIntegration extends Component{
         //remove access tokens from local db
         updateSettings({ alexaToken: null });
       }else{
-        this.onConnectAlexa();
+        this.showAlexaTokenInput(true);
       }
     }
 
-    async onConnectAlexa(){
+    showAlexaTokenInput(isShow){
+      this.setState({showTokenInput: isShow});
+    }
+    
+    async onConnectAlexa(token){
       const { updateSettings } = this.props;
-      updateSettings({ isLoading: true });
-      try{
-        let result = await this.getOauthToken();
-        const smartAppEndpoint = await this.getSmartAppEndpoint(result);
-        result['smartAppEndpoint'] = smartAppEndpoint;
-        let updatedSettings = await RNSmartCam.saveSmartthingsAccessToken(result);
-        updateSettings(updatedSettings);
-        console.log('smartthings token saved successfully');
-      }catch(err){
-        Logger.log('error saving smartthings token' + err);
-      }finally{
-        updateSettings({ isLoading: false });
-      }
+      updateSettings({ alexaToken: token });
+      this.showAlexaTokenInput(false);
     }
 
     render(){
-      const { smartthingsAccessToken } = this.props;
-      let isSmartthingsConnected = smartthingsAccessToken ? true : false ;
+      const { alexaToken } = this.props;
+      let isAlexaConnected = alexaToken ? true : false ;
       return (
-        <Switch
-          value={isSmartthingsConnected}
-          onValueChange={value => this.onChangeConnectStatus(value)}
-        />
+        <View style={{paddingTop: 10}}>
+          <Switch
+            value={isAlexaConnected}
+            onValueChange={value => this.onChangeConnectStatus(value)}
+          />
+          {this.renderTokenInputDialog(alexaToken)}
+        </View>
       );
+    }
+
+    renderTokenInputDialog(alexaToken){
+      return(
+        <DialogInput isDialogVisible={this.state.showTokenInput}
+          title={"Connect Alexa"}
+          message={"Enter the token from Alexa Notify me skill"}
+          hintInput ={alexaToken}
+          submitInput={ (inputText) => {this.onConnectAlexa(inputText)} }
+          closeDialog={ () => {this.showAlexaTokenInput(false)}} />
+      )
     }
 }

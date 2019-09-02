@@ -12,7 +12,7 @@ import InAppPurchase from './InAppPurchase';
 import {LogView} from 'react-native-device-log';
 import Logger from '../common/Logger';
 import SmartthingsIntegration from './SmartthingsIntegration';
-
+import AlexaIntegration from './AlexaIntegration';
 class Settings extends Component{
 
     state = {
@@ -38,7 +38,7 @@ class Settings extends Component{
       // Remove the event listener
       this.focusListener.remove();
     }
-
+    
     async componentDidUpdate(prevProps){
       const prevSettings  = prevProps.settings;
       const currentSettings = this.props.settings;
@@ -47,7 +47,8 @@ class Settings extends Component{
         || currentSettings.isNoAdsPurchased !== prevSettings.isNoAdsPurchased
         || currentSettings.smartthingsAccessToken !== prevSettings.smartthingsAccessToken
         || currentSettings.smartthingsAccessTokenExpiry !== prevSettings.smartthingsAccessTokenExpiry 
-        || currentSettings.smartAppEndpoint !== prevSettings.smartAppEndpoint ) {
+        || currentSettings.smartAppEndpoint !== prevSettings.smartAppEndpoint
+        || currentSettings.alexaToken !== prevSettings.alexaToken ) {
           try{
             let updatedSettings = await RNSmartCam.putSettings(currentSettings);
             console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));

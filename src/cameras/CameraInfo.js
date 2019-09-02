@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { List, TextInput } from 'react-native-paper';
+import { List } from 'react-native-paper';
 import ConfigInput from './ConfigInput';
 export default class CameraInfo extends Component {
   state = {
@@ -23,19 +22,6 @@ export default class CameraInfo extends Component {
 
         <ConfigInput {...props} label="Camera Model" name="model" />
       </List.Accordion>
-    );
-  }
-
-  renderTextInput(label, name) {
-    const { props } = this;
-    return (
-      <TextInput
-        {...props}
-        label={label}
-        name={name}
-        value={props.cameraConfig[name]}
-        onChange={e => props.onConfigChange(name, e.target.value)}
-      />
     );
   }
 }

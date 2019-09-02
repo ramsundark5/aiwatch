@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "8:1805163227029846080",
+      "lastPropertyId": "9:4500561416789704076",
       "name": "Settings",
       "properties": [
         {
@@ -31,6 +31,10 @@
         {
           "id": "8:1805163227029846080",
           "name": "smartthingsAccessTokenExpiry"
+        },
+        {
+          "id": "9:4500561416789704076",
+          "name": "smartAppEndpoint"
         }
       ],
       "relations": []

@@ -16,6 +16,7 @@ public class Settings {
     private String smartthingsAccessToken;
     private String smartAppEndpoint;
     private Date smartthingsAccessTokenExpiry;
+    private String alexaToken;
 
     public long getId() {
         return id;
@@ -71,5 +72,13 @@ public class Settings {
 
     public void setSmartAppEndpoint(String smartAppEndpoint) {
         this.smartAppEndpoint = smartAppEndpoint;
+    }
+
+    public String getAlexaToken() {
+        return alexaToken;
+    }
+
+    public void setAlexaToken(String alexaToken) {
+        this.alexaToken = alexaToken;
     }
 }
