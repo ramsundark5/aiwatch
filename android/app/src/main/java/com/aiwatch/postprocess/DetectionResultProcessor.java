@@ -79,6 +79,7 @@ public class DetectionResultProcessor {
             //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
             smartthingsNotificationManager.notifyHub();
+            AlexaNotificationManager.notifyAlexa(alarmEvent);
             firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
         }
         return isResultInteresting;
