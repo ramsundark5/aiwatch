@@ -185,6 +185,12 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
 
+    //evercam
+    implementation group: 'net.sbbi', name: 'sbbi-upnplib', version: '1.0.4'
+    implementation group: 'org.simpleframework', name: 'simple-xml', version: '2.7.1'
+    implementation group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+    implementation group: 'commons-net', name: 'commons-net', version: '3.6'
+
 
     //react native projects
     implementation project(':react-native-screens')
@@ -206,6 +212,9 @@ dependencies {
 repositories {
     maven {
         url 'https://google.bintray.com/tensorflow'
+    }
+    maven {
+        url "http://maven.nuiton.org/release/"
     }
 }
 

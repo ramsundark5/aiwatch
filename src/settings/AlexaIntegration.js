@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { authorize } from 'react-native-app-auth';
 import { Switch } from 'react-native-paper';
 import Logger from '../common/Logger';
 import RNSmartCam from '../native/RNSmartCam';
@@ -23,13 +22,13 @@ export default class SmartthingsIntegration extends Component{
 
       if(!requestConnect){
         //remove access tokens from local db
-        updateSettings({ smartthingsAccessToken: null, smartthingsAccessTokenExpiry: null });
+        updateSettings({ alexaToken: null });
       }else{
-        this.onConnectSmartthimgs();
+        this.onConnectAlexa();
       }
     }
 
-    async onConnectSmartthimgs(){
+    async onConnectAlexa(){
       const { updateSettings } = this.props;
       updateSettings({ isLoading: true });
       try{
@@ -43,39 +42,6 @@ export default class SmartthingsIntegration extends Component{
         Logger.log('error saving smartthings token' + err);
       }finally{
         updateSettings({ isLoading: false });
-      }
-    }
-
-    async getOauthToken(){
-        try {
-            console.log('starting authorize');
-            const result = await authorize(config);
-            console.log('smartthings token '+JSON.stringify(result));
-            return result;
-            // result includes accessToken, accessTokenExpirationDate and refreshToken
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    async getSmartAppEndpoint(authData){
-      var url = 'https://graph.api.smartthings.com/api/smartapps/endpoints';
-      try{
-        const bearer = 'Bearer ' + authData.accessToken;
-        const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': bearer
-                }
-        });
-        const jsonBody = await response.json();
-        console.log('smartapp endpoint response is '+JSON.stringify(jsonBody));
-        const endpoint = jsonBody[0].uri;
-        console.log('smartapp endpoint is '+endpoint);
-        return endpoint;
-      }catch(err){
-        console.log('error getting smartapp endpoint '+err);
-        return null;
       }
     }
 

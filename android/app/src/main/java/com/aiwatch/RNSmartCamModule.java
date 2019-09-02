@@ -17,6 +17,7 @@ import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseCameraManager;
 import com.aiwatch.firebase.FirebaseSyncManager;
 import com.aiwatch.firebase.FirebaseUserDataDao;
+import com.aiwatch.media.DeviceDiscovery;
 import com.aiwatch.media.FFmpegConnectionTester;
 import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -342,6 +343,19 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             LOGGER.e(e, e.getMessage());
         } finally {
             promise.resolve("sync completed");
+        }
+    }
+
+
+    @ReactMethod
+    public void discover(final Promise promise) {
+        try{
+            DeviceDiscovery deviceDiscovery = new DeviceDiscovery();
+            deviceDiscovery.discover();
+        }catch(Exception e){
+            LOGGER.e(e, e.getMessage());
+        } finally {
+            promise.resolve("discovery completed");
         }
     }
 

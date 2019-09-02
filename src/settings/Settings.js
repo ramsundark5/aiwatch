@@ -106,6 +106,9 @@ class Settings extends Component{
               <List.Item title="Connect Smartthings"
                   description="Integrate with your smartthings hub"
                   right={() => this.renderSmartthingsEnabled()} />
+              <List.Item title="Notify Alexa"
+                  description="Notify Alexa on interested alerts"
+                  right={() => this.renderAlexaEnabled()} />
               <List.Item title="Show Device Logs"
                   description="Required for troubleshooting purpose"
                   right={() => this.renderDeviceLogsEnabled()} />
@@ -129,6 +132,14 @@ class Settings extends Component{
     const { settings, updateSettings } = this.props;
     return (
       <SmartthingsIntegration smartthingsAccessToken={settings.smartthingsAccessToken}
+          updateSettings={updateSettings}/>
+    );
+  }
+
+  renderAlexaEnabled(){
+    const { settings, updateSettings } = this.props;
+    return (
+      <AlexaIntegration alexaToken={settings.alexaToken}
           updateSettings={updateSettings}/>
     );
   }
