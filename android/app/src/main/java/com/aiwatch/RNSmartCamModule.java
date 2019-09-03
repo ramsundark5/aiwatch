@@ -350,7 +350,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     public void discover(final Promise promise) {
         try{
             DeviceDiscovery deviceDiscovery = new DeviceDiscovery();
-            deviceDiscovery.discover();
+            deviceDiscovery.discover(reactContext);
         }catch(Exception e){
             LOGGER.e(e, e.getMessage());
         } finally {
