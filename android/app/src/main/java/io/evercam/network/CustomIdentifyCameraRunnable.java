@@ -1,17 +1,21 @@
 package io.evercam.network;
 
+import com.aiwatch.Logger;
+
 import io.evercam.Vendor;
 import io.evercam.network.discovery.Device;
 import io.evercam.network.discovery.DiscoveredCamera;
 import io.evercam.network.discovery.MacAddress;
 import io.evercam.network.discovery.Port;
 import io.evercam.network.discovery.PortScan;
-import io.evercam.network.query.EvercamQuery;
 import io.evercam.network.query.CustomPublicVendor;
+import io.evercam.network.query.EvercamQuery;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 public abstract class CustomIdentifyCameraRunnable implements Runnable {
+    private static final Logger LOGGER = new Logger();
     private String ip;
 
     public CustomIdentifyCameraRunnable(String ip) {
@@ -20,7 +24,7 @@ public abstract class CustomIdentifyCameraRunnable implements Runnable {
 
     @Override
     public void run() {
-        CustomEvercamDiscover.printLogMessage("Identifying : " + ip);
+        EvercamDiscover.printLogMessage("Identifying : " + ip);
         try {
             String macAddress = MacAddress.getByIpLinux(ip);
             if (!macAddress.equals(Constants.EMPTY_MAC)) {
@@ -45,24 +49,26 @@ public abstract class CustomIdentifyCameraRunnable implements Runnable {
                         if (activePortList.size() > 0) {
                             camera = camera.mergePorts(activePortList);
                         }
-
                         onCameraFound(camera, vendor);
                     }
                 } else {
                     Device device = new Device(ip);
                     device.setMAC(macAddress);
-                    device.setPublicVendor(CustomPublicVendor.getByMac(macAddress)
-                            .getCompany());
+                    CustomPublicVendor publicVendor = CustomPublicVendor.getByMac(macAddress);
+                    String canonicalHostName = (InetAddress.getByName(ip)).getCanonicalHostName();
+                    String vendorStr = canonicalHostName;
+                    if(publicVendor != null){
+                        vendorStr = canonicalHostName + publicVendor.getCompany();
+                    }
+                    device.setPublicVendor(vendorStr);
                     onNonCameraDeviceFound(device);
                 }
             }
         } catch (Exception e) {
-            if (Constants.ENABLE_LOGGING) {
-                e.printStackTrace();
-            }
+            LOGGER.e(e, "Error identifying camera");
         }
 
-        CustomEvercamDiscover.printLogMessage("Identification finished:  " + ip);
+        EvercamDiscover.printLogMessage("Identification finished:  " + ip);
 
         onFinished();
     }

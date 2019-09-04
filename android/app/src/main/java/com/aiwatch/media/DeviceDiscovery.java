@@ -23,8 +23,8 @@ public class DeviceDiscovery {
         try {
             lock = lockMulticast(context);
             NetInfo netInfo = new NetInfo(context);
-            ScanRange scanRange = new ScanRange("192.168.1.1", "255.255.255.0");
-            //ScanRange scanRange = new ScanRange(netInfo.getGatewayIp(), netInfo.getNetmaskIp());
+            //ScanRange scanRange = new ScanRange("192.168.1.1", "255.255.255.0");
+            ScanRange scanRange = new ScanRange(netInfo.getGatewayIp(), netInfo.getNetmaskIp());
             DiscoveryResult discoveryResult = evercamDiscover.discoverAllLinux(scanRange);
             List<DiscoveredCamera> discoveredCameraList = discoveryResult.getCameras();
             List<Device> devices = discoveryResult.getOtherDevices();
