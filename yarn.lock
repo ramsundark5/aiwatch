@@ -5632,9 +5632,9 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-"react-native-admob@git+https://github.com/MTTenterprise/react-native-admob":
+"react-native-admob@git+https://github.com/ramsundark5/react-native-admob":
   version "2.0.0-beta.5"
-  resolved "git+https://github.com/MTTenterprise/react-native-admob#bbf4e340377d4926ab0a877f2c47dea41bb1b799"
+  resolved "git+https://github.com/ramsundark5/react-native-admob#fc4a5dde68266e0aad97ee5dedb0db8ecc04fdf8"
   dependencies:
     prop-types "^15.5.10"
 
@@ -5750,6 +5750,13 @@ react-native-paper@3.0.0-alpha.2:
     "@callstack/react-theme-provider" "^3.0.2"
     color "^2.0.1"
     react-native-safe-area-view "^0.12.0"
+
+react-native-progress@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-3.6.0.tgz#feaf37491f91bb421207fd761e20cb7258a2a3a6"
+  integrity sha512-zzTe595xaaskyfR5OzaGrU4O0R+YkgdEw+EspgGD7wh8Hu0fs6ue3xLW+HEbTjOCn62pCRivwi3NxbpWNBCC7Q==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-safe-area-view@^0.12.0:
   version "0.12.0"

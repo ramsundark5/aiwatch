@@ -353,7 +353,6 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     public void discover(final Promise promise) {
         WritableMap discoverdDevicesMap = null;
         try{
-            promise.resolve("device discovert started");
             DeviceDiscovery deviceDiscovery = new DeviceDiscovery();
             DiscoveryResult discoveryResult = deviceDiscovery.discover(reactContext);
             String jsonString = gson.toJson(discoveryResult);
@@ -362,7 +361,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         }catch(Exception e){
             LOGGER.e(e, e.getMessage());
         } finally {
-            sendEvent(AppConstants.DEVICE_DISCOVERY_COMPLETED_JS_EVENT, discoverdDevicesMap);
+            promise.resolve(discoverdDevicesMap);
         }
     }
 
@@ -422,16 +421,6 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             } catch (Exception e) {
                 LOGGER.e("Exception notifying UI about events " + e.getMessage());
             }
-        }
-    }
-
-    private  void sendEvent(String eventName, WritableMap params) {
-        try{
-            ReactContext reactApplicationContext = (ReactContext) this.reactContext;
-            reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit(eventName, params);
-        }catch (Exception e){
-            LOGGER.e(e, e.getMessage());
         }
     }
 
