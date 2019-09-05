@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Button, List, ActivityIndicator } from 'react-native-paper';
+import { Button, List } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
-import { DeviceEventEmitter, InteractionManager, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { DeviceEventEmitter, InteractionManager, ScrollView, StyleSheet, View } from 'react-native';
 import Theme from '../common/Theme';
 import Logger from '../common/Logger';
 import Spinner from 'react-native-loading-spinner-overlay';
-import LoadingSpinner from '../common/LoadingSpinner';
-import * as Progress from 'react-native-progress';
 
+const INITIAL_PROGRESS_MESSAGE = 'Scanning for devices..';
 export default class ScanCamera extends Component {
 
     static navigationOptions = {
@@ -23,66 +22,39 @@ export default class ScanCamera extends Component {
         cameras: [],
         nonCameraDevices: [],
         isLoading: false,
-        loadingMessage: 'Scanning for devices..',
-        progress: 0,
-        indeterminate: true,
+        loadingMessage: INITIAL_PROGRESS_MESSAGE,
     }
 
     componentDidMount(){
         DeviceEventEmitter.addListener('DEVICE_DISCOVERY_PROGRESS_JS_EVENT', this.onNewProgressEvent);
+        DeviceEventEmitter.addListener('DEVICE_DISCOVERY_COMPLETED_JS_EVENT', this.handleDiscoveryResult);
         InteractionManager.runAfterInteractions(() => {
             this.onStartScan();
         });
-    }
-
-    showProgress() {
-        let progress = 0;
-        let durationOfProgressbar = 30 * 1000; //60 seconds
-        let startTime = new Date().getTime();
-        this.setState({ progress: 0, indeterminate: false });
-        let progressInterval = setInterval(() => {
-            let currentTime = new Date().getTime();
-            let elapsedTime = Math.round( currentTime - startTime);
-            progress = Math.round(elapsedTime / durationOfProgressbar);
-            if (progress > 1) {
-                progress = 1;
-                clearInterval(progressInterval);
-            }
-            this.setState({ progress });
-        }, 300);
     }
 
     onNewProgressEvent = (event) => {
         if(event){
             console.log('event ' + event.message);
             this.setState({loadingMessage: event.message});
-            this.forceUpdate();
         }
     }
 
     onStartScan(){
         this.setState({isLoading: true});
-        setTimeout(() => {
-            this.scan();
-        }, 100);
-        setTimeout(() => {
-            this.setState({isLoading: false, loadingMessage: 'Scanning for devices..'});
-        }, 1000 * 60);
-    }
-
-    async scan(){
         try{
-            let discoveryResult = await RNSmartCam.discover();
-            console.log('discovery completed');
-            this.handleDiscoveryResult(discoveryResult);
+            RNSmartCam.discover();
+            console.log('discovery started');
         }catch(err){
             Logger.error(err);
-        }finally{  
-            this.setState({isLoading: false, loadingMessage: 'Scanning for devices..'});
         }
+        //to be safe, dismiss the spinner after 2 mins
+        setTimeout(() => {
+            this.setState({isLoading: false, loadingMessage: INITIAL_PROGRESS_MESSAGE});
+        }, 1000 * 120);
     }
 
-    handleDiscoveryResult(discoveryResult){
+    handleDiscoveryResult = (discoveryResult) => {
         if(discoveryResult){
             let cameras = discoveryResult.cameras;
             let nonCameraDevices = discoveryResult.nonCameraDevices;
@@ -133,18 +105,11 @@ export default class ScanCamera extends Component {
         }
         console.log('render ' + loadingMessage);
         return(
-            <Progress.Circle
-                style={styles.progress}
-                progress={this.state.progress}
-                indeterminate={this.state.indeterminate}
-            />
-        )
-        /* return(
             <Spinner
                 cancelable={true}
                 visible={isLoading}
                 textContent={loadingMessage} / >
-        ) */
+        )
     }
     
     renderCamera(camera){

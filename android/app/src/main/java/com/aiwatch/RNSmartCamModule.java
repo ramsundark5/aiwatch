@@ -17,7 +17,6 @@ import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseCameraManager;
 import com.aiwatch.firebase.FirebaseSyncManager;
 import com.aiwatch.firebase.FirebaseUserDataDao;
-import com.aiwatch.media.DeviceDiscovery;
 import com.aiwatch.media.FFmpegConnectionTester;
 import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -55,6 +54,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.evercam.network.CustomEvercamDiscover;
 import io.evercam.network.DiscoveryResult;
 
 public class RNSmartCamModule extends ReactContextBaseJavaModule {
@@ -351,17 +351,14 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void discover(final Promise promise) {
-        WritableMap discoverdDevicesMap = null;
         try{
-            DeviceDiscovery deviceDiscovery = new DeviceDiscovery();
-            DiscoveryResult discoveryResult = deviceDiscovery.discover(reactContext);
-            String jsonString = gson.toJson(discoveryResult);
-            JSONObject updatedJsonObject = new JSONObject(jsonString);
-            discoverdDevicesMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
+            CustomEvercamDiscover evercamDiscover = new CustomEvercamDiscover((ReactContext) reactContext);
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.submit(evercamDiscover);
         }catch(Exception e){
             LOGGER.e(e, e.getMessage());
         } finally {
-            promise.resolve(discoverdDevicesMap);
+            promise.resolve("started discovery");
         }
     }
 

@@ -1,7 +1,6 @@
 package io.evercam.network;
 
 import com.aiwatch.Logger;
-
 import io.evercam.Vendor;
 import io.evercam.network.discovery.Device;
 import io.evercam.network.discovery.DiscoveredCamera;
@@ -14,19 +13,29 @@ import io.evercam.network.discovery.ScanResult;
 import io.evercam.network.discovery.UpnpDevice;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.common.ConversionUtil;
+import com.aiwatch.common.NetInfo;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 
-public class CustomEvercamDiscover {
+import org.json.JSONObject;
+
+public class CustomEvercamDiscover implements Runnable {
     private static final Logger LOGGER = new Logger();
-    public static final int DEFAULT_FIXED_POOL = 20;
+    public static final int DEFAULT_FIXED_POOL = 30;
 
     private ArrayList<String> activeIpList = new ArrayList<String>();
     private ArrayList<UpnpDevice> deviceList = new ArrayList<UpnpDevice>();// UPnP
@@ -62,6 +71,30 @@ public class CustomEvercamDiscover {
     public CustomEvercamDiscover withDefaults(boolean withDefaults) {
         this.withDefaults = withDefaults;
         return this;
+    }
+
+
+    @Override
+    public void run() {
+        WritableMap discoverdDevicesMap = null;
+        try {
+            NetInfo netInfo = new NetInfo(reactContext);
+            //ScanRange scanRange = new ScanRange("192.168.1.1", "255.255.255.0");
+            ScanRange scanRange = new ScanRange(netInfo.getGatewayIp(), netInfo.getNetmaskIp());
+            DiscoveryResult discoveryResult = discoverAllLinux(scanRange);
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()))
+                    .registerTypeAdapter(Date.class, (JsonSerializer<Date>) (date, type, jsonSerializationContext) -> new JsonPrimitive(date.getTime()))
+                    .create();
+            String jsonString = gson.toJson(discoveryResult);
+            JSONObject updatedJsonObject = new JSONObject(jsonString);
+            discoverdDevicesMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
+        } catch (Exception e) {
+            LOGGER.e(e, e.getMessage());
+        } finally {
+            sendEvent(AppConstants.DEVICE_DISCOVERY_COMPLETED_JS_EVENT, discoverdDevicesMap);
+        }
     }
 
     /**
@@ -463,4 +496,5 @@ public class CustomEvercamDiscover {
             LOGGER.e(e, e.getMessage());
         }
     }
+
 }
