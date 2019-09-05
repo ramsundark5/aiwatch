@@ -18,6 +18,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.aiwatch.common.AppConstants;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
 public class CustomEvercamDiscover {
     private static final Logger LOGGER = new Logger();
     public static final int DEFAULT_FIXED_POOL = 20;
@@ -41,7 +47,11 @@ public class CustomEvercamDiscover {
     public static long NAT_TIMEOUT = 5000; // 5 secs
     public static long IDENTIFICATION_TIMEOUT = 16000; // 16 secs
     public static long QUERY_TIMEOUT = 12000; // 12 secs
+    private ReactContext reactContext;
 
+    public CustomEvercamDiscover (ReactContext reactContext) {
+        this.reactContext = reactContext;
+    }
     /**
      * Include camera defaults(username, password, paths, and thumbnail URLs) in
      * the scanning result or not
@@ -222,7 +232,7 @@ public class CustomEvercamDiscover {
         return new DiscoveryResult(cameraList, nonCameraDeviceList);
     }
 
-    public static DiscoveredCamera mergeSingleUpnpDeviceToCamera(
+    public  DiscoveredCamera mergeSingleUpnpDeviceToCamera(
             UpnpDevice upnpDevice, DiscoveredCamera discoveredCamera) {
         int port = upnpDevice.getPort();
         String model = upnpDevice.getModel();
@@ -234,7 +244,7 @@ public class CustomEvercamDiscover {
         return discoveredCamera;
     }
 
-    public static DiscoveredCamera mergeUpnpDevicesToCamera(
+    public  DiscoveredCamera mergeUpnpDevicesToCamera(
             DiscoveredCamera camera, ArrayList<UpnpDevice> upnpDeviceList) {
         try {
             if (upnpDeviceList.size() > 0) {
@@ -256,7 +266,7 @@ public class CustomEvercamDiscover {
         return camera;
     }
 
-    public static DiscoveredCamera mergeNatEntryToCamera(
+    public  DiscoveredCamera mergeNatEntryToCamera(
             DiscoveredCamera camera, NatMapEntry mapEntry) {
         int natInternalPort = mapEntry.getInternalPort();
         int natExternalPort = mapEntry.getExternalPort();
@@ -271,7 +281,7 @@ public class CustomEvercamDiscover {
         return camera;
     }
 
-    public static DiscoveredCamera mergeNatTableToCamera(
+    public  DiscoveredCamera mergeNatTableToCamera(
             DiscoveredCamera camera, ArrayList<NatMapEntry> mapEntries) {
         if (mapEntries != null && mapEntries.size() > 0) {
             for (NatMapEntry mapEntry : mapEntries) {
@@ -291,7 +301,7 @@ public class CustomEvercamDiscover {
      *
      *  re-organized camera list
      */
-    public static void mergeDuplicateCameraFromList(
+    public  void mergeDuplicateCameraFromList(
             ArrayList<DiscoveredCamera> cameraList) {
         boolean duplicate = false;
         do {
@@ -342,7 +352,7 @@ public class CustomEvercamDiscover {
     /**
      * If MAC address doesn't exist in camera object, query ARP table again
      */
-    public static void fillMacAddressIfNotExist(
+    public  void fillMacAddressIfNotExist(
             ArrayList<DiscoveredCamera> cameraList) {
         for (DiscoveredCamera camera : cameraList) {
             if (!camera.hasMac()) {
@@ -437,7 +447,20 @@ public class CustomEvercamDiscover {
      * @param message
      *            The logging message to be printed in console
      */
-    public static void printLogMessage(String message) {
+    public  void printLogMessage(String message) {
         LOGGER.d(message);
+        WritableMap payload = Arguments.createMap();
+        payload.putString("message", message);
+        sendEvent(AppConstants.DEVICE_DISCOVERY_PROGRESS_JS_EVENT, payload);
+    }
+
+    private  void sendEvent(String eventName, WritableMap params) {
+        try{
+            this.reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, params);
+        }catch (Exception e){
+            LOGGER.e(e, e.getMessage());
+        }
     }
 }

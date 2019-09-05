@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
-import { Button} from 'react-native-paper';
+import { FAB, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
-import Theme from '../common/Theme';
 import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import CameraControl from './CameraControl';
@@ -17,7 +16,8 @@ class CameraView extends Component {
   };
 
   state = {
-    isFull: false
+    isFull: false,
+    open: false
   }
 
   componentDidMount(){
@@ -35,13 +35,16 @@ class CameraView extends Component {
   }
 
   onAddCamera(){
-    RNSmartCam.discover();
-    /* const uuid = AiwatchUtil.uuidv4();
+    const uuid = AiwatchUtil.uuidv4();
     this.props.navigation.navigate('EditCamera', {
       cameraConfig: {
         uuid: uuid
       }
-    }); */
+    });
+  }
+
+  onScanCamera(){
+    this.props.navigation.navigate('ScanCamera');
   }
 
   onPlayVideoFullScreen(videoUrl){
@@ -101,11 +104,19 @@ class CameraView extends Component {
       return null;
     }
     return(
-      <View style={styles.footer}>
-        <Button mode='outlined' color={Theme.primary} onPress={() => this.onAddCamera()}>
-          Add Camera
-        </Button>
-      </View>
+      <Provider>
+         <Portal>
+           <FAB.Group
+             open={this.state.open}
+             icon={this.state.open ? 'today' : 'add'}
+             actions={[
+               { icon: 'star', label: 'Manual Add', onPress: () => this.onAddCamera()},
+               { icon: 'email', label: 'Scan', onPress: () => this.onScanCamera() },
+             ]}
+             onStateChange={({ open }) => this.setState({ open })}
+           />
+         </Portal>
+      </Provider>
     )
   }
 }

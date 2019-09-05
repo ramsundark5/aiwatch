@@ -5,6 +5,8 @@ class AiwatchUtil{
           return v.toString(16);
         });
     }
+
+    asyncSetState = instance => newState => new Promise(resolve => instance.setState(newState, resolve));
 }
 
 export default new AiwatchUtil();

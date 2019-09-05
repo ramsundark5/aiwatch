@@ -36,4 +36,6 @@ public class AppConstants {
 
     public static final long FFMPEG_COMMAND_TIMEOUT             = 80; //in seconds
     public static final int PRE_RECORDING_BUFFER                = 10; //in seconds
+    public static final String DEVICE_DISCOVERY_PROGRESS_JS_EVENT         = "DEVICE_DISCOVERY_PROGRESS_JS_EVENT";
+    public static final String DEVICE_DISCOVERY_COMPLETED_JS_EVENT        = "DEVICE_DISCOVERY_COMPLETED_JS_EVENT";
 }

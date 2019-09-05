@@ -23,6 +23,7 @@ import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
@@ -53,6 +54,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import io.evercam.network.DiscoveryResult;
 
 public class RNSmartCamModule extends ReactContextBaseJavaModule {
     private static final Logger LOGGER = new Logger();
@@ -348,13 +351,18 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void discover(final Promise promise) {
+        WritableMap discoverdDevicesMap = null;
         try{
+            promise.resolve("device discovert started");
             DeviceDiscovery deviceDiscovery = new DeviceDiscovery();
-            deviceDiscovery.discover(reactContext);
+            DiscoveryResult discoveryResult = deviceDiscovery.discover(reactContext);
+            String jsonString = gson.toJson(discoveryResult);
+            JSONObject updatedJsonObject = new JSONObject(jsonString);
+            discoverdDevicesMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
         }catch(Exception e){
             LOGGER.e(e, e.getMessage());
         } finally {
-            promise.resolve("discovery completed");
+            sendEvent(AppConstants.DEVICE_DISCOVERY_COMPLETED_JS_EVENT, discoverdDevicesMap);
         }
     }
 
@@ -414,6 +422,16 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             } catch (Exception e) {
                 LOGGER.e("Exception notifying UI about events " + e.getMessage());
             }
+        }
+    }
+
+    private  void sendEvent(String eventName, WritableMap params) {
+        try{
+            ReactContext reactApplicationContext = (ReactContext) this.reactContext;
+            reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, params);
+        }catch (Exception e){
+            LOGGER.e(e, e.getMessage());
         }
     }
 
