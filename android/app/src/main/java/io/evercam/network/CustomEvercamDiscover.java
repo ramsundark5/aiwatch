@@ -58,6 +58,13 @@ public class CustomEvercamDiscover implements Runnable {
     public static long QUERY_TIMEOUT = 12000; // 12 secs
     private ReactContext reactContext;
 
+
+
+    private float scanPercentage = 0;
+    private int totalDevices = 255;
+    //ONVIF,SSDP and NAT discovery take 9 percents each. The rest is allocated to IP scan
+    private final int PER__DISCOVERY_METHOD_PERCENT = 9;
+
     public CustomEvercamDiscover (ReactContext reactContext) {
         this.reactContext = reactContext;
     }
@@ -81,6 +88,7 @@ public class CustomEvercamDiscover implements Runnable {
             NetInfo netInfo = new NetInfo(reactContext);
             //ScanRange scanRange = new ScanRange("192.168.1.1", "255.255.255.0");
             ScanRange scanRange = new ScanRange(netInfo.getGatewayIp(), netInfo.getNetmaskIp());
+            totalDevices = scanRange.size();
             DiscoveryResult discoveryResult = discoverAllLinux(scanRange);
 
             Gson gson = new GsonBuilder()
@@ -126,6 +134,7 @@ public class CustomEvercamDiscover implements Runnable {
                 pool.execute(new NatRunnable(scanRange.getRouterIpString()) {
                     @Override
                     public void onFinished(ArrayList<NatMapEntry> mapEntries) {
+                        scanPercentage += PER__DISCOVERY_METHOD_PERCENT;
                         printLogMessage("NAT discovery finished.");
                         if (mapEntries != null) {
                             CustomEvercamDiscover.this.mapEntries = mapEntries;
@@ -147,7 +156,7 @@ public class CustomEvercamDiscover implements Runnable {
 
             @Override
             public void onIpScanned(String ip) {
-                // TODO Auto-generated method stub
+                scanPercentage += getPerDevicePercent();
             }
         });
         ipScan.scanAll(scanRange);
@@ -397,6 +406,7 @@ public class CustomEvercamDiscover implements Runnable {
     private OnvifRunnable onvifRunnable = new OnvifRunnable() {
         @Override
         public void onFinished() {
+            scanPercentage += PER__DISCOVERY_METHOD_PERCENT;
             printLogMessage("ONVIF discovery finished.");
         }
 
@@ -461,6 +471,7 @@ public class CustomEvercamDiscover implements Runnable {
 
         @Override
         public void onFinished(ArrayList<UpnpDevice> upnpDeviceList) {
+            scanPercentage += PER__DISCOVERY_METHOD_PERCENT;
             printLogMessage("UPnP discovery finished.");
             if (upnpDeviceList != null) {
                 deviceList = upnpDeviceList;
@@ -474,6 +485,10 @@ public class CustomEvercamDiscover implements Runnable {
         }
     };
 
+    private float getPerDevicePercent() {
+        return (float) (100 - PER__DISCOVERY_METHOD_PERCENT * 3) / totalDevices;
+    }
+
     /**
      * Only print the logging message when logging is enabled
      *
@@ -484,6 +499,7 @@ public class CustomEvercamDiscover implements Runnable {
         LOGGER.d(message);
         WritableMap payload = Arguments.createMap();
         payload.putString("message", message);
+        payload.putInt("scanPercentage", (int) scanPercentage);
         sendEvent(AppConstants.DEVICE_DISCOVERY_PROGRESS_JS_EVENT, payload);
     }
 
@@ -496,5 +512,4 @@ public class CustomEvercamDiscover implements Runnable {
             LOGGER.e(e, e.getMessage());
         }
     }
-
 }

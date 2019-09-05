@@ -1,10 +1,6 @@
 package io.evercam.network.discovery;
 
 import io.evercam.network.Constants;
-import io.evercam.network.discovery.IpTranslator;
-import io.evercam.network.discovery.ScanRange;
-import io.evercam.network.discovery.ScanResult;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
