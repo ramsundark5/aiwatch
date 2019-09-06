@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Button, List, Title } from 'react-native-paper';
+import { Button, Divider, List, Title } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
-import { DeviceEventEmitter, InteractionManager, ScrollView, StyleSheet, View } from 'react-native';
+import { DeviceEventEmitter, Fragment, InteractionManager, ScrollView, StyleSheet, View } from 'react-native';
 import Theme from '../common/Theme';
 import Logger from '../common/Logger';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -75,10 +75,12 @@ export default class ScanCamera extends Component {
     render(){
         const { cameras, nonCameraDevices, isLoading } = this.state;
         return(
-            <View style={styles.container}>
-                {this.renderSpinner()}
-                {this.renderCameras(cameras)}
-                {this.renderNonCameraDevices(nonCameraDevices)}
+            <View style={{flex: 1}}>
+                <ScrollView style={styles.container}>
+                    {this.renderSpinner()}
+                    {this.renderCameras(nonCameraDevices)}
+                    {this.renderNonCameraDevices(nonCameraDevices)}
+                </ScrollView>
                 <View style={styles.footer}>
                     <Button mode='contained' color={Theme.primary} 
                         disabled={isLoading}
@@ -86,7 +88,7 @@ export default class ScanCamera extends Component {
                         Scan
                     </Button>
                 </View>
-          </View>
+            </View>
         )
     }
 
@@ -117,12 +119,12 @@ export default class ScanCamera extends Component {
         return(
             <View>
                 <Title style={{paddingLeft: 15}}>Identified Cameras:</Title>
-                <ScrollView
+                <View
                     ref={ref => (this.scrollRef = ref)}>
                     {cameras.map((camera) => (
-                        this.renderCamera(camera)
+                        this.renderNonCameraDevice(camera)
                     ))}
-                </ScrollView>
+                </View>
             </View>
         )
     }
@@ -134,9 +136,12 @@ export default class ScanCamera extends Component {
             videoUrl = jpg;
         }
         return(
-            <List.Item title={title} key={title}
-                description={videoUrl}
-                right={() => this.renderAddCameraButton()} />
+            <View>
+                <Divider /> 
+                <List.Item title={title} key={title}
+                    description={videoUrl}
+                    right={() => this.renderAddCameraButton()} />
+            </View>
         )
     }
 
@@ -145,14 +150,14 @@ export default class ScanCamera extends Component {
             return null;
         }
         return(
-            <View>
+            <View style={{flex: 1, paddingTop: 20}}>
                 <Title style={{paddingLeft: 15}}>Network devices:</Title>
-                <ScrollView
+                <View
                     ref={ref => (this.scrollRef = ref)}>
                     {nonCameraDevices.map((nonCameraDevice) => (
                         this.renderNonCameraDevice(nonCameraDevice)
                     ))}
-                </ScrollView>
+                </View>
             </View>
         )
     }
@@ -161,9 +166,12 @@ export default class ScanCamera extends Component {
         const title = device.publicVendor;
         const description = device.ip;
         return(
-            <List.Item title={title} key={device.ip}
-                description={description}
-                right={() => this.renderScanForCamera()} />
+            <View>
+                <Divider/>
+                <List.Item title={title} key={device.ip}
+                    description={description}
+                    right={() => this.renderScanForCamera()} />
+            </View>
         )
     }
 
@@ -191,5 +199,8 @@ const styles = StyleSheet.create({
     footer: {
       width: '100%',
       paddingTop: 20,
+      paddingLeft: 10,
+      paddingRight: 10,
+      paddingBottom: 5
     }
 });
