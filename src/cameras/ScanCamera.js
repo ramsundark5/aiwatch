@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Divider, List, Title } from 'react-native-paper';
+import { Button, Divider, IconButton, List, Subheading, Title, Colors } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
-import { DeviceEventEmitter, Fragment, InteractionManager, ScrollView, StyleSheet, View } from 'react-native';
+import { DeviceEventEmitter, InteractionManager, Linking, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native';
 import Theme from '../common/Theme';
 import Logger from '../common/Logger';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -72,13 +72,35 @@ export default class ScanCamera extends Component {
         }
     }
 
+    onAddCamera(camera){
+        if(!camera){
+            ToastAndroid.showWithGravity('Invalid camera. Try a different one.', ToastAndroid.SHORT, ToastAndroid.CENTER);
+            return;
+        }
+        this.props.navigation.navigate('EditCamera', {
+            cameraConfig: {
+              uuid: uuid,
+              name: camera.name ,
+              brand: camera.vendor,
+              model: camera.model,
+              videoUrl: camera.h264,
+              username: camera.username,
+              password: camera.password
+            }
+        });
+    }
+
+    onPressURLFinderButton(){
+        Linking.openURL('https://www.ispyconnect.com/sources.aspx');
+    }
+
     render(){
         const { cameras, nonCameraDevices, isLoading } = this.state;
         return(
             <View style={{flex: 1}}>
                 <ScrollView style={styles.container}>
                     {this.renderSpinner()}
-                    {this.renderCameras(nonCameraDevices)}
+                    {this.renderCameras(cameras)}
                     {this.renderNonCameraDevices(nonCameraDevices)}
                 </ScrollView>
                 <View style={styles.footer}>
@@ -114,7 +136,15 @@ export default class ScanCamera extends Component {
     
     renderCameras(cameras){
         if(!cameras || cameras.length < 1){
-            return null;
+            const demoCamera = {
+                    name: 'demo',
+                    vendor: 'test',
+                    model: 'test',
+                    h264: 'test',
+                    username: 'test',
+                    password: 'test'
+            }
+            cameras = [demoCamera];
         }
         return(
             <View>
@@ -122,7 +152,7 @@ export default class ScanCamera extends Component {
                 <View
                     ref={ref => (this.scrollRef = ref)}>
                     {cameras.map((camera) => (
-                        this.renderNonCameraDevice(camera)
+                        this.renderCamera(camera)
                     ))}
                 </View>
             </View>
@@ -140,8 +170,20 @@ export default class ScanCamera extends Component {
                 <Divider /> 
                 <List.Item title={title} key={title}
                     description={videoUrl}
-                    right={() => this.renderAddCameraButton()} />
+                    right={() => this.renderAddCameraButton(camera)} />
             </View>
+        )
+    }
+
+
+    renderAddCameraButton(camera){
+        return(
+            <IconButton
+                icon='chevron-right'
+                color={Colors.grey500}
+                size={30}
+                onPress={() => this.onAddCamera(camera)}
+            />
         )
     }
 
@@ -152,6 +194,12 @@ export default class ScanCamera extends Component {
         return(
             <View style={{flex: 1, paddingTop: 20}}>
                 <Title style={{paddingLeft: 15}}>Network devices:</Title>
+                <Subheading>We cannot confirm if the below are cameras. Ask your manufacturer or try camera database like  
+                    <Button color={Theme.primary} 
+                        onPress={() => this.onPressURLFinderButton()} uppercase={false}>
+                        https://www.ispyconnect.com/sources.aspx
+                    </Button>
+                </Subheading>
                 <View
                     ref={ref => (this.scrollRef = ref)}>
                     {nonCameraDevices.map((nonCameraDevice) => (
@@ -169,24 +217,7 @@ export default class ScanCamera extends Component {
             <View>
                 <Divider/>
                 <List.Item title={title} key={device.ip}
-                    description={description}
-                    right={() => this.renderScanForCamera()} />
-            </View>
-        )
-    }
-
-    renderAddCameraButton(camera){
-        return(
-            <View>
-
-            </View>
-        )
-    }
-
-    renderScanForCamera(device){
-        return(
-            <View>
-
+                    description={description}/>
             </View>
         )
     }
