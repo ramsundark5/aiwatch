@@ -499,7 +499,7 @@ public class CustomEvercamDiscover implements Runnable {
         LOGGER.d(message);
         WritableMap payload = Arguments.createMap();
         payload.putString("message", message);
-        payload.putInt("scanPercentage", (int) scanPercentage);
+        payload.putDouble("scanPercentage", scanPercentage);
         sendEvent(AppConstants.DEVICE_DISCOVERY_PROGRESS_JS_EVENT, payload);
     }
 

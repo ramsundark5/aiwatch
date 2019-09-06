@@ -4,7 +4,7 @@ import RNSmartCam from '../native/RNSmartCam';
 import { DeviceEventEmitter, InteractionManager, ScrollView, StyleSheet, View } from 'react-native';
 import Theme from '../common/Theme';
 import Logger from '../common/Logger';
-import Spinner from 'react-native-loading-spinner-overlay';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 const INITIAL_PROGRESS_MESSAGE = 'Scanning for devices..';
 export default class ScanCamera extends Component {
@@ -23,6 +23,7 @@ export default class ScanCamera extends Component {
         nonCameraDevices: [],
         isLoading: false,
         loadingMessage: INITIAL_PROGRESS_MESSAGE,
+        progress: 0
     }
 
     componentDidMount(){
@@ -36,7 +37,9 @@ export default class ScanCamera extends Component {
     onNewProgressEvent = (event) => {
         if(event){
             console.log('event ' + event.message);
-            this.setState({loadingMessage: event.message});
+            let scanPercentage = event.scanPercentage;
+            let progress = scanPercentage ? scanPercentage / 100 : 0;
+            this.setState({loadingMessage: event.message, progress: progress});
         }
     }
 
@@ -55,6 +58,7 @@ export default class ScanCamera extends Component {
     }
 
     handleDiscoveryResult = (discoveryResult) => {
+        this.setState({isLoading: false});
         if(discoveryResult){
             let cameras = discoveryResult.cameras;
             let nonCameraDevices = discoveryResult.nonCameraDevices;
@@ -64,7 +68,7 @@ export default class ScanCamera extends Component {
             if(!nonCameraDevices){
                 nonCameraDevices = [];
             }
-            this.setState({cameras: cameras, nonCameraDevices: nonCameraDevices});
+            this.setState({isLoading: false, cameras: cameras, nonCameraDevices: nonCameraDevices});
         }
     }
 
@@ -99,14 +103,19 @@ export default class ScanCamera extends Component {
     }
 
     renderSpinner(){
-        const { isLoading, loadingMessage } = this.state;
+        const { isLoading, loadingMessage, progress } = this.state;
         if(!isLoading){
             return null;
         }
         console.log('render ' + loadingMessage);
         return(
-            <Spinner
+            <LoadingSpinner
+                animated={true}
                 cancelable={true}
+                showsText={true}
+                showProgress={true}
+                progress={progress}
+                indeterminate={false}
                 visible={isLoading}
                 textContent={loadingMessage} / >
         )

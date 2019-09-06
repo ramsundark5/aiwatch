@@ -5634,7 +5634,7 @@ react-lifecycles-compat@^3.0.4:
 
 "react-native-admob@git+https://github.com/ramsundark5/react-native-admob":
   version "2.0.0-beta.5"
-  resolved "git+https://github.com/ramsundark5/react-native-admob#fc4a5dde68266e0aad97ee5dedb0db8ecc04fdf8"
+  resolved "git+https://github.com/ramsundark5/react-native-admob#59ae8896026fd5a69946c31f1e117851a2d2189f"
   dependencies:
     prop-types "^15.5.10"
 
@@ -5751,10 +5751,9 @@ react-native-paper@3.0.0-alpha.2:
     color "^2.0.1"
     react-native-safe-area-view "^0.12.0"
 
-react-native-progress@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-3.6.0.tgz#feaf37491f91bb421207fd761e20cb7258a2a3a6"
-  integrity sha512-zzTe595xaaskyfR5OzaGrU4O0R+YkgdEw+EspgGD7wh8Hu0fs6ue3xLW+HEbTjOCn62pCRivwi3NxbpWNBCC7Q==
+"react-native-progress@git+https://github.com/ramsundark5/react-native-progress":
+  version "3.7.0"
+  resolved "git+https://github.com/ramsundark5/react-native-progress#997fc2386130531b1155e8bbdbbc7347dfe7fc68"
   dependencies:
     prop-types "^15.7.2"
 
