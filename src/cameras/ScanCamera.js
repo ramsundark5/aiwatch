@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, List } from 'react-native-paper';
+import { Button, List, Title } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import { DeviceEventEmitter, InteractionManager, ScrollView, StyleSheet, View } from 'react-native';
 import Theme from '../common/Theme';
@@ -77,20 +77,8 @@ export default class ScanCamera extends Component {
         return(
             <View style={styles.container}>
                 {this.renderSpinner()}
-                <ScrollView
-                    ref={ref => (this.scrollRef = ref)}
-                    style={{ flex: 1 }}>
-                    {cameras.map((camera) => (
-                        this.renderCamera(camera)
-                    ))}
-                </ScrollView>
-                <ScrollView
-                    ref={ref => (this.scrollRef = ref)}
-                    style={{ flex: 1 }}>
-                    {nonCameraDevices.map((nonCameraDevice) => (
-                        this.renderNonCameraDevice(nonCameraDevice)
-                    ))}
-                </ScrollView>
+                {this.renderCameras(cameras)}
+                {this.renderNonCameraDevices(nonCameraDevices)}
                 <View style={styles.footer}>
                     <Button mode='contained' color={Theme.primary} 
                         disabled={isLoading}
@@ -110,6 +98,7 @@ export default class ScanCamera extends Component {
         console.log('render ' + loadingMessage);
         return(
             <LoadingSpinner
+                size={100}
                 animated={true}
                 cancelable={true}
                 showsText={true}
@@ -121,6 +110,23 @@ export default class ScanCamera extends Component {
         )
     }
     
+    renderCameras(cameras){
+        if(!cameras || cameras.length < 1){
+            return null;
+        }
+        return(
+            <View>
+                <Title style={{paddingLeft: 15}}>Identified Cameras:</Title>
+                <ScrollView
+                    ref={ref => (this.scrollRef = ref)}>
+                    {cameras.map((camera) => (
+                        this.renderCamera(camera)
+                    ))}
+                </ScrollView>
+            </View>
+        )
+    }
+
     renderCamera(camera){
         const title =  camera.name + " " + camera.vendor + " " + camera.model;
         let videoUrl = camera.h264;
@@ -131,6 +137,23 @@ export default class ScanCamera extends Component {
             <List.Item title={title} key={title}
                 description={videoUrl}
                 right={() => this.renderAddCameraButton()} />
+        )
+    }
+
+    renderNonCameraDevices(nonCameraDevices){
+        if(!nonCameraDevices || nonCameraDevices.length < 1){
+            return null;
+        }
+        return(
+            <View>
+                <Title style={{paddingLeft: 15}}>Network devices:</Title>
+                <ScrollView
+                    ref={ref => (this.scrollRef = ref)}>
+                    {nonCameraDevices.map((nonCameraDevice) => (
+                        this.renderNonCameraDevice(nonCameraDevice)
+                    ))}
+                </ScrollView>
+            </View>
         )
     }
 

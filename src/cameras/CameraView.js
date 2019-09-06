@@ -9,6 +9,7 @@ import CameraControl from './CameraControl';
 import Logger from '../common/Logger';
 import MonitoringStatus from './MonitoringStatus';
 import AiwatchUtil from '../common/AiwatchUtil';
+import Theme from '../common/Theme';
 class CameraView extends Component {
 
   static navigationOptions = {
@@ -108,10 +109,12 @@ class CameraView extends Component {
          <Portal>
            <FAB.Group
              open={this.state.open}
-             icon={this.state.open ? 'today' : 'add'}
+             color='white'
+             fabStyle={{backgroundColor: Theme.primary}}
+             icon='add'
              actions={[
-               { icon: 'star', label: 'Manual Add', onPress: () => this.onAddCamera()},
-               { icon: 'email', label: 'Scan', onPress: () => this.onScanCamera() },
+               { icon: 'videocam', label: 'Add Camera', onPress: () => this.onAddCamera()},
+               { icon: 'router', label: 'Scan', onPress: () => this.onScanCamera() },
              ]}
              onStateChange={({ open }) => this.setState({ open })}
            />
