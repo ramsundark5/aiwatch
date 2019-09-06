@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
-import { FAB, Portal, Provider } from 'react-native-paper';
+import { Colors, FAB, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
@@ -62,21 +62,25 @@ class CameraView extends Component {
     const { isFull } = this.state;
     const { cameras } = this.props;
     return (
-      <View style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
-        <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
-        <ScrollView
-          ref={ref => (this.scrollRef = ref)}
-          style={{ flex: 1 }}
-          scrollEnabled={isFull ? false : true}
-          contentContainerStyle={{
-            flex: isFull ? 1 : 0,
-          }}>
-          {cameras.map((cameraConfig) => (
-            this.renderVideoPlayer(cameraConfig)
-          ))}
-        </ScrollView>
-        {this.renderAddCameraButton()}
-      </View>
+      <Provider>
+         <Portal>
+            <View style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
+              <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
+              <ScrollView
+                ref={ref => (this.scrollRef = ref)}
+                style={{ flex: 1 }}
+                scrollEnabled={isFull ? false : true}
+                contentContainerStyle={{
+                  flex: isFull ? 1 : 0,
+                }}>
+                {cameras.map((cameraConfig) => (
+                  this.renderVideoPlayer(cameraConfig)
+                ))}
+              </ScrollView>
+              {this.renderAddCameraButton()}
+            </View>
+          </Portal>
+      </Provider>
     );
   }
 
@@ -105,21 +109,18 @@ class CameraView extends Component {
       return null;
     }
     return(
-      <Provider>
-         <Portal>
            <FAB.Group
              open={this.state.open}
              color='white'
              fabStyle={{backgroundColor: Theme.primary}}
-             icon='add'
+             icon='plus'
              actions={[
-               { icon: 'videocam', label: 'Add Camera', onPress: () => this.onAddCamera()},
-               { icon: 'router', label: 'Scan', onPress: () => this.onScanCamera() },
+               { icon: 'video-plus', label: 'Add Camera', color: 'white', style: {backgroundColor: Theme.primary}, onPress: () => this.onAddCamera()},
+               { icon: 'router-wireless', label: 'Scan', color: 'white', style: {backgroundColor: Theme.primary}, onPress: () => this.onScanCamera() },
              ]}
              onStateChange={({ open }) => this.setState({ open })}
+             theme={{colors: {text: Colors.black, backdrop: 'transparent'}}}
            />
-         </Portal>
-      </Provider>
     )
   }
 }
