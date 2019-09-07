@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Divider, IconButton, List, Subheading, Title, Colors } from 'react-native-paper';
+import { Button, Colors, Divider, IconButton, List, Title } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
-import { DeviceEventEmitter, InteractionManager, Linking, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native';
+import { DeviceEventEmitter, InteractionManager, Linking, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native';
 import Theme from '../common/Theme';
 import Logger from '../common/Logger';
 import LoadingSpinner from '../common/LoadingSpinner';
+import AiwatchUtil from '../common/AiwatchUtil';
 
 const INITIAL_PROGRESS_MESSAGE = 'Scanning for devices..';
 export default class ScanCamera extends Component {
@@ -32,6 +33,12 @@ export default class ScanCamera extends Component {
         InteractionManager.runAfterInteractions(() => {
             this.onStartScan();
         });
+    }
+
+    componentDidCatch(error, info ){
+        // Display fallback UI
+        this.setState({ isLoading: false });
+        console.log(error);
     }
 
     onNewProgressEvent = (event) => {
@@ -77,6 +84,7 @@ export default class ScanCamera extends Component {
             ToastAndroid.showWithGravity('Invalid camera. Try a different one.', ToastAndroid.SHORT, ToastAndroid.CENTER);
             return;
         }
+        const uuid = AiwatchUtil.uuidv4();
         this.props.navigation.navigate('EditCamera', {
             cameraConfig: {
               uuid: uuid,
@@ -88,10 +96,6 @@ export default class ScanCamera extends Component {
               password: camera.password
             }
         });
-    }
-
-    onPressURLFinderButton(){
-        Linking.openURL('https://www.ispyconnect.com/sources.aspx');
     }
 
     render(){
@@ -135,14 +139,15 @@ export default class ScanCamera extends Component {
     }
     
     renderCameras(cameras){
-        if(!cameras || cameras.length < 1){
+        const { isLoading } = this.state;
+        if((!cameras || cameras.length < 1) && !isLoading){
             const demoCamera = {
                     name: 'demo',
-                    vendor: 'test',
-                    model: 'test',
-                    h264: 'test',
-                    username: 'test',
-                    password: 'test'
+                    vendor: 'camera',
+                    model: '',
+                    h264: 'rtsp://ip:port/video',
+                    username: 'admin',
+                    password: 'admin'
             }
             cameras = [demoCamera];
         }
@@ -189,17 +194,20 @@ export default class ScanCamera extends Component {
 
     renderNonCameraDevices(nonCameraDevices){
         if(!nonCameraDevices || nonCameraDevices.length < 1){
-            return null;
+            //return null;
         }
         return(
-            <View style={{flex: 1, paddingTop: 20}}>
+            <View style={{flex: 1, paddingTop: 20, width: '100%'}}>
                 <Title style={{paddingLeft: 15}}>Network devices:</Title>
-                <Subheading>We cannot confirm if the below are cameras. Ask your manufacturer or try camera database like  
-                    <Button color={Theme.primary} 
-                        onPress={() => this.onPressURLFinderButton()} uppercase={false}>
-                        https://www.ispyconnect.com/sources.aspx
-                    </Button>
-                </Subheading>
+                <View style={{flex: 1, paddingLeft: 15, width: '100%'}}>
+                    <Text style={{flex: 1, width: '100%'}}>We cannot confirm if the below are cameras camera2 are manufacturer or try a camera database like {'  '}
+                        <Text style={{color: 'blue'}}
+                                onPress={() => Linking.openURL('https://www.ispyconnect.com/sources.aspx')}>
+                            https://www.ispyconnect.com/sources.aspx
+                        </Text>
+                    </Text> 
+                </View>
+               
                 <View
                     ref={ref => (this.scrollRef = ref)}>
                     {nonCameraDevices.map((nonCameraDevice) => (
