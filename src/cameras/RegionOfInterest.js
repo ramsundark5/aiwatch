@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import { View, ToastAndroid, Text } from 'react-native';
 import Logger from '../common/Logger';
+import Theme from '../common/Theme';
 import { editCamera } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import RNSmartCam from '../native/RNSmartCam';

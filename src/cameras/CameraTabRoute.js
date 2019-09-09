@@ -3,12 +3,14 @@ import { createStackNavigator } from 'react-navigation';
 import { tabBarIcon } from '../common/TabBarIcon';
 import CameraView from './CameraView';
 import EditCamera from './EditCamera';
+import ScanCamera from './ScanCamera';
 import RegionOfInterest from './RegionOfInterest';
 import FullScreenVideoPlayer from '../common/FullScreenVideoPlayer';
 
 const CameraStack = createStackNavigator({
     CameraView: CameraView,
     EditCamera: EditCamera,
+    ScanCamera: ScanCamera,
     FullScreenVideo: FullScreenVideoPlayer,
     RegionOfInterest: RegionOfInterest
 });

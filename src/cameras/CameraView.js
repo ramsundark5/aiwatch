@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
-import { Button} from 'react-native-paper';
+import { Colors, FAB, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
-import Theme from '../common/Theme';
 import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import CameraControl from './CameraControl';
 import Logger from '../common/Logger';
 import MonitoringStatus from './MonitoringStatus';
 import AiwatchUtil from '../common/AiwatchUtil';
+import Theme from '../common/Theme';
 class CameraView extends Component {
 
   static navigationOptions = {
@@ -17,7 +17,8 @@ class CameraView extends Component {
   };
 
   state = {
-    isFull: false
+    isFull: false,
+    open: false
   }
 
   componentDidMount(){
@@ -35,13 +36,16 @@ class CameraView extends Component {
   }
 
   onAddCamera(){
-    RNSmartCam.discover();
-    /* const uuid = AiwatchUtil.uuidv4();
+    const uuid = AiwatchUtil.uuidv4();
     this.props.navigation.navigate('EditCamera', {
       cameraConfig: {
         uuid: uuid
       }
-    }); */
+    });
+  }
+
+  onScanCamera(){
+    this.props.navigation.navigate('ScanCamera');
   }
 
   onPlayVideoFullScreen(videoUrl){
@@ -58,21 +62,25 @@ class CameraView extends Component {
     const { isFull } = this.state;
     const { cameras } = this.props;
     return (
-      <View style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
-        <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
-        <ScrollView
-          ref={ref => (this.scrollRef = ref)}
-          style={{ flex: 1 }}
-          scrollEnabled={isFull ? false : true}
-          contentContainerStyle={{
-            flex: isFull ? 1 : 0,
-          }}>
-          {cameras.map((cameraConfig) => (
-            this.renderVideoPlayer(cameraConfig)
-          ))}
-        </ScrollView>
-        {this.renderAddCameraButton()}
-      </View>
+      <Provider>
+         <Portal>
+            <View style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
+              <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
+              <ScrollView
+                ref={ref => (this.scrollRef = ref)}
+                style={{ flex: 1 }}
+                scrollEnabled={isFull ? false : true}
+                contentContainerStyle={{
+                  flex: isFull ? 1 : 0,
+                }}>
+                {cameras.map((cameraConfig) => (
+                  this.renderVideoPlayer(cameraConfig)
+                ))}
+              </ScrollView>
+              {this.renderAddCameraButton()}
+            </View>
+          </Portal>
+      </Provider>
     );
   }
 
@@ -101,11 +109,18 @@ class CameraView extends Component {
       return null;
     }
     return(
-      <View style={styles.footer}>
-        <Button mode='outlined' color={Theme.primary} onPress={() => this.onAddCamera()}>
-          Add Camera
-        </Button>
-      </View>
+           <FAB.Group
+             open={this.state.open}
+             color='white'
+             fabStyle={{backgroundColor: Theme.primary}}
+             icon='plus'
+             actions={[
+               { icon: 'video-plus', label: 'Add Camera', color: 'white', style: {backgroundColor: Theme.primary}, onPress: () => this.onAddCamera()},
+               { icon: 'router-wireless', label: 'Scan', color: 'white', style: {backgroundColor: Theme.primary}, onPress: () => this.onScanCamera() },
+             ]}
+             onStateChange={({ open }) => this.setState({ open })}
+             theme={{colors: {text: Colors.black, backdrop: 'transparent'}}}
+           />
     )
   }
 }

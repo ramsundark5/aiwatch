@@ -1927,10 +1927,10 @@ color-support@^1.1.3:
   resolved "https://registry.yarnpkg.com/color-support/-/color-support-1.1.3.tgz#93834379a1cc9a0c61f82f52f0d04322251bd5a2"
   integrity sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==
 
-color@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/color/-/color-2.0.1.tgz#e4ed78a3c4603d0891eba5430b04b86314f4c839"
-  integrity sha512-ubUCVVKfT7r2w2D3qtHakj8mbmKms+tThR8gI8zEYCbUBl8/voqFGt3kgBqGwXAopgXybnkuOq+qMYCRrp4cXw==
+color@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/color/-/color-3.1.2.tgz#68148e7f85d41ad7649c5fa8c8106f098d229e10"
+  integrity sha512-vXTJhHebByxZn3lDvDJYw4lR5+uB3vuoHsuYA5AKuxRVn5wzzIfQKGLBmgdVRHKTJYeK5rvJcHnrd0Li49CFpg==
   dependencies:
     color-convert "^1.9.1"
     color-string "^1.5.2"
@@ -5632,9 +5632,9 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-"react-native-admob@git+https://github.com/MTTenterprise/react-native-admob":
+"react-native-admob@git+https://github.com/ramsundark5/react-native-admob":
   version "2.0.0-beta.5"
-  resolved "git+https://github.com/MTTenterprise/react-native-admob#bbf4e340377d4926ab0a877f2c47dea41bb1b799"
+  resolved "git+https://github.com/ramsundark5/react-native-admob#59ae8896026fd5a69946c31f1e117851a2d2189f"
   dependencies:
     prop-types "^15.5.10"
 
@@ -5742,14 +5742,20 @@ react-native-orientation@^3.1.3:
   resolved "https://registry.yarnpkg.com/react-native-orientation/-/react-native-orientation-3.1.3.tgz#d45803841fe94b6cce9acbe904fd5ca191a3711e"
   integrity sha512-A0h0E+2f95X4avmhaBG1ZT8WDxBACA/q//JN2eF1E7kq8AJVxt5XDiavv+aSBkBlqFsfF3bIS+T/DB5mXmnxuA==
 
-react-native-paper@3.0.0-alpha.2:
-  version "3.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-3.0.0-alpha.2.tgz#53483999e7cf6f95090c7a5b14e0b2d8d9ee3b85"
-  integrity sha512-mak9FL2cV6cZ0C+UedyKu+LwplcM4I1qwq/np8EGy6pvrsTmKGQo/R6l/4/No0YRowZJognvOZErmArOTOlR6A==
+react-native-paper@3.0.0-alpha.3:
+  version "3.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-3.0.0-alpha.3.tgz#e7d9f4aafe0e513fd6219cd8fde311ddc39c66cf"
+  integrity sha512-JBFIyyHwkVD+CAdkHlNNK9NqIDZVflAS9LjMGTl/GO/kldVC2vQ3X3XRVerRVK7RTYxId49Nex05zjsa+ZxwOw==
   dependencies:
     "@callstack/react-theme-provider" "^3.0.2"
-    color "^2.0.1"
+    color "^3.1.2"
     react-native-safe-area-view "^0.12.0"
+
+"react-native-progress@git+https://github.com/ramsundark5/react-native-progress":
+  version "3.7.0"
+  resolved "git+https://github.com/ramsundark5/react-native-progress#997fc2386130531b1155e8bbdbbc7347dfe7fc68"
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-safe-area-view@^0.12.0:
   version "0.12.0"
