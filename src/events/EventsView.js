@@ -8,7 +8,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import { loadEvents, deleteSelectedEvents, toggleEventSelection } from '../store/EventsStore';
 import { connect } from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
+import LoadingSpinner from '../common/LoadingSpinner';
 import Logger from '../common/Logger';
 import AdMob from '../common/AdMob';
 import { withNavigation } from 'react-navigation';
@@ -122,7 +122,7 @@ class EventsView extends React.Component {
         }
         return(
             <View style={{flex: 1, backgroundColor: 'white'}}>
-                <Spinner
+                <LoadingSpinner
                     visible={loading}
                     textContent={'Loading...'} />
                 <Agenda items={groupedEvents}

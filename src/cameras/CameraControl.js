@@ -4,7 +4,7 @@ import { Appbar } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import Theme from '../common/Theme';
 import Logger from '../common/Logger';
-import Spinner from 'react-native-loading-spinner-overlay';
+import LoadingSpinner from '../common/LoadingSpinner';
 export default class CameraControl extends Component {
 
     state = {
@@ -102,7 +102,7 @@ export default class CameraControl extends Component {
         const monitoringIcon = !cameraConfig.disconnected && monitoringEnabled ? 'eye' : 'eye-off';
         return(
             <View>
-              <Spinner
+              <LoadingSpinner
                 visible={this.state.isLoading}
                 textContent={'Updating...'} />
                <Appbar style={styles.appBar}>

@@ -4,7 +4,7 @@ import RNSmartCam from '../native/RNSmartCam';
 import { List, Switch, Button } from 'react-native-paper';
 import Theme from '../common/Theme';
 import { withNavigation } from 'react-navigation';
-import Spinner from 'react-native-loading-spinner-overlay';
+import LoadingSpinner from '../common/LoadingSpinner';
 import { updateSettings } from '../store/SettingsStore';
 import GoogleConnectStatus from './GoogleConnectStatus';
 import { connect } from 'react-redux';
@@ -95,7 +95,7 @@ class Settings extends Component{
       const { isLoading } = this.props;
       return(
           <View>
-            <Spinner
+            <LoadingSpinner
               visible={isLoading}
               textContent={'Loading...'} />
             <List.Section>

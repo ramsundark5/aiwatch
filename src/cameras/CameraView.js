@@ -9,6 +9,7 @@ import CameraControl from './CameraControl';
 import Logger from '../common/Logger';
 import MonitoringStatus from './MonitoringStatus';
 import AiwatchUtil from '../common/AiwatchUtil';
+import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
 class CameraView extends Component {
 
@@ -18,7 +19,8 @@ class CameraView extends Component {
 
   state = {
     isFull: false,
-    open: false
+    open: false,
+    isLoading: false
   }
 
   componentDidMount(){
@@ -27,11 +29,14 @@ class CameraView extends Component {
 
   async loadAllCameras(){
     const { loadCameras } = this.props;
+    this.setState({isLoading: true});
     try{
       let cameras = await RNSmartCam.getAllCameras();
       loadCameras(cameras);
     }catch(err){
       Logger.error(err);
+    }finally{
+      this.setState({isLoading: false});
     }
   }
 
@@ -59,11 +64,14 @@ class CameraView extends Component {
   }
 
   render() {
-    const { isFull } = this.state;
+    const { isFull, isLoading } = this.state;
     const { cameras } = this.props;
     return (
       <Provider>
          <Portal>
+            <LoadingSpinner 
+              visible={isLoading}
+              textContent={'Loading...'} />
             <View style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
               <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
               <ScrollView

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { authorize } from 'react-native-app-auth';
+import { View } from 'react-native';
 import { Switch } from 'react-native-paper';
+import EditableText from '../common/EditableText';
 import Logger from '../common/Logger';
 import RNSmartCam from '../native/RNSmartCam';
 
@@ -83,10 +85,27 @@ export default class SmartthingsIntegration extends Component{
       const { smartthingsAccessToken } = this.props;
       let isSmartthingsConnected = smartthingsAccessToken ? true : false ;
       return (
-        <Switch
-          value={isSmartthingsConnected}
-          onValueChange={value => this.onChangeConnectStatus(value)}
-        />
+        <View>
+          <Switch
+            value={isSmartthingsConnected}
+            onValueChange={value => this.onChangeConnectStatus(value)}/>
+          {this.renderOAuthCredentials()}
+        </View>
       );
+    }
+
+    renderOAuthCredentials(){
+      return(
+        <View>
+          <EditableText 
+              editable={true}
+              textContent=''
+              finishEditText={(finishedText) => console.log(finishedText)}/>
+          <EditableText 
+              editable={true}
+              textContent=''
+              finishEditText={(finishedText) => console.log(finishedText)}/>
+        </View>
+      )
     }
 }
