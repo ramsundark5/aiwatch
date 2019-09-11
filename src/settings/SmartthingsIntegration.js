@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { authorize } from 'react-native-app-auth';
-import { View } from 'react-native';
-import { Switch } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { List, Switch } from 'react-native-paper';
 import EditableText from '../common/EditableText';
 import Logger from '../common/Logger';
 import RNSmartCam from '../native/RNSmartCam';
@@ -82,16 +82,24 @@ export default class SmartthingsIntegration extends Component{
     }
 
     render(){
-      const { smartthingsAccessToken } = this.props;
-      let isSmartthingsConnected = smartthingsAccessToken ? true : false ;
       return (
         <View>
-          <Switch
-            value={isSmartthingsConnected}
-            onValueChange={value => this.onChangeConnectStatus(value)}/>
+          <List.Item title="Connect Smartthings"
+                  description="Integrate with your smartthings hub"
+                  right={() => this.renderSwitch()} />
           {this.renderOAuthCredentials()}
         </View>
       );
+    }
+
+    renderSwitch(){
+      const { smartthingsAccessToken } = this.props;
+      let isSmartthingsConnected = smartthingsAccessToken ? true : false ;
+      return(
+        <Switch
+            value={isSmartthingsConnected}
+            onValueChange={value => this.onChangeConnectStatus(value)}/>
+      )
     }
 
     renderOAuthCredentials(){
@@ -99,11 +107,13 @@ export default class SmartthingsIntegration extends Component{
         <View>
           <EditableText 
               editable={true}
-              textContent=''
+              label='Client Id'
+              textContent='hello'
               finishEditText={(finishedText) => console.log(finishedText)}/>
           <EditableText 
               editable={true}
-              textContent=''
+              label='Client Secret'
+              textContent='world'
               finishEditText={(finishedText) => console.log(finishedText)}/>
         </View>
       )

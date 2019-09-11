@@ -104,9 +104,7 @@ class Settings extends Component{
                   right={() => this.renderGoogleAccountConnected()} />
               <List.Item title="Enable Notification"
                   right={() => this.renderNotificationEnabled()} />
-              <List.Item title="Connect Smartthings"
-                  description="Integrate with your smartthings hub"
-                  right={() => this.renderSmartthingsEnabled()} />
+              {this.renderSmartthingsEnabled()}
               <List.Item title="Notify Alexa"
                   description="Notify Alexa on interested alerts"
                   right={() => this.renderAlexaEnabled()} />

@@ -61,18 +61,19 @@ export default class EditableText extends Component {
 		return (
 			<View style={[styles.inputContainer, this.props.editInputContainerStyle]}>
                 <TextInput
+                        {...this.props}
                         ref='editCardInput'
-                        style={[styles.editInput, this.props.editInputStyle]}
+                        style={[this.props.editInputStyle]}
                         value={this.state.editableText}
                         autoFocus={true}
                         onSubmitEditing={() => this._finishEditText()}
                         returnKeyType='done'
                         onChangeText={(changedText) => this.setState({editableText: changedText})}/>
                 <HorizontalRow style={[styles.editButtonContainer, this.props.editButtonContainerStyle]}>
-                    <IconButton icon='ios-close-circle-outline' style={[styles.cancelIcon, this.props.cancelIconStyle]}
+                    <IconButton icon='close-circle-outline' style={[styles.cancelIcon, this.props.cancelIconStyle]}
                         onPress={() => this._cancelEditText()}/>
                     <View style={styles.dummySpace}></View>
-                    <IconButton icon='ios-checkmark-circle-outline' style={[styles.okayIcon, this.props.okayIconStyle]}
+                    <IconButton icon='check-circle-outline' style={[styles.okayIcon, this.props.okayIconStyle]}
                         onPress={() => this._finishEditText()}/>
                 </HorizontalRow>
             </View>
@@ -83,20 +84,10 @@ export default class EditableText extends Component {
 const styles = StyleSheet.create({
     viewText: {
         fontSize: 14,
-        color: 'white'
+        color: 'black',
     },
     inputContainer:{
         justifyContent: 'center',
-    },
-    editInput: {
-        height  : 26,
-        fontSize: 14,
-        color: 'white',
-        fontWeight: 'bold',
-        marginLeft: 10,
-        marginRight: 10,
-        textAlign: 'center',
-        flex: 1
     },
     editButtonContainer:{
         marginTop: 10,
