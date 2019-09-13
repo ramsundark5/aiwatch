@@ -11,6 +11,7 @@ import MonitoringStatus from './MonitoringStatus';
 import AiwatchUtil from '../common/AiwatchUtil';
 import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
+import testID from '../common/testID';
 class CameraView extends Component {
 
   static navigationOptions = {
@@ -72,7 +73,7 @@ class CameraView extends Component {
             <LoadingSpinner 
               visible={isLoading}
               textContent={'Loading...'} />
-            <View style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
+            <View {...testID('cameraHome')} style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
               <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
               <ScrollView
                 ref={ref => (this.scrollRef = ref)}
@@ -118,6 +119,7 @@ class CameraView extends Component {
     }
     return(
            <FAB.Group
+            {...testID('addCameraFAB')}
              open={this.state.open}
              color='white'
              fabStyle={{backgroundColor: Theme.primary}}

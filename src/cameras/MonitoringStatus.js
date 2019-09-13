@@ -4,6 +4,7 @@ import RNSmartCam from '../native/RNSmartCam';
 import { Button, Colors, IconButton, Switch, Subheading } from 'react-native-paper';
 import Logger from '../common/Logger';
 import Theme from '../common/Theme';
+import testID from '../common/testID';
 
 export default class MonitoringStatus extends Component{
 
@@ -40,9 +41,9 @@ export default class MonitoringStatus extends Component{
     render(){
         const { isMonitoringOn } = this.props;
         return(
-            <View style={styles.row}>
+            <View style={styles.row} {...testID('monitorstatus')}>
                 <Subheading style={styles.textStyle}>Monitoring On</Subheading>
-                <Switch
+                <Switch accessibilityLabel='togglemonitor'
                     value={isMonitoringOn}
                     onValueChange={value => this.onToggleMonitoring(value)} />
                 <IconButton icon="autorenew"
