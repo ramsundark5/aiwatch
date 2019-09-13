@@ -40,6 +40,7 @@ class Settings extends Component{
     }
     
     async componentDidUpdate(prevProps){
+      console.log('component updating');
       const prevSettings  = prevProps.settings;
       const currentSettings = this.props.settings;
       if (currentSettings.isGoogleAccountConnected !== prevSettings.isGoogleAccountConnected 
@@ -48,7 +49,9 @@ class Settings extends Component{
         || currentSettings.smartthingsAccessToken !== prevSettings.smartthingsAccessToken
         || currentSettings.smartthingsAccessTokenExpiry !== prevSettings.smartthingsAccessTokenExpiry 
         || currentSettings.smartAppEndpoint !== prevSettings.smartAppEndpoint
-        || currentSettings.alexaToken !== prevSettings.alexaToken ) {
+        || currentSettings.alexaToken !== prevSettings.alexaToken
+        || currentSettings.smartthingsClientId !== prevSettings.smartthingsClientId
+        || currentSettings.smartthingsClientSecret !== prevSettings.smartthingsClientSecret ) {
           try{
             let updatedSettings = await RNSmartCam.putSettings(currentSettings);
             console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));
@@ -130,7 +133,7 @@ class Settings extends Component{
   renderSmartthingsEnabled(){
     const { settings, updateSettings } = this.props;
     return (
-      <SmartthingsIntegration smartthingsAccessToken={settings.smartthingsAccessToken}
+      <SmartthingsIntegration settings={settings}
           updateSettings={updateSettings}/>
     );
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { InteractionManager, StyleSheet, View } from 'react-native';
 import { Button, List, Text } from 'react-native-paper';
 import RNIap, {
     purchaseUpdatedListener,
@@ -7,7 +7,6 @@ import RNIap, {
     acknowledgePurchaseAndroid
 } from 'react-native-iap';
 import Logger from '../common/Logger';
-import BackgroundListener from '../events/BackgroundListener';
 
 const NO_ADS_SKU = 'com.aiwatch.noads';
 let purchaseUpdateSubscription;
@@ -15,10 +14,12 @@ let purchaseErrorSubscription;
 export default class InAppPurchase extends Component{
 
     componentDidMount() {
-        this.init();
+        InteractionManager.runAfterInteractions(() => {
+            this.init();
+        });
     }
 
-    componentWillMount() {
+    componentWillUnmount() {
         try{
             RNIap.endConnectionAndroid();
             if (purchaseUpdateSubscription) {

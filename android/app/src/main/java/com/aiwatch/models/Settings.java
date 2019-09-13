@@ -13,6 +13,8 @@ public class Settings {
     private boolean isGoogleAccountConnected;
     private boolean isNotificationEnabled;
     private boolean isNoAdsPurchased;
+    private String smartthingsClientId;
+    private String smartthingsClientSecret;
     private String smartthingsAccessToken;
     private String smartAppEndpoint;
     private Date smartthingsAccessTokenExpiry;
@@ -80,5 +82,21 @@ public class Settings {
 
     public void setAlexaToken(String alexaToken) {
         this.alexaToken = alexaToken;
+    }
+
+    public String getSmartthingsClientId() {
+        return smartthingsClientId;
+    }
+
+    public void setSmartthingsClientId(String smartthingsClientId) {
+        this.smartthingsClientId = smartthingsClientId;
+    }
+
+    public String getSmartthingsClientSecret() {
+        return smartthingsClientSecret;
+    }
+
+    public void setSmartthingsClientSecret(String smartthingsClientSecret) {
+        this.smartthingsClientSecret = smartthingsClientSecret;
     }
 }

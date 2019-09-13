@@ -12,7 +12,9 @@ const settingsSlice = createSlice({
       smartAppEndpoint: null,
       alexaToken: null,
       isLoading: false,
-      showDeviceLogs: false
+      showDeviceLogs: false,
+      smartthingsClientId: null,
+      smartthingsClientSecret: null
     },
       
     reducers: {

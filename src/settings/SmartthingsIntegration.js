@@ -1,24 +1,16 @@
 import React, { Component } from 'react';
 import { authorize } from 'react-native-app-auth';
-import { StyleSheet, View } from 'react-native';
+import { ToastAndroid, View } from 'react-native';
 import { List, Switch } from 'react-native-paper';
 import EditableText from '../common/EditableText';
 import Logger from '../common/Logger';
 import RNSmartCam from '../native/RNSmartCam';
 
-// base config
-const config = {
-  serviceConfiguration:{
-    authorizationEndpoint: 'https://graph.api.smartthings.com/oauth/authorize',
-    tokenEndpoint: 'https://graph.api.smartthings.com/oauth/token'
-  },
-  clientId: '5c9baee2-daa5-46ff-abc0-2cdceeb284ea',
-  clientSecret: 'f6a70c01-410d-46dd-95a0-94b7ad76f8b2',
-  redirectUrl: 'com.aiwatch.oauth:/oauthredirect',
-  scopes: ['app'],
-};
-
 export default class SmartthingsIntegration extends Component{
+
+    componentDidCatch(err){
+      console.log(err);
+    }
 
     onChangeConnectStatus(requestConnect){
       const { updateSettings } = this.props;
@@ -49,13 +41,26 @@ export default class SmartthingsIntegration extends Component{
     }
 
     async getOauthToken(){
+        const { smartthingsClientId, smartthingsClientSecret } = this.props.settings;
         try {
             console.log('starting authorize');
+            // base config
+            const config = {
+              serviceConfiguration:{
+                authorizationEndpoint: 'https://graph.api.smartthings.com/oauth/authorize',
+                tokenEndpoint: 'https://graph.api.smartthings.com/oauth/token'
+              },
+              clientId: smartthingsClientId,
+              clientSecret: smartthingsClientSecret,
+              redirectUrl: 'com.aiwatch.oauth:/oauthredirect',
+              scopes: ['app'],
+            };
             const result = await authorize(config);
             console.log('smartthings token '+JSON.stringify(result));
             return result;
             // result includes accessToken, accessTokenExpirationDate and refreshToken
         } catch (error) {
+            ToastAndroid.showWithGravity('Error connecting to smartthings. Check if you have valid ClientId and ClientSecret', ToastAndroid.SHORT, ToastAndroid.CENTER);
             console.log(error);
         }
     }
@@ -81,6 +86,16 @@ export default class SmartthingsIntegration extends Component{
       }
     }
 
+    updateSmartthingsClientId(value){
+      const { updateSettings } = this.props;
+      updateSettings({ smartthingsClientId: value });
+    }
+
+    updateSmartthingsClientSecret(value){
+      const { updateSettings } = this.props;
+      updateSettings({ smartthingsClientSecret: value });
+    }
+
     render(){
       return (
         <View>
@@ -93,7 +108,7 @@ export default class SmartthingsIntegration extends Component{
     }
 
     renderSwitch(){
-      const { smartthingsAccessToken } = this.props;
+      const { smartthingsAccessToken } = this.props.settings;
       let isSmartthingsConnected = smartthingsAccessToken ? true : false ;
       return(
         <Switch
@@ -103,18 +118,20 @@ export default class SmartthingsIntegration extends Component{
     }
 
     renderOAuthCredentials(){
+      const { smartthingsClientId, smartthingsClientSecret } = this.props.settings;
       return(
         <View>
           <EditableText 
               editable={true}
               label='Client Id'
-              textContent='hello'
-              finishEditText={(finishedText) => console.log(finishedText)}/>
+              textContent={smartthingsClientId}
+              finishEditText={(clientId) => this.updateSmartthingsClientId(clientId)}/>
           <EditableText 
               editable={true}
+              mask={true}
               label='Client Secret'
-              textContent='world'
-              finishEditText={(finishedText) => console.log(finishedText)}/>
+              textContent={smartthingsClientSecret}
+              finishEditText={(clientSecret) => this.updateSmartthingsClientSecret(clientSecret)}/>
         </View>
       )
     }
