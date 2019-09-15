@@ -60,6 +60,7 @@ export default class CameraViewPage {
     async addManualCamera(cameraConfig) {
        /* await expect(this.addCameraFAB).toBeVisible();
        await this.addCameraFAB.tap();
+       await waitFor(this.addCameraButton).toBeVisible().withTimeout(2000);
        await expect(this.addCameraButton).toBeVisible();
        await this.addCameraButton.tap(); */
 

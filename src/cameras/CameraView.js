@@ -86,6 +86,7 @@ class CameraView extends Component {
                   this.renderVideoPlayer(cameraConfig)
                 ))}
               </ScrollView>
+              {this.renderAddCameraButton()}
               {this.renderAddCameraButtonForTest()}
             </View>
           </Portal>
