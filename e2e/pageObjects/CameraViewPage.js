@@ -64,18 +64,14 @@ export default class CameraViewPage {
        await this.cameraModelextField.replaceText(cameraConfig.model);
 
        await waitFor(this.videoUrlTextField).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(300, 'down');
-       await this.videoUrlTextField.tap();
        await this.videoUrlTextField.replaceText(cameraConfig.videoUrl);
 
        await waitFor(this.usernameTextField).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(SCROLL_SPEED, 'down');
-       await this.usernameTextField.tap();
-       await this.usernameTextField.replaceText(cameraConfig.username);
+       await this.usernameTextField.typeText(cameraConfig.username);
 
        await waitFor(this.passwordTextField).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(SCROLL_SPEED, 'down');
-       await this.passwordTextField.tap();
        await this.passwordTextField.typeText(cameraConfig.password);
 
-       await waitFor(this.saveCameraButton).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(SCROLL_SPEED, 'down');
-       //await this.saveCameraButton.tap();
+       await this.saveCameraButton.tap();
     }
 }

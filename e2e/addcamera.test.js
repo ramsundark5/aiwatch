@@ -3,7 +3,6 @@ import { Config } from './env';
 
 describe('Add Camera', () => {
     beforeEach(async () => {
-      //await device.reloadReactNative();
     });
     
     it('should be able to add camera', async () => {
