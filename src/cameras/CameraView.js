@@ -117,20 +117,25 @@ class CameraView extends Component {
     if(this.state.isFull){
       return null;
     }
+    const addCameraButton = { icon: 'video-plus', label: 'Add Camera', color: 'white', 
+            style: {backgroundColor: Theme.primary}, onPress: () => this.onAddCamera(),
+            accessibilityLabel: 'ADD_MANUAL_CAMERA'};
+
+    const scanButton = { icon: 'router-wireless', label: 'Scan', color: 'white', 
+            style: {backgroundColor: Theme.primary}, onPress: () => this.onScanCamera(), 
+            accessibilityLabel: 'SCAN_CAMERA'};
+                        
     return(
-           <FAB.Group
-            {...testID('addCameraFAB')}
-             open={this.state.open}
-             color='white'
-             fabStyle={{backgroundColor: Theme.primary}}
-             icon='plus'
-             actions={[
-               { icon: 'video-plus', label: 'Add Camera', color: 'white', style: {backgroundColor: Theme.primary}, onPress: () => this.onAddCamera()},
-               { icon: 'router-wireless', label: 'Scan', color: 'white', style: {backgroundColor: Theme.primary}, onPress: () => this.onScanCamera() },
-             ]}
-             onStateChange={({ open }) => this.setState({ open })}
-             theme={{colors: {text: Colors.black, backdrop: 'transparent'}}}
-           />
+        <FAB.Group
+          {...testID('addcamerafab')}
+          open={this.state.open}
+          color='white'
+          fabStyle={{backgroundColor: Theme.primary}}
+          icon='plus'
+          actions={[ addCameraButton, scanButton ]}
+          onStateChange={({ open }) => this.setState({ open })}
+          theme={{colors: {text: Colors.black, backdrop: 'transparent'}}}
+        />
     )
   }
 }

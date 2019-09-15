@@ -9,6 +9,7 @@ import Theme from '../common/Theme';
 import { editCamera } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import Logger from '../common/Logger';
+import testID from '../common/testID';
 class EditCamera extends Component {
 
   static navigationOptions = {
@@ -88,7 +89,8 @@ class EditCamera extends Component {
         <View style={styles.footer}>
           <Button mode='contained' color={Theme.primary} 
               loading={loading}
-              onPress={() => this.onSaveCameraConfig()}>
+              onPress={() => this.onSaveCameraConfig()}
+              {...testID('SAVE_CAMERA')}>
             Save
           </Button>
         </View>

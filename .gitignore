@@ -75,3 +75,6 @@ transcoder/
 android/app/release/
 keystore.properties
 #android/gradle.properties
+
+#ignore test secrets
+env.js

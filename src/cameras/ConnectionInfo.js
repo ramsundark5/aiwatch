@@ -5,6 +5,7 @@ import Theme from '../common/Theme';
 import RNSmartCam from '../native/RNSmartCam';
 import { Alert, Image, Linking, View, Text } from 'react-native';
 import Logger from '../common/Logger';
+import testID from '../common/testID';
 
 const initialMessage = 'An image from your camera will appear here on successful test.';
 export default class ConnectionInfo extends Component {
@@ -66,13 +67,13 @@ export default class ConnectionInfo extends Component {
     const { props, state } = this;
     return (
       <List.Accordion title="Connection Info" expanded={state.expanded} onPress={this.toggleExpand}>
-        <ConfigInput {...props} label="Video URL" name="videoUrl" />
+        <ConfigInput {...props} label="Video URL" name="videoUrl"  {...testID('VIDEO_URL')}/>
         <Button color={Theme.primary} onPress={() => this.onPressURLFinderButton()} uppercase={false}>
             Need help finding your video url?
         </Button>
-        <ConfigInput {...props} label="Username" name="username" />
-        <ConfigInput {...props} label="Password" name="password" secureTextEntry={true}/>
-        <Button color={Theme.primary} onPress={() => this.testConnection()}>
+        <ConfigInput {...props} label="Username" name="username"  {...testID('USERNAME')}/>
+        <ConfigInput {...props} label="Password" name="password" secureTextEntry={true}  {...testID('PASSWORD')}/>
+        <Button color={Theme.primary} onPress={() => this.testConnection()}  {...testID('TEST_CONNECTION')}>
           Test Connection
         </Button>
         {this.renderTestImage()}
