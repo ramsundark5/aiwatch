@@ -1,14 +1,20 @@
+const EDIT_CAMERA_SCROLL_VIEW = 'EDIT_CAMERA_SCROLL_VIEW';
+const SCROLL_SPEED = 100;
 export default class CameraViewPage {
     get addCameraFAB() {
-        return element(by.id("ADD_CAMERA_FAB"));
+        return element(by.label("ADD_CAMERA_FAB"));
     }
 
     get addCameraButton() {
-        return element(by.id("ADD_MANUAL_CAMERA"));
+        return element(by.label("ADD_MANUAL_CAMERA"));
     }
 
     get scanCameraButton() {
-        return element(by.id("SCAN_CAMERA"));
+        return element(by.label("SCAN_CAMERA"));
+    }
+
+    get addCameraTestButton(){
+        return element(by.id("ADD_CAMERA_BUTTON"));
     }
 
     get cameraNameTextField() {
@@ -44,17 +50,32 @@ export default class CameraViewPage {
     }
 
     async addManualCamera(cameraConfig) {
-       //await expect(this.addCameraFAB).toBeVisible();
+       /* await expect(this.addCameraFAB).toBeVisible();
        await this.addCameraFAB.tap();
        await expect(this.addCameraButton).toBeVisible();
-       await this.addCameraButton.tap();
+       await this.addCameraButton.tap(); */
+
+       await expect(this.addCameraTestButton).toBeVisible();
+       await this.addCameraTestButton.tap();
+
        await expect(this.cameraNameTextField).toBeVisible();
-       await this.cameraNameTextField.typeText(cameraConfig.name);
-       await this.cameraBrandTextField.typeText(cameraConfig.brand);
-       await this.cameraModelextField.typeText(cameraConfig.model);
-       await this.videoUrlTextField.typeText(cameraConfig.videoUrl);
-       await this.usernameTextField.typeText(cameraConfig.username);
+       await this.cameraNameTextField.replaceText(cameraConfig.name);
+       await this.cameraBrandTextField.replaceText(cameraConfig.brand);
+       await this.cameraModelextField.replaceText(cameraConfig.model);
+
+       await waitFor(this.videoUrlTextField).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(300, 'down');
+       await this.videoUrlTextField.tap();
+       await this.videoUrlTextField.replaceText(cameraConfig.videoUrl);
+
+       await waitFor(this.usernameTextField).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(SCROLL_SPEED, 'down');
+       await this.usernameTextField.tap();
+       await this.usernameTextField.replaceText(cameraConfig.username);
+
+       await waitFor(this.passwordTextField).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(SCROLL_SPEED, 'down');
+       await this.passwordTextField.tap();
        await this.passwordTextField.typeText(cameraConfig.password);
-       await this.saveCameraButton.tap();
+
+       await waitFor(this.saveCameraButton).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(SCROLL_SPEED, 'down');
+       //await this.saveCameraButton.tap();
     }
 }

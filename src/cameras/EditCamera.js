@@ -68,6 +68,7 @@ class EditCamera extends Component {
     return (
       <View style={styles.container}>
         <ScrollView 
+          {...testID('EDIT_CAMERA_SCROLL_VIEW')}
           style={{ flex: 1 }}
           scrollEnabled={true}
           contentContainerStyle={{

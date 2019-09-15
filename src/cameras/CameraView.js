@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
-import { Colors, FAB, Portal, Provider } from 'react-native-paper';
+import { Button, Colors, FAB, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
@@ -86,7 +86,7 @@ class CameraView extends Component {
                   this.renderVideoPlayer(cameraConfig)
                 ))}
               </ScrollView>
-              {this.renderAddCameraButton()}
+              {this.renderAddCameraButtonForTest()}
             </View>
           </Portal>
       </Provider>
@@ -127,7 +127,7 @@ class CameraView extends Component {
                         
     return(
         <FAB.Group
-          {...testID('addcamerafab')}
+          {...testID('ADD_CAMERA_FAB')}
           open={this.state.open}
           color='white'
           fabStyle={{backgroundColor: Theme.primary}}
@@ -136,6 +136,19 @@ class CameraView extends Component {
           onStateChange={({ open }) => this.setState({ open })}
           theme={{colors: {text: Colors.black, backdrop: 'transparent'}}}
         />
+    )
+  }
+
+  renderAddCameraButtonForTest(){
+    if(this.state.isFull){
+      return null;
+    }
+    return(
+      <View style={styles.footer}>
+        <Button mode='outlined' color={Theme.primary} onPress={() => this.onAddCamera()} {...testID('ADD_CAMERA_BUTTON')}>
+          Add Camera
+        </Button>
+      </View>
     )
   }
 }
