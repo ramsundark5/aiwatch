@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { tabBarIcon } from '../common/TabBarIcon';
 import EventsView from './EventsView';
 import FullScreenVideoPlayer from '../common/FullScreenVideoPlayer';
