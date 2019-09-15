@@ -45,8 +45,16 @@ export default class CameraViewPage {
         return element(by.id("TEST_CONNECTION"));
     }
 
+    get testConectionImage(){
+        return element(by.id('TEST_CONNECTION_IMAGE'));
+    }
+
     get saveCameraButton() {
         return element(by.id("SAVE_CAMERA"));
+    }
+
+    addedCameraText(name) {
+        return element(by.label(name));
     }
 
     async addManualCamera(cameraConfig) {
@@ -72,6 +80,11 @@ export default class CameraViewPage {
        await waitFor(this.passwordTextField).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(SCROLL_SPEED, 'down');
        await this.passwordTextField.typeText(cameraConfig.password);
 
-       await this.saveCameraButton.tap();
+       await waitFor(this.testConectionButton).toBeVisible().whileElement(by.id(EDIT_CAMERA_SCROLL_VIEW)).scroll(SCROLL_SPEED, 'down');
+       await this.testConectionButton.tap();
+       await expect(this.testConectionImage).toBeVisible();
+
+       //await this.saveCameraButton.tap();
+       //await expect(this.addedCameraText(cameraConfig.name)).toBeVisible();
     }
 }

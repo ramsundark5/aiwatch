@@ -93,7 +93,7 @@ export default class ConnectionInfo extends Component {
     }
     if(base64Image){
       return(
-        <View>
+        <View {...testID('TEST_CONNECTION_IMAGE')}>
           <Text>Does the image look correct?</Text>
             <Image source={{uri: imageUri}} style={{width: '100%', height: 256}}/>
         </View>
