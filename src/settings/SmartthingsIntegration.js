@@ -18,6 +18,7 @@ export default class SmartthingsIntegration extends Component{
       if(!requestConnect){
         //remove access tokens from local db
         updateSettings({ smartthingsAccessToken: null, smartthingsAccessTokenExpiry: null });
+        ToastAndroid.showWithGravity('Smartthings integration disconnected.', ToastAndroid.SHORT, ToastAndroid.CENTER);
       }else{
         this.onConnectSmartthimgs();
       }
@@ -31,6 +32,7 @@ export default class SmartthingsIntegration extends Component{
         const smartAppEndpoint = await this.getSmartAppEndpoint(result);
         result['smartAppEndpoint'] = smartAppEndpoint;
         let updatedSettings = await RNSmartCam.saveSmartthingsAccessToken(result);
+        ToastAndroid.showWithGravity('Smartthings integration was successfull.', ToastAndroid.SHORT, ToastAndroid.CENTER);
         updateSettings(updatedSettings);
         console.log('smartthings token saved successfully');
       }catch(err){
