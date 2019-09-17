@@ -50,15 +50,22 @@ public class FFmpegFrameExtractor {
             videoFolder.mkdirs();
         }
         String videoPath = videoFolder.getAbsolutePath();
-        String videoSegmentPrefix = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time " + AppConstants.PRE_RECORDING_BUFFER + " -segment_format_options movflags=+faststart -reset_timestamps 1 ";
-        String recordCommand =  videoSegmentPrefix + videoPath + "/" + cameraConfig.getId() +"-%Y%m%d_%H:%M:%S.mp4 ";
+
+        File cvrFolder = new File(context.getFilesDir(), AppConstants.CVR_VIDEO_FOLDER);
+        if (!cvrFolder.exists()) {
+            cvrFolder.mkdirs();
+        }
+        String cvrPath = cvrFolder.getAbsolutePath();
+
+        String recordCommand = getRecordCommand(videoPath, AppConstants.PRE_RECORDING_BUFFER);
+        String cvrCommand = getRecordCommand(cvrPath, AppConstants.CVR_RECORDING_DURATION);
         String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
         //String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
         String rtspPrefix = "-rtsp_transport tcp ";
         if(videoUrl != null && !videoUrl.startsWith("rtsp")){
             rtspPrefix = "";
         }
-        String command = rtspPrefix + "-i " + videoUrl + frameExtractCommand + recordCommand;
+        String command = rtspPrefix + "-i " + videoUrl + frameExtractCommand + recordCommand + cvrCommand;
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.setTimeout(AppConstants.FFMPEG_COMMAND_TIMEOUT * 1000); //80 seconds
         ffTask = (CustomFFcommandExecuteAsyncTask) ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
@@ -90,6 +97,12 @@ public class FFmpegFrameExtractor {
                 LOGGER.e("ffmpeg extraction failed " + message);
             }
         });
+    }
+
+    private String getRecordCommand(String outputPath, int recordingDuration){
+        String videoSegmentPrefix = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time " + recordingDuration + " -segment_format_options movflags=+faststart -reset_timestamps 1 ";
+        String recordCommand =  videoSegmentPrefix + outputPath + "/" + cameraConfig.getId() +"-%Y%m%d_%H:%M:%S.mp4 ";
+        return recordCommand;
     }
 
     public void stop(){

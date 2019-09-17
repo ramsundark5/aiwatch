@@ -22,7 +22,7 @@ public class AppConstants {
     public static final String STATUS_CHANGED_EVENT_JS_EVENT    = "STATUS_CHANGED_EVENT_JS_EVENT";
     public static final String UNCOMPRESSED_VIDEO_FOLDER        = "tempvideos";
     public static final String COMPRESSED_VIDEO_FOLDER          = "compressed";
-    public static final String MERGED_VIDEO_FOLDER              = "videos";
+    public static final String CVR_VIDEO_FOLDER                 = "cvr";
     public static final String IMAGES_FOLDER                    = "images";
 
     public static final String PERSON_DETECTED_MESSAGE          = "Person detected";
@@ -36,6 +36,7 @@ public class AppConstants {
 
     public static final long FFMPEG_COMMAND_TIMEOUT             = 80; //in seconds
     public static final int PRE_RECORDING_BUFFER                = 10; //in seconds
+    public static final int CVR_RECORDING_DURATION              = 60; //in seconds
     public static final String DEVICE_DISCOVERY_PROGRESS_JS_EVENT         = "DEVICE_DISCOVERY_PROGRESS_JS_EVENT";
     public static final String DEVICE_DISCOVERY_COMPLETED_JS_EVENT        = "DEVICE_DISCOVERY_COMPLETED_JS_EVENT";
 }
