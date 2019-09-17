@@ -140,7 +140,10 @@ export default class ScanCamera extends Component {
     
     renderCameras(cameras){
         const { isLoading } = this.state;
-        if((!cameras || cameras.length < 1) && !isLoading){
+        if(isLoading){
+            return null;
+        }
+        if((cameras || cameras.length < 1)){
             const demoCamera = {
                     name: 'demo',
                     vendor: 'camera',
@@ -193,8 +196,9 @@ export default class ScanCamera extends Component {
     }
 
     renderNonCameraDevices(nonCameraDevices){
-        if(!nonCameraDevices || nonCameraDevices.length < 1){
-            //return null;
+        const { isLoading } = this.state;
+        if(isLoading){
+            return null;
         }
         return(
             <View style={{flex: 1, paddingTop: 20, width: '100%'}}>

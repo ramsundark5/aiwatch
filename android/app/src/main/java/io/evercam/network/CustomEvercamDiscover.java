@@ -7,7 +7,7 @@ import io.evercam.network.discovery.DiscoveredCamera;
 import io.evercam.network.discovery.CustomIpScan;
 import io.evercam.network.discovery.MacAddress;
 import io.evercam.network.discovery.NatMapEntry;
-import io.evercam.network.discovery.NetworkInfo;
+import io.evercam.network.discovery.CustomNetworkInfo;
 import io.evercam.network.discovery.ScanRange;
 import io.evercam.network.discovery.ScanResult;
 import io.evercam.network.discovery.UpnpDevice;
@@ -118,31 +118,28 @@ public class CustomEvercamDiscover implements Runnable {
             throws Exception {
         pool = Executors.newFixedThreadPool(DEFAULT_FIXED_POOL);
         // Request for external IP address
-        externalIp = NetworkInfo.getExternalIP();
-
+        externalIp = CustomNetworkInfo.getExternalIP();
+        LOGGER.d("found external ip as "+ externalIp);
         if (!pool.isShutdown()) {
             // ONVIF discovery
             pool.execute(onvifRunnable);
             printLogMessage("Discovering ONVIF devices......");
             // Start UPnP discovery
             pool.execute(upnpRunnable);
+            printLogMessage("Discovering UPnP devices......");
 
-            if (scanRange.getRouterIpString().equals(
-                    NetworkInfo.getLinuxRouterIp())) {
-                // Start UPnP router discovery
-                printLogMessage("Discovering UPnP devices......");
-                pool.execute(new NatRunnable(scanRange.getRouterIpString()) {
-                    @Override
-                    public void onFinished(ArrayList<NatMapEntry> mapEntries) {
-                        scanPercentage += PER__DISCOVERY_METHOD_PERCENT;
-                        printLogMessage("NAT discovery finished.");
-                        if (mapEntries != null) {
-                            CustomEvercamDiscover.this.mapEntries = mapEntries;
-                        }
-                        natDone = true;
+            // Start UPnP router discovery
+            pool.execute(new NatRunnable(scanRange.getRouterIpString()) {
+                @Override
+                public void onFinished(ArrayList<NatMapEntry> mapEntries) {
+                    scanPercentage += PER__DISCOVERY_METHOD_PERCENT;
+                    printLogMessage("NAT discovery finished.");
+                    if (mapEntries != null) {
+                        CustomEvercamDiscover.this.mapEntries = mapEntries;
                     }
-                });
-            }
+                    natDone = true;
+                }
+            });
             printLogMessage("Discovering NAT table......");
         }
 
@@ -483,6 +480,7 @@ public class CustomEvercamDiscover implements Runnable {
         public void onDeviceFound(UpnpDevice upnpDevice) {
             printLogMessage("Found UPnP device: " + upnpDevice.getIp());
         }
+
     };
 
     private float getPerDevicePercent() {

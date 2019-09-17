@@ -80,8 +80,8 @@ android {
         applicationId 'com.aiwatch'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.0.5"
+        versionCode 8
+        versionName "1.1.0"
         manifestPlaceholders = [
             appAuthRedirectScheme: "com.aiwatch.oauth"
         ]
@@ -111,9 +111,9 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             signingConfig signingConfigs.release
             shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             // Detox-specific additions to pro-guard
             proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
     aaptOptions {
@@ -191,13 +191,13 @@ dependencies {
     implementation 'com.github.ramsundark5:FFmpeg-Android:e90de6380c596dbd64179a249c7991748966bc76'
 
     //firebase
-    implementation 'com.google.firebase:firebase-core:17.0.1'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.crashlytics.sdk.android:crashlytics-ndk:2.1.0'
-    implementation 'com.google.firebase:firebase-perf:18.0.1'
-    implementation 'com.google.firebase:firebase-messaging:19.0.1'
-    implementation 'com.google.firebase:firebase-auth:18.1.0'
-    implementation 'com.google.firebase:firebase-firestore:20.1.0'
+    implementation 'com.google.firebase:firebase-perf:19.0.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.google.firebase:firebase-auth:19.0.0'
+    implementation 'com.google.firebase:firebase-firestore:21.1.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
 
