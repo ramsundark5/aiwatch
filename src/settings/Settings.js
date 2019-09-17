@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { Linking, Text, View } from 'react-native';
 import RNSmartCam from '../native/RNSmartCam';
-import { List, Switch, Button } from 'react-native-paper';
+import { Button, Colors, List, Switch } from 'react-native-paper';
 import Theme from '../common/Theme';
 import { withNavigation } from 'react-navigation';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -88,7 +88,7 @@ class Settings extends Component{
         this.setState({syncing: true});
         await RNSmartCam.sync();
       }catch(err){
-        Logger.log('error sycing to firebase' + err);
+        Logger.log('Error sycing to firebase' + err);
       }finally{
         this.setState({syncing: false});
       }
@@ -111,6 +111,10 @@ class Settings extends Component{
               <List.Item title="Notify Alexa"
                   description="Notify Alexa on interested alerts"
                   right={() => this.renderAlexaEnabled()} />
+              <Text style={{fontWeight: 'bold', paddingLeft: 20, color: Colors.blue500}}
+                      onPress={() => Linking.openURL('https://aiwatch.live/alexa.html')}>
+                  View setup instructions
+              </Text>
               <List.Item title="Show Device Logs"
                   description="Required for troubleshooting purpose"
                   right={() => this.renderDeviceLogsEnabled()} />

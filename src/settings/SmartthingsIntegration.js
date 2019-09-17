@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { authorize } from 'react-native-app-auth';
-import { ToastAndroid, View } from 'react-native';
-import { List, Switch } from 'react-native-paper';
+import { Linking, Text, ToastAndroid, View } from 'react-native';
+import { List, Switch, Colors } from 'react-native-paper';
 import EditableText from '../common/EditableText';
 import Logger from '../common/Logger';
 import RNSmartCam from '../native/RNSmartCam';
@@ -102,8 +102,12 @@ export default class SmartthingsIntegration extends Component{
       return (
         <View>
           <List.Item title="Connect Smartthings"
-                  description="Integrate with your smartthings hub"
+                  description="Integrate with your smartthings hub."
                   right={() => this.renderSwitch()} />
+                  <Text style={{fontWeight: 'bold', paddingLeft: 20, color: Colors.blue500}}
+                          onPress={() => Linking.openURL('https://aiwatch.live/smartthings.html')}>
+                      View setup instructions
+                  </Text>
           {this.renderOAuthCredentials()}
         </View>
       );
