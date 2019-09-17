@@ -67,6 +67,8 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3233599560396549~2106137714"/>
+
+        <uses-library android:name ="org.apache.http.legacy" android:required ="false"/>
     </application>
 
 </manifest>
