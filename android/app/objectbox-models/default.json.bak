@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "10:4707764710860841764",
+      "lastPropertyId": "12:2866281788418262",
       "name": "Settings",
       "properties": [
         {
@@ -39,6 +39,14 @@
         {
           "id": "10:4707764710860841764",
           "name": "alexaToken"
+        },
+        {
+          "id": "11:3559524551298777346",
+          "name": "smartthingsClientId"
+        },
+        {
+          "id": "12:2866281788418262",
+          "name": "smartthingsClientSecret"
         }
       ],
       "relations": []

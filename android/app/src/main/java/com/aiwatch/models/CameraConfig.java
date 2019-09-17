@@ -39,6 +39,7 @@ public class CameraConfig implements Serializable {
     private boolean recordAnimalDetect;
     private boolean recordVehicleDetect;
     private boolean testModeEnabled;
+    private boolean cvrEnabled;
     private boolean disconnected;
     private Date lastModified;
 
@@ -187,6 +188,14 @@ public class CameraConfig implements Serializable {
 
     public void setTestModeEnabled(boolean testModeEnabled) {
         this.testModeEnabled = testModeEnabled;
+    }
+
+    public boolean isCvrEnabled() {
+        return cvrEnabled;
+    }
+
+    public void setCvrEnabled(boolean cvrEnabled) {
+        this.cvrEnabled = cvrEnabled;
     }
 
     public boolean isDisconnected() {

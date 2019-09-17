@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Picker} from 'react-native';
+import { Alert, Picker } from 'react-native';
 import { List, Switch } from 'react-native-paper';
 export default class MonitorInfo extends Component {
 
@@ -12,6 +12,33 @@ export default class MonitorInfo extends Component {
       expanded: !this.state.expanded
     });
   };
+
+  onEnableCvr(value){
+    const { onConfigChange } = this.props;
+    if(!value){
+      onConfigChange('cvrEnabled', value);
+      return;
+    }
+
+    let warningMessage = 'Ensure you are using the extra/secondary stream in video url. For many cameras this can be done by setting subtype=1 in video url. '
+    + 'aiwatch does not compress videos and using primary stream will fill your storage very quickly. ';
+    try{
+      Alert.alert(
+        'Continuous Video Recording',
+        warningMessage,
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => onConfigChange('cvrEnabled', value)},
+        ]
+      );
+    }catch(err){
+      Logger.error(err);
+    }
+  }
 
   render() {
     const { state } = this;
@@ -39,6 +66,10 @@ export default class MonitorInfo extends Component {
                 right={() => this.renderPicker('waitPeriodAfterDetection', [1, 5, 10, 15, 30], 5)}/>
         </List.Section>
 
+        <List.Section title='Continuous Recording'>
+          <List.Item title='Enable Continuous Recording' right={() => this.renderCvrEnabled()} />
+        </List.Section>
+
         <List.Section title='Test Mode'>
           <List.Item title='Enable Test Mode' right={() => this.renderSwitch('testModeEnabled')} />
         </List.Section>
@@ -53,6 +84,16 @@ export default class MonitorInfo extends Component {
       <Switch
         value={props.cameraConfig[name]}
         onValueChange={value => props.onConfigChange(name, value)}
+      />
+    );
+  }
+
+  renderCvrEnabled(){
+    const { props } = this;
+    return (
+      <Switch
+        value={props.cameraConfig['cvrEnabled']}
+        onValueChange={value => this.onEnableCvr(value)}
       />
     );
   }
