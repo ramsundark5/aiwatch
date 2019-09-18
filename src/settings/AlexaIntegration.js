@@ -1,57 +1,58 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { Switch } from 'react-native-paper';
-import DialogInput from '../common/DialogInput';
+import { ToastAndroid, View } from 'react-native';
+import { Colors, List, Switch, Text } from 'react-native-paper';
+import EditableText from '../common/EditableText';
 
 export default class AlexaIntegration extends Component{
-
-    state = {
-      showTokenInput: false,
+    async onUpdateAlexaToken(token){
+      const { updateSettings } = this.props;
+      updateSettings({ alexaToken: token });
     }
 
-    onChangeConnectStatus(requestConnect){
-      const { updateSettings } = this.props;
-
-      if(!requestConnect){
-        //remove access tokens from local db
-        updateSettings({ alexaToken: null });
-      }else{
-        this.showAlexaTokenInput(true);
+    onChangeConnectStatus(connectAlexa){
+      const { alexaToken } = this.props;
+      let isAlexaConnected = alexaToken && alexaToken.length > 5 ? true : false ;
+      if(connectAlexa && !isAlexaConnected){
+        ToastAndroid.showWithGravity('Valid Notify Me token required to enable Alexa integration.', ToastAndroid.SHORT, ToastAndroid.CENTER);
       }
     }
 
-    showAlexaTokenInput(isShow){
-      this.setState({showTokenInput: isShow});
-    }
-    
-    async onConnectAlexa(token){
-      const { updateSettings } = this.props;
-      updateSettings({ alexaToken: token });
-      this.showAlexaTokenInput(false);
-    }
-
     render(){
-      const { alexaToken } = this.props;
-      let isAlexaConnected = alexaToken ? true : false ;
       return (
-        <View style={{paddingTop: 10}}>
-          <Switch
-            value={isAlexaConnected}
-            onValueChange={value => this.onChangeConnectStatus(value)}
-          />
-          {this.renderTokenInputDialog(alexaToken)}
+        <View>
+            <List.Item title="Notify Alexa"
+                description="Notify Alexa on interested alerts"
+                right={() => this.renderSwitch()} />
+            <Text style={{fontWeight: 'bold', paddingLeft: 20, color: Colors.blue500}}
+                    onPress={() => Linking.openURL('https://aiwatch.live/alexa.html')}>
+                View setup instructions
+            </Text>
+            {this.renderAlexaTokenInput()}
         </View>
       );
     }
 
-    renderTokenInputDialog(alexaToken){
+    renderSwitch(){
+      const { alexaToken } = this.props;
+      let isAlexaConnected = alexaToken && alexaToken.length > 5 ? true : false ;
       return(
-        <DialogInput isDialogVisible={this.state.showTokenInput}
-          title={"Connect Alexa"}
-          message={"Enter the token from Alexa Notify me skill"}
-          hintInput ={alexaToken}
-          submitInput={ (inputText) => {this.onConnectAlexa(inputText)} }
-          closeDialog={ () => {this.showAlexaTokenInput(false)}} />
+        <Switch
+          value={isAlexaConnected}
+          onValueChange={value => this.onChangeConnectStatus(value)}
+        />
+      )
+    }
+    renderAlexaTokenInput(){
+      const { alexaToken } = this.props;
+      return(
+        <View>
+          <EditableText 
+              mask={true}
+              editable={true}
+              label='Notify Me Token'
+              textContent={alexaToken}
+              finishEditText={(token) => this.onUpdateAlexaToken(token)}/>
+        </View>
       )
     }
 }

@@ -10,7 +10,7 @@ import { editCamera } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import Logger from '../common/Logger';
 import testID from '../common/testID';
-class EditCamera extends Component {
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';class EditCamera extends Component {
 
   static navigationOptions = {
     headerTitle: 'Manage Camera',
@@ -67,7 +67,7 @@ class EditCamera extends Component {
     const { cameraConfig, loading } = this.state;
     return (
       <View style={styles.container}>
-        <ScrollView 
+        <KeyboardAwareScrollView 
           {...testID('EDIT_CAMERA_SCROLL_VIEW')}
           style={{ flex: 1 }}
           scrollEnabled={true}
@@ -86,7 +86,7 @@ class EditCamera extends Component {
             cameraConfig={cameraConfig}
             onConfigChange={(key, value) => this.onConfigChange(key, value)}
           />
-        </ScrollView>
+        </KeyboardAwareScrollView>
         <View style={styles.footer}>
           <Button mode='contained' color={Theme.primary} 
               loading={loading}

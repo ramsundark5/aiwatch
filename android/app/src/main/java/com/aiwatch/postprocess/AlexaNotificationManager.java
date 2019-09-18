@@ -6,6 +6,10 @@ import com.aiwatch.models.AlarmEvent;
 import com.aiwatch.models.AlexaNotifyRequest;
 import com.aiwatch.models.Settings;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class AlexaNotificationManager {
@@ -27,7 +31,23 @@ public class AlexaNotificationManager {
                 alexaNotifyRequest.setAccessCode(accessToken);
                 //alexaNotifyRequest.setTitle("Aiwatch detected new event at "+alarmEvent.getDate().getHours() + "." + alarmEvent.getDate().getMinutes());
                 alexaNotifyRequest.setNotification(alarmEvent.getMessage());
-                alexaService.notifyAlexa(alexaNotifyRequest);
+                Call<ResponseBody> notifyResponse =alexaService.notifyAlexa(alexaNotifyRequest);
+                notifyResponse.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        int statusCode = response.code();
+                        if (response.isSuccessful()) {
+                            LOGGER.d("Alexa notified succesfully with status code "+statusCode);
+                        }else{
+                            LOGGER.d("Alexa notification returned failure response with status code "+statusCode);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        LOGGER.e(t, "Error notifying Alexa");
+                    }
+                });
             }
         }catch (Exception e){
             LOGGER.e(e, "Error notifying alexa");

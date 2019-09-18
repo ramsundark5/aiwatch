@@ -13,6 +13,7 @@ import {LogView} from 'react-native-device-log';
 import Logger from '../common/Logger';
 import SmartthingsIntegration from './SmartthingsIntegration';
 import AlexaIntegration from './AlexaIntegration';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 class Settings extends Component{
 
     state = {
@@ -97,7 +98,7 @@ class Settings extends Component{
     render(){
       const { isLoading } = this.props;
       return(
-          <View>
+          <KeyboardAwareScrollView>
             <LoadingSpinner
               visible={isLoading}
               textContent={'Loading...'} />
@@ -108,13 +109,7 @@ class Settings extends Component{
               <List.Item title="Enable Notification"
                   right={() => this.renderNotificationEnabled()} />
               {this.renderSmartthingsEnabled()}
-              <List.Item title="Notify Alexa"
-                  description="Notify Alexa on interested alerts"
-                  right={() => this.renderAlexaEnabled()} />
-              <Text style={{fontWeight: 'bold', paddingLeft: 20, color: Colors.blue500}}
-                      onPress={() => Linking.openURL('https://aiwatch.live/alexa.html')}>
-                  View setup instructions
-              </Text>
+              {this.renderAlexaEnabled()}
               <List.Item title="Show Device Logs"
                   description="Required for troubleshooting purpose"
                   right={() => this.renderDeviceLogsEnabled()} />
@@ -122,7 +117,7 @@ class Settings extends Component{
             {this.renderSyncButton()}
             <InAppPurchase {...this.props}/>
             {this.renderDeviceLogs()}
-          </View>
+          </KeyboardAwareScrollView>
       );
   }
 

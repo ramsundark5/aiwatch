@@ -55,6 +55,8 @@ public class DetectionResultProcessor {
             alarmEvent.setThumbnailPath(thumbnailPath);
             String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
             alarmEvent.setCloudImagePath(gdriveImagePath);
+            smartthingsNotificationManager.notifyHub();
+            AlexaNotificationManager.notifyAlexa(alarmEvent);
             NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
         }
         //now record
@@ -72,7 +74,6 @@ public class DetectionResultProcessor {
             }
         }
 
-        isResultInteresting = false;
         if(isResultInteresting){
             //store the results
             alarmEvent.setVideoPath(videoPath);
@@ -80,8 +81,6 @@ public class DetectionResultProcessor {
             alarmEventDao.putEvent(alarmEvent);
             //this will allow UI redux store to refresh with latest results
             NotificationManager.sendUINotification(frameEvent, alarmEvent);
-            smartthingsNotificationManager.notifyHub();
-            AlexaNotificationManager.notifyAlexa(alarmEvent);
             firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
         }
         return isResultInteresting;
