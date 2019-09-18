@@ -13,6 +13,7 @@ public class Settings {
     private boolean isGoogleAccountConnected;
     private boolean isNotificationEnabled;
     private boolean isNoAdsPurchased;
+    private boolean isAlexaConnected;
     private String smartthingsClientId;
     private String smartthingsClientSecret;
     private String smartthingsAccessToken;
@@ -98,5 +99,13 @@ public class Settings {
 
     public void setSmartthingsClientSecret(String smartthingsClientSecret) {
         this.smartthingsClientSecret = smartthingsClientSecret;
+    }
+
+    public boolean isAlexaConnected() {
+        return isAlexaConnected;
+    }
+
+    public void setAlexaConnected(boolean alexaConnected) {
+        isAlexaConnected = alexaConnected;
     }
 }

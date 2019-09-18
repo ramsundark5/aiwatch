@@ -22,11 +22,12 @@ public class AlexaNotificationManager {
             SettingsDao settingsDao = new SettingsDao();
             Settings settings = settingsDao.getSettings();
             String accessToken = settings.getAlexaToken();
+            boolean isAlexaConnected = settings.isAlexaConnected();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .build();
             AlexaService alexaService = retrofit.create(AlexaService.class);
-            if( accessToken != null){
+            if( isAlexaConnected && accessToken != null){
                 AlexaNotifyRequest alexaNotifyRequest = new AlexaNotifyRequest();
                 alexaNotifyRequest.setAccessCode(accessToken);
                 //alexaNotifyRequest.setTitle("Aiwatch detected new event at "+alarmEvent.getDate().getHours() + "." + alarmEvent.getDate().getMinutes());

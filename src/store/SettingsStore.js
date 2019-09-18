@@ -11,6 +11,7 @@ const settingsSlice = createSlice({
       smartthingsAccessTokenExpiry: null,
       smartAppEndpoint: null,
       alexaToken: null,
+      isAlexaConnected: false,
       isLoading: false,
       showDeviceLogs: false,
       smartthingsClientId: null,

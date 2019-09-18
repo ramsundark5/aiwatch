@@ -52,7 +52,8 @@ class Settings extends Component{
         || currentSettings.smartAppEndpoint !== prevSettings.smartAppEndpoint
         || currentSettings.alexaToken !== prevSettings.alexaToken
         || currentSettings.smartthingsClientId !== prevSettings.smartthingsClientId
-        || currentSettings.smartthingsClientSecret !== prevSettings.smartthingsClientSecret ) {
+        || currentSettings.smartthingsClientSecret !== prevSettings.smartthingsClientSecret
+        || currentSettings.isAlexaConnected !== prevSettings.isAlexaConnected ) {
           try{
             let updatedSettings = await RNSmartCam.putSettings(currentSettings);
             console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));
@@ -140,7 +141,7 @@ class Settings extends Component{
   renderAlexaEnabled(){
     const { settings, updateSettings } = this.props;
     return (
-      <AlexaIntegration alexaToken={settings.alexaToken}
+      <AlexaIntegration alexaToken={settings.alexaToken} isAlexaConnected={settings.isAlexaConnected}
           updateSettings={updateSettings}/>
     );
   }

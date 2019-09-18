@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ToastAndroid, View } from 'react-native';
+import { Linking, ToastAndroid, View } from 'react-native';
 import { Colors, List, Switch, Text } from 'react-native-paper';
 import EditableText from '../common/EditableText';
 
@@ -10,11 +10,13 @@ export default class AlexaIntegration extends Component{
     }
 
     onChangeConnectStatus(connectAlexa){
-      const { alexaToken } = this.props;
-      let isAlexaConnected = alexaToken && alexaToken.length > 5 ? true : false ;
-      if(connectAlexa && !isAlexaConnected){
+      const { alexaToken, updateSettings } = this.props;
+      let isAlexaTokenValid = alexaToken && alexaToken.length > 5 ? true : false ;
+      if(connectAlexa && !isAlexaTokenValid){
         ToastAndroid.showWithGravity('Valid Notify Me token required to enable Alexa integration.', ToastAndroid.SHORT, ToastAndroid.CENTER);
+        return;
       }
+      updateSettings({ isAlexaConnected: connectAlexa });
     }
 
     render(){
@@ -33,8 +35,7 @@ export default class AlexaIntegration extends Component{
     }
 
     renderSwitch(){
-      const { alexaToken } = this.props;
-      let isAlexaConnected = alexaToken && alexaToken.length > 5 ? true : false ;
+      const { isAlexaConnected } = this.props;
       return(
         <Switch
           value={isAlexaConnected}
