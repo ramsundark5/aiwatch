@@ -30,7 +30,7 @@ export default class EventImage extends PureComponent{
                 contentPosition='center'>
                <TouchableRipple rippleColor={Colors.white} onPress={() => this.onPlayVideo()}>
                 <Avatar.Icon size={48} 
-                    icon='play-arrow' color={Colors.red600}
+                    icon='play' color={Colors.red600}
                     style={styles.avatarStyle}/>
                </TouchableRipple>
             </ImageOverlay>

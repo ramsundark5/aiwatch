@@ -8,11 +8,11 @@ const DEFAULT_LINE_COLOR = 'lightblue';
 export default class EventIcon extends PureComponent{
     render(){
         const { event } = this.props;
-        let iconName = 'directions-walk';
+        let iconName = 'walk';
         if(event.message && event.message.toLowerCase().includes('vehicle')){
-            iconName = 'directions-car';
+            iconName = 'car';
         }else if(event.message && event.message.toLowerCase().includes('animal')){
-            iconName = 'pets';
+            iconName = 'paw';
         }
         return(
             <View style={[styles.separatorContainer]}>
