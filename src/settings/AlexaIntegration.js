@@ -22,7 +22,7 @@ export default class AlexaIntegration extends Component{
     render(){
       return (
         <View>
-            <List.Item title="Notify Alexa"
+            <List.Item title="Connect Alexa"
                 description="Notify Alexa on interested alerts"
                 right={() => this.renderSwitch()} />
             <Text style={{fontWeight: 'bold', paddingLeft: 20, color: Colors.blue500}}
@@ -50,7 +50,7 @@ export default class AlexaIntegration extends Component{
           <EditableText 
               mask={true}
               editable={true}
-              label='Notify Me Token'
+              label='Alexa Token'
               textContent={alexaToken}
               finishEditText={(token) => this.onUpdateAlexaToken(token)}/>
         </View>
