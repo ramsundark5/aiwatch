@@ -60,7 +60,6 @@ public class DetectionResultProcessor {
             NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
         }
         //now record
-        shouldRecordVideo = false;
         if(shouldRecordVideo){
             long waitTimeForRecording = cameraConfig.getRecordingDuration() + ( 2 * AppConstants.PRE_RECORDING_BUFFER );
             try {
