@@ -99,7 +99,7 @@ class CameraView extends Component {
       //cameraConfig.videoUrl = 'rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov';
     }
     return(
-      <View style={[styles.container]} key={cameraConfig.id}>
+      <View style={[styles.container, styles.responsizeVideo]} key={cameraConfig.id}>
         <Text>{cameraConfig.name}</Text>
         <RTSPVideoPlayer
               style={{width:'100%'}}
@@ -167,10 +167,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    padding: 10
+    padding: 10,
   },
   footer: {
     width: '100%',
     paddingTop: 20,
+  },
+  responsizeVideo:{
+    alignSelf: 'center', 
+    maxWidth: 640
   }
 });

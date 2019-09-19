@@ -26,7 +26,7 @@ export default class EventImage extends PureComponent{
                 source={{isStatic:true, uri: 'file://'+event.thumbnailPath}}
                 height={120}
                 overlayAlpha={0}
-                containerStyle={{width: '100%'}} 
+                containerStyle={{width: '100%', maxWidth: 300}} 
                 contentPosition='center'>
                <TouchableRipple rippleColor={Colors.white} onPress={() => this.onPlayVideo()}>
                 <Avatar.Icon size={48} 
