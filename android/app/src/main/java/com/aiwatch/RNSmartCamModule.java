@@ -370,7 +370,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                 FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(reactContext);
                 if(firebaseUser != null){
                     FirebaseCameraManager firebaseCameraManager = new FirebaseCameraManager();
-                    firebaseCameraManager.getCameraConfigUpdates(firebaseUser);
+                    firebaseCameraManager.getCameraConfigUpdates(firebaseUser, reactContext);
                     FirebaseAlarmEventManager firebaseAlarmEventManager = new FirebaseAlarmEventManager();
                     firebaseAlarmEventManager.getAlarmEventUpdates(firebaseUser, reactContext);
                 }

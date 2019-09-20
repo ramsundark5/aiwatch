@@ -79,7 +79,7 @@ public class DetectionResultProcessor {
             alarmEvent.setCloudVideoPath(gdriveVideoPath);
             alarmEventDao.putEvent(alarmEvent);
             //this will allow UI redux store to refresh with latest results
-            NotificationManager.sendUINotification(frameEvent, alarmEvent);
+            NotificationManager.sendUINotification(frameEvent.getContext(), alarmEvent);
             firebaseAlarmEventDao.addEvent(frameEvent.getContext(), alarmEvent);
         }
         return isResultInteresting;

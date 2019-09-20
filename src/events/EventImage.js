@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import ImageOverlay from 'react-native-image-overlay';
 import { Avatar, Colors, TouchableRipple } from 'react-native-paper';
 export default class EventImage extends PureComponent{

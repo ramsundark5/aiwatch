@@ -1,8 +1,11 @@
 package com.aiwatch.firebase;
 
+import android.content.Context;
+
 import com.aiwatch.Logger;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
+import com.aiwatch.postprocess.NotificationManager;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,7 +22,7 @@ public class FirebaseCameraManager {
     private static final Logger LOGGER = new Logger();
     private CameraConfigDao cameraConfigDao = new CameraConfigDao();
 
-    public void getCameraConfigUpdates(FirebaseUser firebaseUser){
+    public void getCameraConfigUpdates(FirebaseUser firebaseUser, Context context){
         try{
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CameraConfig latestCameraConfig = cameraConfigDao.getLatestCameraConfig();
@@ -33,13 +36,13 @@ public class FirebaseCameraManager {
                     .whereGreaterThan("lastModified", lastUpdatedDate)
                     .get();
             QuerySnapshot querySnapshots = Tasks.await(querySnapshotTask);
-            handleCameraConfigUpdates(querySnapshots);
+            handleCameraConfigUpdates(querySnapshots, context);
         }catch(Exception e){
             LOGGER.e(e, "Error getting cameraconfig updates");
         }
     }
 
-    protected void handleCameraConfigUpdates(QuerySnapshot querySnapshots){
+    protected void handleCameraConfigUpdates(QuerySnapshot querySnapshots, Context context){
         for (DocumentChange dc : querySnapshots.getDocumentChanges()) {
             QueryDocumentSnapshot cameraConfigSnapshot = dc.getDocument();
             if (cameraConfigSnapshot == null || !cameraConfigSnapshot.exists()) {
@@ -55,10 +58,10 @@ public class FirebaseCameraManager {
                             existingCameraConfig = new CameraConfig();
                             existingCameraConfig.setId(0L);
                         }
-                        applyModificationsToCameraConfig(existingCameraConfig, cameraConfig);
+                        applyModificationsToCameraConfig(existingCameraConfig, cameraConfig, context);
                         break;
                     case MODIFIED:
-                        applyModificationsToCameraConfig(existingCameraConfig, cameraConfig);
+                        applyModificationsToCameraConfig(existingCameraConfig, cameraConfig, context);
                         break;
                     case REMOVED:
                         if(existingCameraConfig != null){
@@ -73,7 +76,7 @@ public class FirebaseCameraManager {
         }
     }
 
-    private void applyModificationsToCameraConfig(CameraConfig existingCameraConfig, CameraConfig updatedCameraConfig){
+    private void applyModificationsToCameraConfig(CameraConfig existingCameraConfig, CameraConfig updatedCameraConfig, Context context){
         existingCameraConfig.setVideoUrl(updatedCameraConfig.getVideoUrl());
         existingCameraConfig.setBrand(updatedCameraConfig.getBrand());
         existingCameraConfig.setModel(updatedCameraConfig.getModel());
@@ -84,5 +87,6 @@ public class FirebaseCameraManager {
         //existingCameraConfig.setPassword(updatedCameraConfig.getPassword());
         existingCameraConfig.setVideoCodec(updatedCameraConfig.getVideoCodec());
         cameraConfigDao.putCamera(existingCameraConfig);
+        NotificationManager.sendUINotification(context, existingCameraConfig);
     }
 }

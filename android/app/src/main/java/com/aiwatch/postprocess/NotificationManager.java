@@ -40,16 +40,15 @@ public class NotificationManager {
         return shouldNotify;
     }
 
-    public static void sendUINotification(FrameEvent frameEvent, AlarmEvent alarmEvent){
+    public static void sendUINotification(Context context, AlarmEvent alarmEvent){
         try{
-            Context context = frameEvent.getContext();
             LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
             Intent newAlarmIntent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
             newAlarmIntent.putExtra(AppConstants.NEW_DETECTION_EVENT, alarmEvent);
             localBroadcastManager.sendBroadcast(newAlarmIntent);
 
             UiThreadUtil.runOnUiThread(() -> {
-                Toast.makeText(frameEvent.getContext(), alarmEvent.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, alarmEvent.getMessage(), Toast.LENGTH_SHORT).show();
             });
         }catch(Exception e){
             LOGGER.e(e, "Error sending local notification "+e);

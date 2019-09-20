@@ -6,6 +6,7 @@ import com.aiwatch.cloud.gdrive.GDriveServiceHelper;
 import com.aiwatch.cloud.gdrive.GdriveManager;
 import com.aiwatch.models.AlarmEvent;
 import com.aiwatch.media.db.AlarmEventDao;
+import com.aiwatch.postprocess.NotificationManager;
 import com.aiwatch.postprocess.RecordingManager;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -79,6 +80,8 @@ public class FirebaseAlarmEventManager {
         alarmEvent.setId(0L);
         saveFileLocally(alarmEvent, context);
         alarmEventDao.putEvent(alarmEvent);
+        NotificationManager.sendUINotification(context, alarmEvent);
+        NotificationManager.sendImageNotification(context, alarmEvent);
     }
 
     private void saveFileLocally(AlarmEvent alarmEvent, Context context){
