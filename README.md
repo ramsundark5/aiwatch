@@ -2,7 +2,7 @@
 
 Todo
 
-- [ ] Region of interest
+- [x] Region of interest
 - [x] Video player fullscreen
 - [x] Sync to dropbox/google drive
 - [x] Firebase integration and sync
@@ -21,7 +21,7 @@ Todo
 - [x] Splash screen
 - [x] Test with non-rtsp url
 - [ ] Face recognition
-- [ ] Smartthings integration or IFTTT
+- [X] Smartthings integration or IFTTT
 
 
 Command to record video in chunks

@@ -9,6 +9,7 @@
 -keep class com.aiwatch.models.** {*;}
 -keep class org.apache.** { *; }
 -keep class io.evercam.** {*;}
+-keep class com.facebook.hermes.unicode.** { *; }
 
 # Don't show warnings for the following libraries
 -dontwarn android.support.v7.**
