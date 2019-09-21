@@ -1,11 +1,14 @@
 package com.aiwatch.firebase;
 
 import android.content.Context;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.aiwatch.Logger;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
@@ -87,6 +90,19 @@ public class FirebaseCameraManager {
         //existingCameraConfig.setPassword(updatedCameraConfig.getPassword());
         existingCameraConfig.setVideoCodec(updatedCameraConfig.getVideoCodec());
         cameraConfigDao.putCamera(existingCameraConfig);
-        NotificationManager.sendUINotification(context, existingCameraConfig);
+        notifyUI(existingCameraConfig, context);
+    }
+    private void notifyUI(CameraConfig existingCameraConfig, Context context){
+        try{
+            NotificationManager.sendUINotification(context, existingCameraConfig);
+            String message = "aiwatch does not store or sync camera password. Edit the camera to set password.";
+            UiThreadUtil.runOnUiThread(() -> {
+                Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            });
+        } catch (Exception e){
+            LOGGER.d("Error notifying UI about new camera");
+        }
     }
 }

@@ -179,6 +179,7 @@ class EventsView extends React.Component {
         return (
             <View style={styles.emptyData}>
                 <Text style={{textAlign: 'center'}}>No events found for this day. Swipe down the calendar and look for a day that has the dot marking.</Text>
+                <Button icon="reload" mode="outline" onPress={() => this.loadInitialEvents()}>Refresh</Button>
             </View>
         )
     }

@@ -97,7 +97,8 @@ class Settings extends Component{
     }
 
     render(){
-      const { isLoading } = this.props;
+      const { settings } = this.props;
+      const isLoading = settings ? settings.isLoading : false;
       return(
           <KeyboardAwareScrollView>
             <LoadingSpinner
