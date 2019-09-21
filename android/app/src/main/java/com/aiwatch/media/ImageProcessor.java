@@ -106,7 +106,7 @@ public class ImageProcessor {
         long waitPeriodInMins = cameraConfig.getWaitPeriodAfterDetection();
         long waitPeriod = waitPeriodInMins * 60;
         if(cameraConfig.isTestModeEnabled() || waitPeriod < 30){
-            waitPeriod = 45;
+            waitPeriod = AppConstants.WAIT_TIME_AFTER_DETECT;
         }
         return waitPeriod;
     }

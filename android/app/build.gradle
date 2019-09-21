@@ -179,8 +179,10 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'org.apache.commons:commons-collections4:4.3'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.mp4parser:muxer:1.9.39'
+    implementation 'joda-time:joda-time:2.10.3'
 
 
     //tflite
@@ -197,9 +199,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:19.0.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.google.firebase:firebase-auth:19.0.0'
-    implementation 'com.google.firebase:firebase-firestore:21.1.0'
+    implementation 'com.google.firebase:firebase-firestore:21.1.1'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
 
     //evercam
     implementation('org.simpleframework:simple-xml:2.7.1') {

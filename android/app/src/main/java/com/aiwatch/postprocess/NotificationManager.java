@@ -58,9 +58,9 @@ public class NotificationManager {
     public static void sendUINotification(Context context, CameraConfig cameraConfig){
         try{
             LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
-            Intent newAlarmIntent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
-            newAlarmIntent.putExtra(AppConstants.STATUS_CHANGED_EVENT, cameraConfig);
-            localBroadcastManager.sendBroadcast(newAlarmIntent);
+            Intent cameraConfigEvent= new Intent(AppConstants.AIWATCH_EVENT_INTENT);
+            cameraConfigEvent.putExtra(AppConstants.STATUS_CHANGED_EVENT, cameraConfig);
+            localBroadcastManager.sendBroadcast(cameraConfigEvent);
 
             String connectedMessage = "Camera  "+cameraConfig.getName() + " connected.";
             String disconnectedMessage = "Camera  "+cameraConfig.getName() + " disconnected.";

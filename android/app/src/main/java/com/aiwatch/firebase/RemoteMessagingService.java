@@ -52,6 +52,8 @@ public class RemoteMessagingService extends FirebaseMessagingService {
                 }
                 NotificationManager.sendStringNotification(getApplicationContext(), alarmEvent.getMessage(), icon);
                 //NotificationManager.sendImageNotification(getApplicationContext(), alarmEvent);
+                FirebaseSyncManager firebaseSyncManager = new FirebaseSyncManager();
+                firebaseSyncManager.getFirebaseUpdates(getApplicationContext());
             }
         }catch (Exception e){
             LOGGER.e(e, "Error sending local notification.");

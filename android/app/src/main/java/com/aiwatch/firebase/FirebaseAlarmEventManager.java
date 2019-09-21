@@ -10,6 +10,7 @@ import com.aiwatch.postprocess.NotificationManager;
 import com.aiwatch.postprocess.RecordingManager;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.api.client.util.DateTime;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -19,7 +20,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class FirebaseAlarmEventManager {
 
@@ -80,8 +83,7 @@ public class FirebaseAlarmEventManager {
         alarmEvent.setId(0L);
         saveFileLocally(alarmEvent, context);
         alarmEventDao.putEvent(alarmEvent);
-        NotificationManager.sendUINotification(context, alarmEvent);
-        NotificationManager.sendImageNotification(context, alarmEvent);
+        notifyIfRecent(alarmEvent, context);
     }
 
     private void saveFileLocally(AlarmEvent alarmEvent, Context context){
@@ -112,5 +114,19 @@ public class FirebaseAlarmEventManager {
         String fileName = alarmEvent.getCameraId() + currentTime;
         File outputFile = new File(context.getFilesDir(), fileName);
         return outputFile.getAbsolutePath();
+    }
+
+    private void notifyIfRecent(AlarmEvent alarmEvent, Context context){
+        try{
+            if(alarmEvent !=null  && alarmEvent.getDate() != null){
+                long elapsedTimeSinceAlarm = System.currentTimeMillis() - alarmEvent.getDate().getTime();
+                if(elapsedTimeSinceAlarm < TimeUnit.MINUTES.toMillis(5)){
+                    NotificationManager.sendUINotification(context, alarmEvent);
+                    NotificationManager.sendImageNotification(context, alarmEvent);
+                }
+            }
+        }catch (Exception e){
+            LOGGER.e(e, "Error getting elapsed time of alarmevent");
+        }
     }
 }

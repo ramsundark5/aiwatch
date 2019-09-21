@@ -363,21 +363,8 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
     }
 
     private void getFirebaseUpdates(){
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(() -> {
-            try {
-                FirebaseAuthManager firebaseAuthManager = new FirebaseAuthManager();
-                FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(reactContext);
-                if(firebaseUser != null){
-                    FirebaseCameraManager firebaseCameraManager = new FirebaseCameraManager();
-                    firebaseCameraManager.getCameraConfigUpdates(firebaseUser, reactContext);
-                    FirebaseAlarmEventManager firebaseAlarmEventManager = new FirebaseAlarmEventManager();
-                    firebaseAlarmEventManager.getAlarmEventUpdates(firebaseUser, reactContext);
-                }
-            } catch (Exception e) {
-                LOGGER.e(e, "Error getting updates from firebase");
-            }
-        });
+        FirebaseSyncManager firebaseSyncManager = new FirebaseSyncManager();
+        firebaseSyncManager.getFirebaseUpdates(reactContext);
     }
 
     private Date convertStringToDate(String dateInString){

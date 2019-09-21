@@ -1093,10 +1093,10 @@
     eslint-plugin-react-native "3.6.0"
     prettier "1.16.4"
 
-"@react-native-community/netinfo@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-4.2.1.tgz#b6309f078da500807ef8afa4d659e56ccd14dee4"
-  integrity sha512-kAnmYp8vXpZToPw8rgE7uO+MqmqHSR9VEDPkuZT0DnFMBJmIXCSD2NLAD28HGKVY/kujVWCknC/FuVWr5/A3uA==
+"@react-native-community/netinfo@^4.2.2":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-4.2.2.tgz#15035730a230e743b2e5429f2bbd75b0851a4b98"
+  integrity sha512-ktMlUCYn+vKL8PQH/e6Vpoygvn3gU+Ibc1uD7m+pYhQwiKHD7eqCRAkR1Xt5vc2L3Xy3N1z0tMXlxzK4IKbYyQ==
 
 "@react-navigation/core@^3.5.1":
   version "3.5.1"
@@ -2406,10 +2406,10 @@ detect-newline@^2.1.0:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
   integrity sha1-9B8cEL5LAOh7XxPaaAdZ8sW/0+I=
 
-detox@^14.3.0:
-  version "14.3.0"
-  resolved "https://registry.yarnpkg.com/detox/-/detox-14.3.0.tgz#1e81759b2a0be5fc8bb53bbde994ada54e045123"
-  integrity sha512-tis2br/6EYI//0gignY/BuilwISkEvKMSrPgfAbG30KLxn9s1JE21wUS2j6xGseLbwaCA5zianGdUP2FSGCwjA==
+detox@^14.3.2:
+  version "14.3.2"
+  resolved "https://registry.yarnpkg.com/detox/-/detox-14.3.2.tgz#c01e441c7ce9e869d4ea412ac0d1e552c0a2f19b"
+  integrity sha512-GykXKlPGbtB0eR0RVOoPJSzF/dppgUw8IOZ/l2Ff91mKXe87IcNwr3ddAJheE9J+AocZEtp0rA7LCbxVQDfGGA==
   dependencies:
     "@babel/core" "^7.4.5"
     bunyan "^1.8.12"
@@ -2464,12 +2464,10 @@ domexception@^1.0.1:
   dependencies:
     webidl-conversions "^4.0.2"
 
-dooboolab-welcome@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/dooboolab-welcome/-/dooboolab-welcome-1.1.0.tgz#4a0aa9d2cbc4e2b1008bf7683bc056b41caa3d0d"
-  integrity sha512-K9TKEeefzDXZiUyLZG+bIr8cy9UoYIfFMseowp/o3czVl7TfkVm3gQpeB85w+TO8xeqzWHiIcEelZbBgt5WUwQ==
-  dependencies:
-    chalk "^2.4.1"
+dooboolab-welcome@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/dooboolab-welcome/-/dooboolab-welcome-1.1.1.tgz#ca2184f6e1f568865d707a6ce3bda7e003550f54"
+  integrity sha512-tQ/9NBCGnalHwKOBjDqTD4t4wQpDfSSbxQGctzkzaLHR3AhN0wCBkIs05JciVtvl/jfLZ+DgAndktAMk3Bu7Vw==
 
 dtrace-provider@~0.8:
   version "0.8.8"
@@ -6147,12 +6145,12 @@ react-native-gesture-handler@^1.4.1:
   version "2.0.0"
   resolved "git+https://github.com/ramsundark5/react-native-google-signin#1d733892683dc9b1dcc8f326cc23fe9b837a3c2e"
 
-react-native-iap@3.4.6:
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-3.4.6.tgz#68d94e1d5a9d4d65439869e440792204697b1825"
-  integrity sha512-1GaeglPA+PGILUPYiEGZ+0HcSssmwHmt3e1gjkkLtMN/DgGxOcxMMraQIE3IwAT56hk2h0rEuNLT0Xw3XYs+Og==
+react-native-iap@3.4.12:
+  version "3.4.12"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-3.4.12.tgz#864c688946207e1ef018cb0621321f6acff7f8a1"
+  integrity sha512-UIsSB5N9KBZND28ZY89OoxqD11B3ZMutvG9iBskEiAMyGM5Vq9tL1JZDdXrXIWiFauXPoxvjBVLMnxEOE2MTeQ==
   dependencies:
-    dooboolab-welcome "^1.1.0"
+    dooboolab-welcome "^1.1.1"
 
 react-native-image-overlay@^0.1.2:
   version "0.1.2"
@@ -6273,10 +6271,10 @@ react-native-splash-screen@^3.2.0:
   resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
   integrity sha512-Ls9qiNZzW/OLFoI25wfjjAcrf2DZ975hn2vr6U9gyuxi2nooVbzQeFoQS5vQcbCt9QX5NY8ASEEAtlLdIa6KVg==
 
-react-native-svg@^9.9.3:
-  version "9.9.3"
-  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-9.9.3.tgz#5dab1a44b20b13a3f35245a286f30882b9611d66"
-  integrity sha512-oL4EWGEYhaXDwZw3ULxAtXXh3xao0BiUt2UdVANdGuP3jdpSWuXUmXCd2HpgppOVsHwbSuR67sFmnduXPGaxuA==
+react-native-svg@^9.9.4:
+  version "9.9.4"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-9.9.4.tgz#31070eeb68fb6e8dc0c0828c87687da3e0679102"
+  integrity sha512-tROcwGg69hEF+eUoYIIn8Aldq57ZZqq5gjxiILegK0EXc4XAoeWxOzfZiPQJbykY/FSYuT8IkKIsPF9ZGFlLqQ==
 
 react-native-tab-view@^2.9.0:
   version "2.10.0"
@@ -6340,27 +6338,27 @@ react-navigation-material-bottom-tabs@^2.1.1:
   resolved "https://registry.yarnpkg.com/react-navigation-material-bottom-tabs/-/react-navigation-material-bottom-tabs-2.1.1.tgz#8d91db76d115659647f3459c8ec1188b8c63b621"
   integrity sha512-3ctWCO+zHEPvQ3KAk76vtIV3TMul6+CswZhBzTjKpt0oC558E5FBIDky6AZV3DfKXTEpXPtaQnzwiLzDnavOFw==
 
-react-navigation-stack@^1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/react-navigation-stack/-/react-navigation-stack-1.7.3.tgz#2dce28bdc80bbd2bf09755a6aa7200055a907504"
-  integrity sha512-wOt7T5NkIFInnFw+cxkUHUbNrXbPqascScia6azMWSdHhx+gvz3uW4Ubyw+2NULHcoshU53boUuQ8lUmUrJdhg==
+react-navigation-stack@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/react-navigation-stack/-/react-navigation-stack-1.8.0.tgz#52cb159371b64d20780a72ce43e9620adec2f2a0"
+  integrity sha512-J8ezJlZRxoXuxVH7Y9EOBBluoOpjgrFN0HBKMJyi8ctFEVDsEjjbsffhk6ihOeZ2um7dPYErzeD7sLjx8YQDzw==
   dependencies:
     prop-types "^15.7.2"
 
-react-navigation-tabs@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/react-navigation-tabs/-/react-navigation-tabs-2.5.2.tgz#80812254e32c5720722fed9a26b6e109ed0f4ac1"
-  integrity sha512-f5OlXROO6VtnvgmSBzvS+2X8+KEMjJ4JM3S3IsmHa2J1dc/ssZE9QNEjttmsNxDi79vHVNaC+oiXI9GUtb3+YA==
+react-navigation-tabs@^2.5.4:
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/react-navigation-tabs/-/react-navigation-tabs-2.5.4.tgz#7e03a51970d603cf02fa52060d81f1ee4d040e64"
+  integrity sha512-4iwlTih+94tSIPOvOgRmJSrZO6lM5Rmx59f+vO/peTdmgQMZYfoCi1kMz0oOoJ9No+JBL2mZfyRERhncuxxgMw==
   dependencies:
     hoist-non-react-statics "^3.3.0"
     react-lifecycles-compat "^3.0.4"
     react-native-safe-area-view "^0.14.6"
     react-native-tab-view "^2.9.0"
 
-react-navigation@^4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/react-navigation/-/react-navigation-4.0.5.tgz#d4e16d9884cfd6bb2cda4d16e001227e2c859b46"
-  integrity sha512-VidRiSA2RvrgPlKs/7FNKV6pXEYXREtxiEl6m/Dmfb8x27amG6JRibzJC2mpWt4w0SAIGMUjHallRi3h9sIk0A==
+react-navigation@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/react-navigation/-/react-navigation-4.0.6.tgz#6e0c4324c8eb314f31b510a43cbf7cea9410f246"
+  integrity sha512-DEhAcuiPI+I8pEgKStVrhDjZA5bc/1Nc+ByKWPn1pVWJCRHs+i+vJ6D2KWZCUtpzKCSm/yVPyUab4hOCg8L+Ww==
   dependencies:
     "@react-navigation/core" "^3.5.1"
     "@react-navigation/native" "^3.6.2"
