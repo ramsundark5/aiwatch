@@ -55,14 +55,15 @@ public class CameraConfigDao {
         cameraConfigBox.remove(cameraId);
     }
 
-    public void updateCameraStatus(long cameraId, boolean disconnected){
+    public CameraConfig updateCameraStatus(long cameraId, boolean disconnected){
         try{
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             CameraConfig cameraToUpdate = cameraConfigDao.getCamera(cameraId);
             cameraToUpdate.setDisconnected(disconnected);
-            cameraConfigDao.putCamera(cameraToUpdate);
+            return cameraConfigDao.putCamera(cameraToUpdate);
         }catch(Exception e){
             LOGGER.e(e, "error updating camera status");
         }
+        return null;
     }
 }

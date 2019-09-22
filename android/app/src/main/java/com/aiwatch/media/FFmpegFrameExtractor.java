@@ -150,10 +150,10 @@ public class FFmpegFrameExtractor {
             }
             String status = disconnected ? "disconnected" : "connected";
             cameraConfig.setDisconnected(disconnected);
-            cameraConfigDao.updateCameraStatus(cameraConfig.getId(), disconnected);
+            CameraConfig updatedCameraConfig = cameraConfigDao.updateCameraStatus(cameraConfig.getId(), disconnected);
             LOGGER.d("camera monitoring enabled status "+cameraConfig.isMonitoringEnabled());
             NotificationManager.sendStringNotification(context, "Camera "+ cameraConfig.getName() + " "+ status);
-            //NotificationManager.sendUINotification(context, cameraConfig);
+            NotificationManager.sendUINotification(context, updatedCameraConfig);
         }catch (Exception e){
             LOGGER.e(e, "error notifying camera status ");
         }
