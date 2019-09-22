@@ -34,7 +34,7 @@ class EventsView extends React.Component {
         this.focusListener = navigation.addListener('didFocus', () => this.showAd());
     }
     
-    componentWillUnmount() {
+    UNSAFE_componentWillUnmount() {
         // Remove the event listener
         this.focusListener.remove();
     }

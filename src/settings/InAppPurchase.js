@@ -19,7 +19,7 @@ export default class InAppPurchase extends Component{
         });
     }
 
-    componentWillUnmount() {
+    UNSAFE_componentWillUnmount() {
         try{
             RNIap.endConnectionAndroid();
             if (purchaseUpdateSubscription) {

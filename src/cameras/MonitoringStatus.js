@@ -12,6 +12,12 @@ export default class MonitoringStatus extends Component{
         this.checkMonitoringStatus();
     }
 
+    UNSAFE_componentWillReceiveProps(nextProps){
+        if(this.props.cameras !== nextProps.cameras){
+            this.checkMonitoringStatus();
+        }
+    }
+
     async checkMonitoringStatus(){
         try{
             const { updateMonitoringStatus } = this.props;

@@ -35,7 +35,7 @@ class Settings extends Component{
       this.focusListener = navigation.addListener('didFocus', () => this.loadSettings());
     }
 
-    componentWillUnmount() {
+    UNSAFE_componentWillUnmount() {
       // Remove the event listener
       this.focusListener.remove();
     }
