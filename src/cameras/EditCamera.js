@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, StyleSheet, ToastAndroid } from 'react-native';
+import { View, StyleSheet, ToastAndroid } from 'react-native';
 import CameraInfo from './CameraInfo';
 import ConnectionInfo from './ConnectionInfo';
 import MonitorInfo from './MonitorInfo';
@@ -10,7 +10,8 @@ import { editCamera } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import Logger from '../common/Logger';
 import testID from '../common/testID';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';class EditCamera extends Component {
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+class EditCamera extends Component {
 
   static navigationOptions = {
     headerTitle: 'Manage Camera',
@@ -52,6 +53,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
       this.setState({
         cameraConfig: updatedCameraConfig
       });
+      console.log('camera config updated from UI');
       editCamera(updatedCameraConfig);
       this.props.navigation.goBack();
       ToastAndroid.showWithGravity("Changes saved successfully", ToastAndroid.SHORT, ToastAndroid.CENTER);

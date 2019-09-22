@@ -21,31 +21,32 @@ public class SmartthingsNotificationManager {
         SettingsDao settingsDao = new SettingsDao();
         Settings settings = settingsDao.getSettings();
         String accessToken = settings.getSmartthingsAccessToken();
+        if(accessToken == null || accessToken.isEmpty()){
+            return;
+        }
         String endpoint = settings.getSmartAppEndpoint();
         String smartAppUrl = endpoint + "/";//BASE_URL + endpoint + "/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(smartAppUrl)
                 .build();
         smartthingsService = retrofit.create(SmartthingsService.class);
-        if( accessToken != null){
-            String authToken = "Bearer " + accessToken;
-            Call<ResponseBody> result = smartthingsService.updateSwitch("on", authToken);
-            result.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    int statusCode = response.code();
-                    if (response.isSuccessful()) {
-                        LOGGER.d("smartthings hub notified succesfully with status code "+statusCode);
-                    }else{
-                        LOGGER.d("smartthings hub notification returned failure response with status code "+statusCode);
-                    }
+        String authToken = "Bearer " + accessToken;
+        Call<ResponseBody> result = smartthingsService.updateSwitch("on", authToken);
+        result.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                int statusCode = response.code();
+                if (response.isSuccessful()) {
+                    LOGGER.d("smartthings hub notified succesfully with status code "+statusCode);
+                }else{
+                    LOGGER.d("smartthings hub notification returned failure response with status code "+statusCode);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    LOGGER.e(t, "Error notifying smartthings hub");
-                }
-            });
-        }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                LOGGER.e(t, "Error notifying smartthings hub");
+            }
+        });
     }
 }

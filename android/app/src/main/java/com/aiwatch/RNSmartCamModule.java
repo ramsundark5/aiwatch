@@ -103,7 +103,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             cameraConfig.setLastModified(new Date());
-            cameraConfigDao.putCamera(cameraConfig);
+            CameraConfig updatedCameraConfig = cameraConfigDao.putCamera(cameraConfig);
             if (cameraConfig.getId() == 0) {
                 throw new Exception("Error trying to save Camera Info. Please try again.");
             }
@@ -114,6 +114,8 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             intent.putExtra(AppConstants.CAMERA_CONFIG_EXTRA, cameraConfig);
             reactContext.startService(intent);
 
+            LOGGER.d("camera config before update "+ cameraConfig.toString());
+            LOGGER.d("camera config after update "+ updatedCameraConfig.toString());
             //return updated cameraconfig to UI
             cameraConfig.setVideoUrlWithAuth(cameraConfig.getVideoUrlWithAuth());
             String jsonString = gson.toJson(cameraConfig);
@@ -398,6 +400,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                         String jsonString = gson.toJson(cameraConfig);
                         JSONObject jsonObject = new JSONObject(jsonString);
                         WritableMap camerConfigMap = ConversionUtil.convertJsonToMap(jsonObject);
+                        //camerConfigMap.putBoolean("monitoringEnabled", cameraConfig.isMonitoringEnabled());
                         reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                                 .emit(AppConstants.STATUS_CHANGED_EVENT_JS_EVENT, camerConfigMap);
                     }

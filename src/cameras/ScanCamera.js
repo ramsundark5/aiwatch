@@ -204,7 +204,7 @@ export default class ScanCamera extends Component {
             <View style={{flex: 1, paddingTop: 20, width: '100%'}}>
                 <Title style={{paddingLeft: 15}}>Network devices:</Title>
                 <View style={{flex: 1, paddingLeft: 15, width: '100%'}}>
-                    <Text style={{flex: 1, width: '100%'}}>We cannot confirm if the below are cameras camera2 are manufacturer or try a camera database like {'  '}
+                    <Text style={{flex: 1, width: '100%'}}>We cannot confirm if the below are cameras. Check with your manufacturer for the video url or try a camera database like {'  '}
                         <Text style={{color: 'blue'}}
                                 onPress={() => Linking.openURL('https://www.ispyconnect.com/sources.aspx')}>
                             https://www.ispyconnect.com/sources.aspx

@@ -309,4 +309,41 @@ public class CameraConfig implements Serializable {
         }
         return this.videoUrl;
     }
+
+    @Override
+    public String toString() {
+        return "CameraConfig{" +
+                "id=" + id +
+                ", uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", videoUrlWithAuth='" + videoUrlWithAuth + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", videoCodec=" + videoCodec +
+                ", recordingDuration=" + recordingDuration +
+                ", waitPeriodAfterDetection=" + waitPeriodAfterDetection +
+                ", notifyPersonDetect=" + notifyPersonDetect +
+                ", notifyAnimalDetect=" + notifyAnimalDetect +
+                ", notifyVehicleDetect=" + notifyVehicleDetect +
+                ", recordPersonDetect=" + recordPersonDetect +
+                ", recordAnimalDetect=" + recordAnimalDetect +
+                ", recordVehicleDetect=" + recordVehicleDetect +
+                ", testModeEnabled=" + testModeEnabled +
+                ", cvrEnabled=" + cvrEnabled +
+                ", disconnected=" + disconnected +
+                ", lastModified=" + lastModified +
+                ", topLeftX=" + topLeftX +
+                ", topLeftY=" + topLeftY +
+                ", topRightX=" + topRightX +
+                ", topRightY=" + topRightY +
+                ", bottomLeftX=" + bottomLeftX +
+                ", bottomLeftY=" + bottomLeftY +
+                ", bottomRightX=" + bottomRightX +
+                ", bottomRightY=" + bottomRightY +
+                ", monitoringEnabled=" + monitoringEnabled +
+                '}';
+    }
 }
