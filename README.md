@@ -15,13 +15,14 @@ Todo
 - [x] Payment
 - [x] code obfuscation
 - [x] Remote Notifications
-- [ ] Encryption
 - [x] Notification icons
 - [x] Sync events and camera config
 - [x] Splash screen
 - [x] Test with non-rtsp url
+- [x] Smartthings integration or IFTTT
+- [ ] External storage
+- [ ] TTS
 - [ ] Face recognition
-- [X] Smartthings integration or IFTTT
 
 
 Command to record video in chunks

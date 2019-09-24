@@ -28,11 +28,13 @@ public class DetectionResultProcessor {
     private AlarmEventDao alarmEventDao;
     private FirebaseAlarmEventDao firebaseAlarmEventDao;
     private SmartthingsNotificationManager smartthingsNotificationManager;
+    private TTSManager ttsManager;
 
     public DetectionResultProcessor(){
         this.alarmEventDao = new AlarmEventDao();
         this.firebaseAlarmEventDao = new FirebaseAlarmEventDao();
         this.smartthingsNotificationManager = new SmartthingsNotificationManager();
+        this.ttsManager = new TTSManager();
     }
 
     public boolean processObjectDetectionResult(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
@@ -52,11 +54,14 @@ public class DetectionResultProcessor {
         }
         if(shouldNotify){
             //first notify the event
+            if(cameraConfig.isTtsEnabled()){
+                ttsManager.speakMessage(frameEvent.getContext(), notificationMessage);
+            }
+            smartthingsNotificationManager.notifyHub();
+            AlexaNotificationManager.notifyAlexa(alarmEvent);
             alarmEvent.setThumbnailPath(thumbnailPath);
             String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
             alarmEvent.setCloudImagePath(gdriveImagePath);
-            smartthingsNotificationManager.notifyHub();
-            AlexaNotificationManager.notifyAlexa(alarmEvent);
             NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
         }
         //now record

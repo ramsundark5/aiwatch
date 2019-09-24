@@ -24,6 +24,6 @@ public class SettingsDao {
             Settings settings = settingsList.get(0);
             return settings;
         }
-        return null;
+        return new Settings();
     }
 }

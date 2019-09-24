@@ -70,6 +70,12 @@ export default class MonitorInfo extends Component {
           <List.Item title='Enable Continuous Recording' right={() => this.renderCvrEnabled()} />
         </List.Section>
 
+        <List.Section title='Voice notification'>
+          <List.Item title='Enable voice notification' 
+          description="Read aloud the detection message"
+          right={() => this.renderSwitch('ttsEnabled')} />
+        </List.Section>
+
         <List.Section title='Test Mode'>
           <List.Item title='Enable Test Mode' right={() => this.renderSwitch('testModeEnabled')} />
         </List.Section>

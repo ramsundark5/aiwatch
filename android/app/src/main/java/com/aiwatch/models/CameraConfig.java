@@ -40,6 +40,7 @@ public class CameraConfig implements Serializable {
     private boolean recordVehicleDetect;
     private boolean testModeEnabled;
     private boolean cvrEnabled;
+    private boolean ttsEnabled;
     private boolean disconnected;
     private Date lastModified;
 
@@ -196,6 +197,14 @@ public class CameraConfig implements Serializable {
 
     public void setCvrEnabled(boolean cvrEnabled) {
         this.cvrEnabled = cvrEnabled;
+    }
+
+    public boolean isTtsEnabled() {
+        return ttsEnabled;
+    }
+
+    public void setTtsEnabled(boolean ttsEnabled) {
+        this.ttsEnabled = ttsEnabled;
     }
 
     public boolean isDisconnected() {
