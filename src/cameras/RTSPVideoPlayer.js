@@ -9,7 +9,6 @@ export default class RTSPVideoPlayer extends Component {
         {...this.props}
         showAd={false}
         showBack={false}
-        Orientation={Orientation}
         initType={2}
         hwDecoderEnabled={1}
         hwDecoderForced={1}
