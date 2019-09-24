@@ -12,6 +12,7 @@ import AiwatchUtil from '../common/AiwatchUtil';
 import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
 import testID from '../common/testID';
+import { FlatGrid } from 'react-native-super-grid';
 class CameraView extends Component {
 
   static navigationOptions = {
@@ -75,17 +76,10 @@ class CameraView extends Component {
               textContent={'Loading...'} />
             <View {...testID('cameraHome')} style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
               <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
-              <ScrollView
-                ref={ref => (this.scrollRef = ref)}
-                style={{ flex: 1 }}
-                scrollEnabled={isFull ? false : true}
-                contentContainerStyle={{
-                  flex: isFull ? 1 : 0,
-                }}>
-                {cameras.map((cameraConfig) => (
-                  this.renderVideoPlayer(cameraConfig)
-                ))}
-              </ScrollView>
+              <FlatGrid
+                itemDimension={300}
+                items={cameras}
+                renderItem={({ item, index }) => this.renderVideoPlayer(item, index)}/>
               {this.renderAddCameraButton()}
             </View>
           </Portal>
@@ -94,9 +88,8 @@ class CameraView extends Component {
   }
 
   renderVideoPlayer(cameraConfig){
-    if(!cameraConfig.videoUrlWithAuth){
-      //return null;
-      //cameraConfig.videoUrl = 'rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov';
+    if(!cameraConfig){
+      return null;
     }
     return(
       <View style={[styles.container, styles.responsizeVideo]} key={cameraConfig.id}>
@@ -174,7 +167,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   responsizeVideo:{
-    alignSelf: 'center', 
+    //alignSelf: 'center', 
     maxWidth: 640
   }
 });
