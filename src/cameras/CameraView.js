@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
 import { Button, Colors, FAB, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
@@ -14,6 +14,11 @@ import Theme from '../common/Theme';
 import testID from '../common/testID';
 import { FlatGrid } from 'react-native-super-grid';
 class CameraView extends Component {
+  
+  constructor(props) {
+    super(props);
+    this.deviceType = null; 
+  }
 
   static navigationOptions = {
     header: null,
@@ -22,7 +27,7 @@ class CameraView extends Component {
   state = {
     isFull: false,
     open: false,
-    isLoading: false
+    isLoading: false,
   }
 
   componentDidMount(){
@@ -33,6 +38,7 @@ class CameraView extends Component {
     const { loadCameras } = this.props;
     this.setState({isLoading: true});
     try{
+      this.deviceType = await RNSmartCam.getDeviceInfo();
       let cameras = await RNSmartCam.getAllCameras();
       loadCameras(cameras);
     }catch(err){
@@ -68,6 +74,13 @@ class CameraView extends Component {
   render() {
     const { isFull, isLoading } = this.state;
     const { cameras } = this.props;
+    let playerSize = 300;
+    if(this.deviceType == 'Small_Tablet'){
+      playerSize = 480;
+    }
+    if(this.deviceType == 'Large_Tablet'){
+      playerSize = 600;
+    }
     return (
       <Provider>
          <Portal>
@@ -77,7 +90,7 @@ class CameraView extends Component {
             <View {...testID('cameraHome')} style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
               <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
               <FlatGrid
-                itemDimension={300}
+                itemDimension={playerSize}
                 items={cameras}
                 renderItem={({ item, index }) => this.renderVideoPlayer(item, index)}/>
               {this.renderAddCameraButton()}
@@ -167,7 +180,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   responsizeVideo:{
-    //alignSelf: 'center', 
+    alignSelf: 'center', 
     maxWidth: 640
   }
 });

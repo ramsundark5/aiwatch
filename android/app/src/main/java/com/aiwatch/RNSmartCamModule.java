@@ -10,6 +10,8 @@ import android.content.IntentFilter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.common.DeviceInfo;
+import com.aiwatch.common.DeviceType;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.firebase.FirebaseAlarmEventManager;
 import com.aiwatch.firebase.FirebaseAuthManager;
@@ -364,6 +366,20 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void getDeviceInfo(final Promise promise) {
+        String deviceTypeStr = null;
+        try{
+            DeviceInfo deviceInfo = new DeviceInfo();
+            DeviceType deviceType = deviceInfo.getDeviceType(reactContext);
+            deviceTypeStr = deviceType.getValue();
+        }catch(Exception e){
+            LOGGER.e(e, e.getMessage());
+        } finally {
+            promise.resolve(deviceTypeStr);
+        }
+    }
+
     private void getFirebaseUpdates(){
         FirebaseSyncManager firebaseSyncManager = new FirebaseSyncManager();
         firebaseSyncManager.getFirebaseUpdates(reactContext);
@@ -400,7 +416,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                         String jsonString = gson.toJson(cameraConfig);
                         JSONObject jsonObject = new JSONObject(jsonString);
                         WritableMap camerConfigMap = ConversionUtil.convertJsonToMap(jsonObject);
-                        //camerConfigMap.putBoolean("monitoringEnabled", cameraConfig.isMonitoringEnabled());
+                        camerConfigMap.putBoolean("monitoringEnabled", cameraConfig.isMonitoringEnabled());
                         reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                                 .emit(AppConstants.STATUS_CHANGED_EVENT_JS_EVENT, camerConfigMap);
                     }
