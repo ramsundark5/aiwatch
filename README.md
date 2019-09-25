@@ -21,7 +21,8 @@ Todo
 - [x] Test with non-rtsp url
 - [x] Smartthings integration or IFTTT
 - [ ] External storage
-- [ ] TTS
+- [x] TTS
+- [x] Tablet optimize
 - [ ] Face recognition
 
 

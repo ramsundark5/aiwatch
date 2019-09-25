@@ -6,9 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Environment;
+
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.common.FileUtil;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.media.FrameEvent;
 import com.aiwatch.models.AlarmEvent;
@@ -18,6 +21,7 @@ import com.google.common.net.MediaType;
 
 import org.greenrobot.essentials.io.FileUtils;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.UUID;
@@ -94,7 +98,8 @@ public class DetectionResultProcessor {
         String outputFilePath = null;
         try {
             String inputFilePath = frameEvent.getImageFilePath();
-            outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, ".png");
+            File baseDirectory = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.EVENT_IMAGES_FOLDER, Environment.DIRECTORY_PICTURES);
+            outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, baseDirectory, ".png");
             FileUtils.copyFile(inputFilePath, outputFilePath);
             RectF location = objectDetectionResult.getLocation();
 

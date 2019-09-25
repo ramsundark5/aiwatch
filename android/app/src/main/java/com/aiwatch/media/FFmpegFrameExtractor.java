@@ -1,8 +1,11 @@
 package com.aiwatch.media;
 
 import android.content.Context;
+import android.os.Environment;
+
 import com.aiwatch.Logger;
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.common.FileUtil;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
@@ -45,16 +48,10 @@ public class FFmpegFrameExtractor {
         if(imageFile.exists()){
             imageFile.delete();
         }
-        File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
-        if (!videoFolder.exists()) {
-            videoFolder.mkdirs();
-        }
+        File videoFolder = FileUtil.getBaseDirectory(context, AppConstants.TEMP_VIDEO_FOLDER, Environment.DIRECTORY_MOVIES);
         String videoPath = videoFolder.getAbsolutePath();
 
-        File cvrFolder = new File(context.getFilesDir(), AppConstants.CVR_VIDEO_FOLDER);
-        if (!cvrFolder.exists()) {
-            cvrFolder.mkdirs();
-        }
+        File cvrFolder = FileUtil.getBaseDirectory(context, AppConstants.CVR_VIDEO_FOLDER, Environment.DIRECTORY_MOVIES);
         String cvrPath = cvrFolder.getAbsolutePath();
 
         String recordCommand = getRecordCommand(videoPath, AppConstants.PRE_RECORDING_BUFFER);

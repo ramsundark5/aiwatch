@@ -13,7 +13,7 @@ public class OldMediaCleaner {
     public void cleanupMedia(Context context){
         LOGGER.d("Starting old files cleanup");
         try{
-            File videoFolder = new File(context.getFilesDir(), AppConstants.UNCOMPRESSED_VIDEO_FOLDER);
+            File videoFolder = new File(context.getFilesDir(), AppConstants.TEMP_VIDEO_FOLDER);
             File[] filesToBeDeleted = videoFolder.listFiles(file -> {
                 long lastModified = file.lastModified();
                 boolean isOldFile = false;

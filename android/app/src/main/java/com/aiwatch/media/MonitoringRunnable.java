@@ -1,8 +1,10 @@
 package com.aiwatch.media;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.aiwatch.Logger;
+import com.aiwatch.common.FileUtil;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.common.AppConstants;
 
@@ -93,10 +95,7 @@ public class MonitoringRunnable implements Runnable {
     }
 
     private String getImageFilePath(){
-        File imageFolder = new File(context.getFilesDir(), AppConstants.IMAGES_FOLDER);
-        if (!imageFolder.exists()) {
-            imageFolder.mkdirs();
-        }
+        File imageFolder = FileUtil.getBaseDirectory(context, AppConstants.EVENT_IMAGES_FOLDER, Environment.DIRECTORY_PICTURES);
         String imageFolderPath = imageFolder.getAbsolutePath();
         File imageFile = new File(imageFolderPath, "/" + cameraConfig.getId() + "-camera.png");
         return imageFile.getAbsolutePath();
