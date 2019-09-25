@@ -13,7 +13,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
 import testID from '../common/testID';
 import { FlatGrid } from 'react-native-super-grid';
-import { verticalScale } from 'react-native-size-matters';
+import { moderateScale, verticalScale } from 'react-native-size-matters';
 class CameraView extends Component {
   
   constructor(props) {
@@ -79,11 +79,12 @@ class CameraView extends Component {
     let playerSize = 300;
     //console.log('player width '+playerSize);
     if(this.deviceType == 'Small_Tablet'){
-      playerSize = 480;
+      playerSize = 400;
     }
     if(this.deviceType == 'Large_Tablet'){
       playerSize = 600;
     }
+
     return (
       <Provider>
          <Portal>
@@ -93,8 +94,9 @@ class CameraView extends Component {
             <View {...testID('cameraHome')} style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
               <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
               <FlatGrid
+                spacing={0}
                 itemDimension={playerSize}
-                items={cameras}
+                items={[cameras[0]]}
                 renderItem={({ item, index }) => this.renderVideoPlayer(item, index)}/>
               {this.renderAddCameraButton()}
             </View>
@@ -108,9 +110,10 @@ class CameraView extends Component {
       return null;
     }
     let playerHeight = verticalScale(211.5);
+    let playerMaxWidth = moderateScale(400);
     console.log('player height '+playerHeight);
     return(
-      <View style={[styles.container, styles.responsizeVideo]} key={cameraConfig.id}>
+      <View style={[styles.container, {alignSelf: 'center', maxWidth: playerMaxWidth}]} key={cameraConfig.id}>
         <Text>{cameraConfig.name}</Text>
         <RTSPVideoPlayer
               style={{width:'100%', height: playerHeight}}
