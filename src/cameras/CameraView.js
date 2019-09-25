@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
 import { Button, Colors, FAB, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
@@ -74,17 +74,6 @@ class CameraView extends Component {
 
   render() {
     const { isFull, isLoading } = this.state;
-    const { cameras } = this.props;
-    //let playerSize = scale(300);
-    let playerSize = 300;
-    //console.log('player width '+playerSize);
-    if(this.deviceType == 'Small_Tablet'){
-      playerSize = 400;
-    }
-    if(this.deviceType == 'Large_Tablet'){
-      playerSize = 600;
-    }
-
     return (
       <Provider>
          <Portal>
@@ -93,11 +82,7 @@ class CameraView extends Component {
               textContent={'Loading...'} />
             <View {...testID('cameraHome')} style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
               <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
-              <FlatGrid
-                spacing={0}
-                itemDimension={playerSize}
-                items={[cameras[0]]}
-                renderItem={({ item, index }) => this.renderVideoPlayer(item, index)}/>
+              {this.renderCameras()}
               {this.renderAddCameraButton()}
             </View>
           </Portal>
@@ -105,7 +90,33 @@ class CameraView extends Component {
     );
   }
 
-  renderVideoPlayer(cameraConfig){
+  renderCameras(){
+    const { cameras } = this.props;
+    if(cameras && cameras.length === 1){
+      return (
+        <ScrollView style={{flex: 1}}>
+          {this.renderSingleCamera(cameras[0])}
+        </ScrollView>
+      )
+    }
+    //render multiple cameras in grid
+    let playerSize = 300;
+    if(this.deviceType == 'Small_Tablet'){
+      playerSize = 400;
+    }
+    if(this.deviceType == 'Large_Tablet'){
+      playerSize = 600;
+    }
+    return(
+      <FlatGrid
+        spacing={0}
+        itemDimension={playerSize}
+        items={cameras}
+        renderItem={({ item, index }) => this.renderSingleCamera(item, index)}/>
+    )
+  }
+
+  renderSingleCamera(cameraConfig){
     if(!cameraConfig){
       return null;
     }
