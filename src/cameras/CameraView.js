@@ -13,6 +13,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
 import testID from '../common/testID';
 import { FlatGrid } from 'react-native-super-grid';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 class CameraView extends Component {
   
   constructor(props) {
@@ -74,7 +75,9 @@ class CameraView extends Component {
   render() {
     const { isFull, isLoading } = this.state;
     const { cameras } = this.props;
+    //let playerSize = scale(300);
     let playerSize = 300;
+    //console.log('player width '+playerSize);
     if(this.deviceType == 'Small_Tablet'){
       playerSize = 480;
     }
@@ -104,11 +107,13 @@ class CameraView extends Component {
     if(!cameraConfig){
       return null;
     }
+    let playerHeight = verticalScale(211.5);
+    console.log('player height '+playerHeight);
     return(
       <View style={[styles.container, styles.responsizeVideo]} key={cameraConfig.id}>
         <Text>{cameraConfig.name}</Text>
         <RTSPVideoPlayer
-              style={{width:'100%'}}
+              style={{width:'100%', height: playerHeight}}
               isLive={true}
               showFullScreen={true}
               key={cameraConfig.id}

@@ -42,6 +42,7 @@
     "react-native-progress": "git+https://github.com/ramsundark5/react-native-progress",
     "react-native-reanimated": "^1.2.0",
     "react-native-screens": "^2.0.0-alpha.3",
+    "react-native-size-matters": "^0.2.1",
     "react-native-slider": "^0.11.0",
     "react-native-splash-screen": "^3.2.0",
     "react-native-super-grid": "^3.1.0",
