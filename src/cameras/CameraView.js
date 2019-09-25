@@ -13,7 +13,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
 import testID from '../common/testID';
 import { FlatGrid } from 'react-native-super-grid';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { verticalScale } from 'react-native-size-matters';
 class CameraView extends Component {
   
   constructor(props) {

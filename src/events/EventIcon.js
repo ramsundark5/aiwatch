@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Avatar } from 'react-native-paper';
-
+import { verticalScale } from 'react-native-size-matters';
 const DEFAULT_LINE_WIDTH = 1;
 const DEFAULT_LINE_COLOR = 'lightblue';
 
@@ -26,7 +26,7 @@ export default class EventIcon extends PureComponent{
 
 const styles = StyleSheet.create({
     separatorContainer: {
-      minHeight: 150,//configure this adjust spacing between events
+      minHeight: verticalScale(150),//configure this adjust spacing between events
       alignItems: 'center',
       paddingLeft: '10%',
       paddingRight: '10%'

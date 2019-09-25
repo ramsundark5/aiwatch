@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ImageOverlay from 'react-native-image-overlay';
 import { Avatar, Colors, TouchableRipple } from 'react-native-paper';
+import { verticalScale } from 'react-native-size-matters';
 export default class EventImage extends PureComponent{
     render(){
         const { event } = this.props;
@@ -21,12 +22,13 @@ export default class EventImage extends PureComponent{
     }
     
     renderImageItem(event){
+        let playerHeight = verticalScale(120);
         return(
             <ImageOverlay
                 source={{isStatic:true, uri: 'file://'+event.thumbnailPath}}
-                height={120}
+                height={playerHeight}
                 overlayAlpha={0}
-                containerStyle={{width: '100%', maxWidth: 300}} 
+                containerStyle={{width: '100%', maxWidth: 400}} 
                 contentPosition='center'>
                <TouchableRipple rippleColor={Colors.white} onPress={() => this.onPlayVideo()}>
                 <Avatar.Icon size={48} 
