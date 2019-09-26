@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { GoogleSignin, statusCodes } from 'react-native-google-signin';
+import { authorize, revoke } from 'react-native-app-auth';
 import { Switch } from 'react-native-paper';
 import { ToastAndroid } from 'react-native';
 import Logger from '../common/Logger';
 
+//webClientId: '119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+const config = {
+  issuer: 'https://accounts.google.com',
+  clientId: '119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk.apps.googleusercontent.com',
+  redirectUrl: 'com.googleusercontent.apps.119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk:/oauth2redirect/google',
+  scopes: ['openid', 'profile','https://www.googleapis.com/auth/drive.file']
+};
+
 export default class GoogleConnectStatus extends Component{ 
-  
-    componentDidMount(){
-        GoogleSignin.configure({
-          scopes: ['https://www.googleapis.com/auth/drive.file'], // what API you want to access on behalf of the user, default is email and profile
-          webClientId: '119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-          offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-        });
-    }
   
     async onGoogleAccountSettingsChange(isConnected){
         const { updateSettings } = this.props;
@@ -33,8 +33,10 @@ export default class GoogleConnectStatus extends Component{
     async connectGoogleAccount(){
         const { updateSettings } = this.props;
         try {
-            await GoogleSignin.signIn();
-            updateSettings({ isGoogleAccountConnected: true });
+          // Log in to get an authentication token
+          const authState = await authorize(config);
+          console.log('google auth ' + authState);
+          updateSettings({ isGoogleAccountConnected: true });
         }catch (error) {
             updateSettings({ isGoogleAccountConnected: false });
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -53,7 +55,9 @@ export default class GoogleConnectStatus extends Component{
     async disconnectGoogleAccount(){
         const { updateSettings } = this.props;
         try{
-          await GoogleSignin.revokeAccess();
+          await revoke(config, {
+            tokenToRevoke: refreshedState.refreshToken
+          });
           updateSettings({ isGoogleAccountConnected: false });
         }catch(err){
           Logger.log(err);
