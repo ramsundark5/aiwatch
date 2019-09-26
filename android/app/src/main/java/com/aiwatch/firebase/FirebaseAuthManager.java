@@ -42,11 +42,7 @@ public class FirebaseAuthManager {
                 firebaseUser = authResult.getUser();
             }
         }catch(Exception e){
-            if(e instanceof FirebaseAuthInvalidCredentialsException){
-                LOGGER.e("Google user signin expired");
-            }else{
-                LOGGER.e(e, "Error getting firebaseauth user");
-            }
+            LOGGER.e(e, "Error getting firebaseauth user");
         }
         return firebaseUser;
     }

@@ -219,6 +219,13 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                 getFirebaseUpdates();
                 firebaseUserDataDao.registerFCMToken(reactContext);
             }
+
+            //restart monitoring if external storage flag changes
+            if(settings.isExternalStorageEnabled() != settingsBeforeSave.isExternalStorageEnabled()){
+                Intent intent = new Intent(reactContext, MonitoringService.class);
+                intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.START_MONITORING);
+                reactContext.startService(intent);
+            }
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());
