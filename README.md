@@ -20,9 +20,10 @@ Todo
 - [x] Splash screen
 - [x] Test with non-rtsp url
 - [x] Smartthings integration or IFTTT
-- [ ] External storage
+- [x] External storage
 - [x] TTS
 - [x] Tablet optimize
+- [ ] Google signin refresh token
 - [ ] Face recognition
 
 

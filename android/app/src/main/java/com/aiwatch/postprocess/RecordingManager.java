@@ -106,9 +106,9 @@ public class RecordingManager {
         if(extension == null){
             extension = DEFAULT_VIDEO_EXTENSION;
         }
-        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmm");
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH:mm:ss");
         String currentTime = dateFormat.format(System.currentTimeMillis());
-        String fileName = frameEvent.getCameraConfig().getId() + currentTime + extension;
+        String fileName = frameEvent.getCameraConfig().getId() + "-"+ currentTime + extension;
         File outputFile = new File(baseDirectory, fileName);
         return outputFile.getAbsolutePath();
     }

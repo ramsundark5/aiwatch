@@ -57,7 +57,7 @@
     },
     {
       "id": "2:4322453221154582630",
-      "lastPropertyId": "31:9073428756066965580",
+      "lastPropertyId": "32:79586835420613341",
       "name": "CameraConfig",
       "properties": [
         {
@@ -184,6 +184,10 @@
         {
           "id": "31:9073428756066965580",
           "name": "cvrEnabled"
+        },
+        {
+          "id": "32:79586835420613341",
+          "name": "ttsEnabled"
         }
       ],
       "relations": []

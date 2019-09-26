@@ -3,6 +3,9 @@ package com.aiwatch.common;
 import android.content.Context;
 import android.os.Environment;
 import com.aiwatch.Logger;
+import com.aiwatch.media.db.SettingsDao;
+import com.aiwatch.models.Settings;
+
 import java.io.File;
 
 public class FileUtil {
@@ -11,8 +14,12 @@ public class FileUtil {
 
     public static File getBaseDirectory(Context context, String folderName, String mediaType){
         File outputDir = new File(context.getFilesDir(), folderName);
-        if(isExternalStorageReadable() && isExternalStorageWritable()){
-            outputDir = getExternalStoragePath(context, folderName, mediaType);
+        SettingsDao settingsDao = new SettingsDao();
+        Settings settings = settingsDao.getSettings();
+        if(settings.isExternalStorageEnabled()){
+            if(isExternalStorageReadable() && isExternalStorageWritable()){
+                outputDir = getExternalStoragePath(context, folderName, mediaType);
+            }
         }
         if(!outputDir.exists()){
             outputDir.mkdirs();

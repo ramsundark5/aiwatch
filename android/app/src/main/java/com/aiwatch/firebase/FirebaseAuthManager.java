@@ -1,6 +1,8 @@
 package com.aiwatch.firebase;
 
 import android.content.Context;
+import android.widget.Toast;
+
 import com.aiwatch.Logger;
 import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -10,6 +12,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -39,7 +42,11 @@ public class FirebaseAuthManager {
                 firebaseUser = authResult.getUser();
             }
         }catch(Exception e){
-            LOGGER.e(e, "Error getting firebaseauth user");
+            if(e instanceof FirebaseAuthInvalidCredentialsException){
+                LOGGER.e("Google user signin expired");
+            }else{
+                LOGGER.e(e, "Error getting firebaseauth user");
+            }
         }
         return firebaseUser;
     }

@@ -14,6 +14,7 @@ public class Settings {
     private boolean isNotificationEnabled;
     private boolean isNoAdsPurchased;
     private boolean isAlexaConnected;
+    private boolean isExternalStorageEnabled;
     private String smartthingsClientId;
     private String smartthingsClientSecret;
     private String smartthingsAccessToken;
@@ -107,5 +108,13 @@ public class Settings {
 
     public void setAlexaConnected(boolean alexaConnected) {
         isAlexaConnected = alexaConnected;
+    }
+
+    public boolean isExternalStorageEnabled() {
+        return isExternalStorageEnabled;
+    }
+
+    public void setExternalStorageEnabled(boolean externalStorageEnabled) {
+        isExternalStorageEnabled = externalStorageEnabled;
     }
 }

@@ -53,7 +53,8 @@ class Settings extends Component{
         || currentSettings.alexaToken !== prevSettings.alexaToken
         || currentSettings.smartthingsClientId !== prevSettings.smartthingsClientId
         || currentSettings.smartthingsClientSecret !== prevSettings.smartthingsClientSecret
-        || currentSettings.isAlexaConnected !== prevSettings.isAlexaConnected ) {
+        || currentSettings.isAlexaConnected !== prevSettings.isAlexaConnected
+        || currentSettings.isExternalStorageEnabled !== prevSettings.isExternalStorageEnabled ) {
           try{
             let updatedSettings = await RNSmartCam.putSettings(currentSettings);
             console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));
@@ -70,7 +71,7 @@ class Settings extends Component{
       updateSettings(settings);
     }
 
-    async onNotificationEnabledChange(value){
+    onNotificationEnabledChange(value){
       const { updateSettings } = this.props;
       updateSettings({ isLoading: true });
       try{
@@ -78,6 +79,16 @@ class Settings extends Component{
       }finally{
         updateSettings({ isLoading: false });
       }
+    }
+
+    onExternalStorageEnabledChange(value){
+        const { updateSettings } = this.props;
+        updateSettings({ isLoading: true });
+        try{
+          updateSettings({ isExternalStorageEnabled: value });
+        }finally{
+          updateSettings({ isLoading: false });
+        }
     }
 
     onShowDeviceLogsChange(value){
@@ -110,6 +121,8 @@ class Settings extends Component{
                   right={() => this.renderGoogleAccountConnected()} />
               <List.Item title="Enable Notification"
                   right={() => this.renderNotificationEnabled()} />
+              <List.Item title="Use External Storage"
+                  right={() => this.renderExternalStorageEnabled()} />
               {this.renderSmartthingsEnabled()}
               {this.renderAlexaEnabled()}
               <List.Item title="Show Device Logs"
@@ -153,6 +166,16 @@ class Settings extends Component{
       <Switch
         value={settings.isNotificationEnabled}
         onValueChange={value => this.onNotificationEnabledChange(value)}
+      />
+    );
+  }
+
+  renderExternalStorageEnabled() {
+    const { settings } = this.props;
+    return (
+      <Switch
+        value={settings.isExternalStorageEnabled}
+        onValueChange={value => this.onExternalStorageEnabledChange(value)}
       />
     );
   }
