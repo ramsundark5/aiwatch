@@ -4,6 +4,8 @@ import android.content.Context;
 import com.aiwatch.Logger;
 import com.aiwatch.cloud.gdrive.GDriveServiceHelper;
 import com.aiwatch.cloud.gdrive.GdriveManager;
+import com.aiwatch.common.AppConstants;
+import com.aiwatch.common.FileUtil;
 import com.aiwatch.models.AlarmEvent;
 import com.aiwatch.media.db.AlarmEventDao;
 import com.aiwatch.postprocess.NotificationManager;
@@ -92,9 +94,10 @@ public class FirebaseAlarmEventManager {
             if(gDriveServiceHelper == null){
                 return;
             }
-            String filePath = getFilePathToRecord(alarmEvent, context);
-            String imageDownloadPath = filePath + RecordingManager.DEFAULT_IMAGE_EXTENSION;
-            String videoDownloadPath = filePath + RecordingManager.DEFAULT_VIDEO_EXTENSION;
+            File imageBaseDirectory = FileUtil.getBaseDirectory(context, AppConstants.EVENT_IMAGES_FOLDER);
+            File videoBaseDirectory = FileUtil.getBaseDirectory(context, AppConstants.EVENT_VIDEO_FOLDER);
+            String imageDownloadPath = RecordingManager.getFilePathToRecord(alarmEvent.getCameraId(), imageBaseDirectory, RecordingManager.DEFAULT_IMAGE_EXTENSION);
+            String videoDownloadPath = RecordingManager.getFilePathToRecord(alarmEvent.getCameraId(), videoBaseDirectory, RecordingManager.DEFAULT_VIDEO_EXTENSION);
             if(alarmEvent.getCloudImagePath() != null && !alarmEvent.getCloudImagePath().isEmpty()){
                 gDriveServiceHelper.downloadFile(alarmEvent.getCloudImagePath(), imageDownloadPath);
                 alarmEvent.setThumbnailPath(imageDownloadPath);
@@ -106,14 +109,6 @@ public class FirebaseAlarmEventManager {
         }catch(Exception e){
             LOGGER.e(e, "Error downloading file from gdrive");
         }
-    }
-
-    public static String getFilePathToRecord(AlarmEvent alarmEvent, Context context){
-        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmm");
-        String currentTime = dateFormat.format(alarmEvent.getDate());
-        String fileName = alarmEvent.getCameraId() + currentTime;
-        File outputFile = new File(context.getFilesDir(), fileName);
-        return outputFile.getAbsolutePath();
     }
 
     private void notifyIfRecent(AlarmEvent alarmEvent, Context context){

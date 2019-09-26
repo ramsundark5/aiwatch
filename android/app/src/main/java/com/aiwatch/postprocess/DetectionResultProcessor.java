@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.os.Environment;
-
 import com.aiwatch.Logger;
 import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.common.AppConstants;
@@ -98,7 +96,7 @@ public class DetectionResultProcessor {
         String outputFilePath = null;
         try {
             String inputFilePath = frameEvent.getImageFilePath();
-            File baseDirectory = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.EVENT_IMAGES_FOLDER, Environment.DIRECTORY_PICTURES);
+            File baseDirectory = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.EVENT_IMAGES_FOLDER);
             outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, baseDirectory, ".png");
             FileUtils.copyFile(inputFilePath, outputFilePath);
             RectF location = objectDetectionResult.getLocation();

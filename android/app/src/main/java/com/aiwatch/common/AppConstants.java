@@ -21,11 +21,11 @@ public class AppConstants {
     public static final String STATUS_CHANGED_EVENT             = "STATUS_CHANGED_EVENT";
     public static final String STATUS_CHANGED_EVENT_JS_EVENT    = "STATUS_CHANGED_EVENT_JS_EVENT";
 
-    public static final String TEMP_VIDEO_FOLDER                = "tempvideos";
-    public static final String EVENT_VIDEO_FOLDER               = "eventvideos";
-    public static final String TEMP_IMAGES_FOLDER               = "tempimages";
-    public static final String EVENT_IMAGES_FOLDER              = "eventimages";
-    public static final String CVR_VIDEO_FOLDER                 = "cvr";
+    public static final String TEMP_VIDEO_FOLDER                = "aiwatch_tempvideos";
+    public static final String EVENT_VIDEO_FOLDER               = "aiwatch_eventvideos";
+    public static final String TEMP_IMAGES_FOLDER               = "aiwatch_tempimages";
+    public static final String EVENT_IMAGES_FOLDER              = "aiwatch_eventimages";
+    public static final String CVR_VIDEO_FOLDER                 = "aiwatch_cvr";
 
     public static final String PERSON_DETECTED_MESSAGE          = "Person detected";
     public static final String ANIMAL_DETECTED_MESSAGE          = "Animal detected";

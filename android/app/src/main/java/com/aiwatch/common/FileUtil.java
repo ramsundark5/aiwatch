@@ -12,13 +12,13 @@ public class FileUtil {
 
     private static final Logger LOGGER = new Logger();
 
-    public static File getBaseDirectory(Context context, String folderName, String mediaType){
+    public static File getBaseDirectory(Context context, String folderName){
         File outputDir = new File(context.getFilesDir(), folderName);
         SettingsDao settingsDao = new SettingsDao();
         Settings settings = settingsDao.getSettings();
         if(settings.isExternalStorageEnabled()){
             if(isExternalStorageReadable() && isExternalStorageWritable()){
-                outputDir = getExternalStoragePath(context, folderName, mediaType);
+                outputDir = getExternalStoragePath(context, folderName);
             }
         }
         if(!outputDir.exists()){
@@ -27,12 +27,14 @@ public class FileUtil {
         return outputDir;
     }
 
-    public static File getExternalStoragePath(Context context, String fileName, String mediaType) {
+    public static File getExternalStoragePath(Context context, String fileName) {
         // Get the directory for the app's private pictures directory.
-        File file = new File(context.getExternalFilesDir(
-                Environment.DIRECTORY_PICTURES), fileName);
-        if (!file.mkdirs()) {
-            LOGGER.e("Unable to create directory");
+        File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DCIM), fileName);
+        if (!file.exists()) {
+            boolean folderCreated = file.mkdirs();
+            if(!folderCreated){
+                LOGGER.e("Unable to create directory "+ fileName);
+            }
         }
         return file;
     }

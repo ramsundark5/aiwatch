@@ -1,8 +1,6 @@
 package com.aiwatch.postprocess;
 
 import android.content.Context;
-import android.os.Environment;
-
 import com.aiwatch.cloud.gdrive.GDriveServiceHelper;
 import com.aiwatch.cloud.gdrive.GdriveManager;
 import com.aiwatch.Logger;
@@ -46,8 +44,8 @@ public class RecordingManager {
         String filePath = null;
         try{
             File[] inputFileList = getInputFileList(frameEvent);
-            File baseDirectory = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.EVENT_VIDEO_FOLDER, Environment.DIRECTORY_MOVIES);
-            filePath = getFilePathToRecord(frameEvent, baseDirectory, DEFAULT_VIDEO_EXTENSION);
+            File baseDirectory = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.EVENT_VIDEO_FOLDER);
+            filePath = getFilePathToRecord(frameEvent.getCameraConfig().getId(), baseDirectory, DEFAULT_VIDEO_EXTENSION);
             if(inputFileList == null || inputFileList.length < 1){
                 //nothing to process
                 return null;
@@ -102,13 +100,13 @@ public class RecordingManager {
         return null;
     }
 
-    public static String getFilePathToRecord(FrameEvent frameEvent, File baseDirectory, String extension){
+    public static String getFilePathToRecord(long cameraId, File baseDirectory, String extension){
         if(extension == null){
             extension = DEFAULT_VIDEO_EXTENSION;
         }
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH:mm:ss");
         String currentTime = dateFormat.format(System.currentTimeMillis());
-        String fileName = frameEvent.getCameraConfig().getId() + "-"+ currentTime + extension;
+        String fileName = cameraId + "-"+ currentTime + extension;
         File outputFile = new File(baseDirectory, fileName);
         return outputFile.getAbsolutePath();
     }
@@ -116,7 +114,7 @@ public class RecordingManager {
 
     private static File[] getInputFileList(FrameEvent frameEvent){
         try{
-            File videoFolder = new File(frameEvent.getContext().getFilesDir(), AppConstants.TEMP_VIDEO_FOLDER);
+            File videoFolder = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.TEMP_VIDEO_FOLDER);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
 
             final long currentTime = System.currentTimeMillis();
