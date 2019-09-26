@@ -97,7 +97,7 @@ public class DetectionResultProcessor {
         try {
             String inputFilePath = frameEvent.getImageFilePath();
             File baseDirectory = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.EVENT_IMAGES_FOLDER);
-            outputFilePath = RecordingManager.getFilePathToRecord(frameEvent, baseDirectory, ".png");
+            outputFilePath = RecordingManager.getFilePathToRecord(frameEvent.getCameraConfig().getId(), baseDirectory, ".png");
             FileUtils.copyFile(inputFilePath, outputFilePath);
             RectF location = objectDetectionResult.getLocation();
 
