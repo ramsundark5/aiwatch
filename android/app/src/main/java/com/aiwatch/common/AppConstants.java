@@ -4,6 +4,7 @@ public class AppConstants {
 
     public static final int FRAME_RATE = 5;
     public static final int TF_OD_API_INPUT_SIZE                = 300;
+
     //public static final long WAIT_TIME_AFTER_DETECT           = 600000; //10 mins
     public static final long WAIT_TIME_AFTER_DETECT             = 45; //45 seconds
     public static final String START_MONITORING                 = "start_monitoring";
@@ -15,6 +16,7 @@ public class AppConstants {
     public static final String CAMERA_CONFIG_EXTRA              = "camera_config_extra";
     public static final String CAMERA_CONFIG_ID_EXTRA           = "camera_config_id_extra";
     public static final String ACTION_EXTRA                     = "action_extra";
+
     public static final String AIWATCH_EVENT_INTENT             = "AIWATCH_EVENT_INTENT";
     public static final String NEW_DETECTION_EVENT              = "NEW_DETECTION_EVENT";
     public static final String NEW_DETECTION_JS_EVENT           = "NEW_DETECTION_JS_EVENT";
@@ -39,6 +41,10 @@ public class AppConstants {
     public static final long FFMPEG_COMMAND_TIMEOUT             = 80; //in seconds
     public static final int PRE_RECORDING_BUFFER                = 10; //in seconds
     public static final int CVR_RECORDING_DURATION              = 1200; //in seconds - 20 mins
+
+    public static final String GOOOGLE_API_CLIENT_ID            = "119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk";
+
     public static final String DEVICE_DISCOVERY_PROGRESS_JS_EVENT         = "DEVICE_DISCOVERY_PROGRESS_JS_EVENT";
     public static final String DEVICE_DISCOVERY_COMPLETED_JS_EVENT        = "DEVICE_DISCOVERY_COMPLETED_JS_EVENT";
+
 }

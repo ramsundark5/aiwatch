@@ -65,7 +65,7 @@ public class FirebaseUserDataDao {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             FirebaseUserData firebaseUserData = buildUserData(firebaseUser, context, token);
             db.collection("users").document(firebaseUser.getUid()).set(firebaseUserData);
-            LOGGER.d("Refreshed token saved to db: " + token);
+            LOGGER.d("Refreshed FCM token saved to firebase: " + token);
         }
     }
 

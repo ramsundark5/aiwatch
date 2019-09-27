@@ -83,7 +83,7 @@ android {
         versionCode 9
         versionName "1.1.1"
         manifestPlaceholders = [
-            appAuthRedirectScheme: "com.aiwatch.oauth"
+            appAuthRedirectScheme: "com.googleusercontent.apps.119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk"
         ]
         resValue "string", "build_config_package", "com.aiwatch"
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type

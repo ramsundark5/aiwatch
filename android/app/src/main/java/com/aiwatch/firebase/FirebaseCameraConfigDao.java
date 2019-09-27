@@ -14,29 +14,40 @@ public class FirebaseCameraConfigDao {
     private static final Logger LOGGER = new Logger();
     private FirebaseAuthManager firebaseAuthManager = new FirebaseAuthManager();
 
+    public void putCamera(FirebaseUser firebaseUser, CameraConfig cameraConfig){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            putCameraInternal(firebaseUser, cameraConfig);
+        });
+    }
+
     public void putCamera(Context context, CameraConfig cameraConfig){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
-            try {
-                FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
-                if(firebaseUser == null){
-                    return;
-                }
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                //scrub password
-                cameraConfig.setPassword(null);
-                db.collection("users")
-                        .document(firebaseUser.getUid())
-                        .collection("cameras")
-                        .document(String.valueOf(cameraConfig.getUuid()))
-                        .set(cameraConfig)
-                        .addOnSuccessListener(documentReference -> LOGGER.d("Camera updated to firebase"))
-                        .addOnFailureListener(e -> LOGGER.e(e, "Failed updating camera to firebase"));
-
-            } catch (Exception e) {
-                LOGGER.e(e, "Error updating camera to firebase");
-            }
+            FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+            putCameraInternal(firebaseUser, cameraConfig);
         });
+    }
+
+    private void putCameraInternal(FirebaseUser firebaseUser, CameraConfig cameraConfig){
+        try {
+            if(firebaseUser == null){
+                return;
+            }
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            //scrub password
+            cameraConfig.setPassword(null);
+            db.collection("users")
+                    .document(firebaseUser.getUid())
+                    .collection("cameras")
+                    .document(String.valueOf(cameraConfig.getUuid()))
+                    .set(cameraConfig)
+                    .addOnSuccessListener(documentReference -> LOGGER.d("Camera updated to firebase"))
+                    .addOnFailureListener(e -> LOGGER.e(e, "Failed updating camera to firebase"));
+
+        } catch (Exception e) {
+            LOGGER.e(e, "Error updating camera to firebase");
+        }
     }
 
     public void deleteCamera(Context context, String cameraUUId){

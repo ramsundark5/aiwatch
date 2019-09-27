@@ -7,6 +7,7 @@ import { withNavigation } from 'react-navigation';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { updateSettings } from '../store/SettingsStore';
 import GoogleConnectStatus from './GoogleConnectStatus';
+import GoogleConnectStatusOauth from './GoogleConnectStatusOauth';
 import { connect } from 'react-redux';
 import InAppPurchase from './InAppPurchase';
 import {LogView} from 'react-native-device-log';
@@ -54,7 +55,9 @@ class Settings extends Component{
         || currentSettings.smartthingsClientId !== prevSettings.smartthingsClientId
         || currentSettings.smartthingsClientSecret !== prevSettings.smartthingsClientSecret
         || currentSettings.isAlexaConnected !== prevSettings.isAlexaConnected
-        || currentSettings.isExternalStorageEnabled !== prevSettings.isExternalStorageEnabled ) {
+        || currentSettings.isExternalStorageEnabled !== prevSettings.isExternalStorageEnabled
+        || currentSettings.googleAccessToken !== prevSettings.googleAccessToken
+        || currentSettings.googleRefreshToken !== prevSettings.googleRefreshToken ) {
           try{
             let updatedSettings = await RNSmartCam.putSettings(currentSettings);
             console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));
@@ -139,7 +142,7 @@ class Settings extends Component{
   renderGoogleAccountConnected() {
     const { settings, updateSettings } = this.props;
     return (
-      <GoogleConnectStatus isGoogleAccountConnected={settings.isGoogleAccountConnected}
+      <GoogleConnectStatusOauth isGoogleAccountConnected={settings.isGoogleAccountConnected}
           updateSettings={updateSettings}/>
     );
   }

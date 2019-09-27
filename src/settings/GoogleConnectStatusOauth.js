@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { authorize, revoke } from 'react-native-app-auth';
+import { authorize, refresh, revoke } from 'react-native-app-auth';
 import { Switch } from 'react-native-paper';
 import { ToastAndroid } from 'react-native';
+import RNSmartCam from '../native/RNSmartCam';
 import Logger from '../common/Logger';
 
 //webClientId: '119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -12,7 +13,7 @@ const config = {
   scopes: ['openid', 'profile','https://www.googleapis.com/auth/drive.file']
 };
 
-export default class GoogleConnectStatus extends Component{ 
+export default class GoogleConnectStatusOauth extends Component{ 
   
     async onGoogleAccountSettingsChange(isConnected){
         const { updateSettings } = this.props;
@@ -35,35 +36,31 @@ export default class GoogleConnectStatus extends Component{
         try {
           // Log in to get an authentication token
           const authState = await authorize(config);
-          console.log('google auth ' + authState);
-          updateSettings({ isGoogleAccountConnected: true });
+          console.log('refresh token is '+authState.refreshToken);
+          updateSettings({ 
+            isGoogleAccountConnected: true, 
+            googleAccessToken:  authState.accessToken,
+            googleRefreshToken: authState.refreshToken
+          });
         }catch (error) {
             updateSettings({ isGoogleAccountConnected: false });
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-              // user cancelled the login flow
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-              // operation (f.e. sign in) is in progress already
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-              // play services not available or outdated
-            } else {
-              // some other error happened
-              ToastAndroid.show(error.message, ToastAndroid.SHORT);
-            }
+            ToastAndroid.show("Error connecting to your Google account. Try again.", ToastAndroid.SHORT);
         }
     }
   
     async disconnectGoogleAccount(){
-        const { updateSettings } = this.props;
+        const { updateSettings, googleRefreshToken } = this.props;
         try{
           await revoke(config, {
-            tokenToRevoke: refreshedState.refreshToken
+            tokenToRevoke: googleRefreshToken
           });
-          updateSettings({ isGoogleAccountConnected: false });
+          updateSettings({ 
+            isGoogleAccountConnected: false,
+            googleAccessToken:  null,
+            googleRefreshToken: null 
+          });
         }catch(err){
           Logger.log(err);
-          if(err.message ==="SIGN_IN_REQUIRED"){
-            updateSettings({ isGoogleAccountConnected: false });
-          }
         }
     }
 

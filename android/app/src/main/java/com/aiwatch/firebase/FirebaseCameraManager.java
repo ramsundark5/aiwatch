@@ -92,6 +92,7 @@ public class FirebaseCameraManager {
         cameraConfigDao.putCamera(existingCameraConfig);
         notifyUI(existingCameraConfig, context);
     }
+
     private void notifyUI(CameraConfig existingCameraConfig, Context context){
         try{
             NotificationManager.sendUINotification(context, existingCameraConfig);

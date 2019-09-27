@@ -15,6 +15,8 @@ public class Settings {
     private boolean isNoAdsPurchased;
     private boolean isAlexaConnected;
     private boolean isExternalStorageEnabled;
+    private String googleAccessToken;
+    private String googleRefreshToken;
     private String smartthingsClientId;
     private String smartthingsClientSecret;
     private String smartthingsAccessToken;
@@ -116,5 +118,21 @@ public class Settings {
 
     public void setExternalStorageEnabled(boolean externalStorageEnabled) {
         isExternalStorageEnabled = externalStorageEnabled;
+    }
+
+    public String getGoogleAccessToken() {
+        return googleAccessToken;
+    }
+
+    public void setGoogleAccessToken(String googleAccessToken) {
+        this.googleAccessToken = googleAccessToken;
+    }
+
+    public String getGoogleRefreshToken() {
+        return googleRefreshToken;
+    }
+
+    public void setGoogleRefreshToken(String googleRefreshToken) {
+        this.googleRefreshToken = googleRefreshToken;
     }
 }

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "13:7634168645155487894",
+      "lastPropertyId": "14:520228550785569471",
       "name": "Settings",
       "properties": [
         {
@@ -51,6 +51,10 @@
         {
           "id": "13:7634168645155487894",
           "name": "isAlexaConnected"
+        },
+        {
+          "id": "14:520228550785569471",
+          "name": "isExternalStorageEnabled"
         }
       ],
       "relations": []

@@ -21,14 +21,21 @@ public class FirebaseSyncManager {
     protected void syncCameras(Context context){
         CameraConfigDao cameraConfigDao = new CameraConfigDao();
         FirebaseCameraConfigDao firebaseCameraConfigDao = new FirebaseCameraConfigDao();
-        try{
-            List<CameraConfig> cameras = cameraConfigDao.getAllCameras();
-            for(CameraConfig cameraConfig : cameras){
-                firebaseCameraConfigDao.putCamera(context, cameraConfig);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            try{
+                FirebaseAuthManager firebaseAuthManager = new FirebaseAuthManager();
+                FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
+                if(firebaseUser != null){
+                    List<CameraConfig> cameras = cameraConfigDao.getAllCameras();
+                    for(CameraConfig cameraConfig : cameras){
+                        firebaseCameraConfigDao.putCamera(firebaseUser, cameraConfig);
+                    }
+                }
+            }catch (Exception e){
+                LOGGER.e(e, e.getMessage());
             }
-        }catch (Exception e){
-            LOGGER.e(e, e.getMessage());
-        }
+        });
     }
 
     public void getFirebaseUpdates(Context context){

@@ -16,7 +16,9 @@ const settingsSlice = createSlice({
       isLoading: false,
       showDeviceLogs: false,
       smartthingsClientId: null,
-      smartthingsClientSecret: null
+      smartthingsClientSecret: null,
+      googleAccessToken: null,
+      googleRefreshToken: null
     },
       
     reducers: {

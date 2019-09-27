@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "14:520228550785569471",
+      "lastPropertyId": "16:6373558596602342167",
       "name": "Settings",
       "properties": [
         {
@@ -55,6 +55,14 @@
         {
           "id": "14:520228550785569471",
           "name": "isExternalStorageEnabled"
+        },
+        {
+          "id": "15:4284917339507134961",
+          "name": "googleAccessToken"
+        },
+        {
+          "id": "16:6373558596602342167",
+          "name": "googleRefreshToken"
         }
       ],
       "relations": []
