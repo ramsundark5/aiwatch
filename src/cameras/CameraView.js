@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
-import { Button, Colors, FAB, Portal, Provider } from 'react-native-paper';
+import { Button, Colors, FAB, Headline, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
@@ -82,6 +82,7 @@ class CameraView extends Component {
               textContent={'Loading...'} />
             <View {...testID('cameraHome')} style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
               <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
+              {this.renderEmptyMessage()}
               {this.renderCameras()}
               {this.renderAddCameraButton()}
             </View>
@@ -134,6 +135,19 @@ class CameraView extends Component {
               url={cameraConfig.videoUrlWithAuth}
               onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
           <CameraControl {...this.props} cameraConfig={cameraConfig}/>
+      </View>
+    )
+  }
+
+  renderEmptyMessage(){
+    const { cameras } = this.props;
+    if(cameras && cameras.length > 0){
+      return null;
+    }
+    return(
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Headline>No cameras found :( </Headline>
+        <Headline>Add a camera to monitor.</Headline>
       </View>
     )
   }

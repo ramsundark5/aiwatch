@@ -45,7 +45,10 @@ export default class MonitoringStatus extends Component{
     }
 
     render(){
-        const { isMonitoringOn } = this.props;
+        const { isMonitoringOn, cameras } = this.props;
+        if(!cameras || cameras.length <1){
+            return null;
+        }
         return(
             <View style={styles.container}>
                 <View style={styles.row} {...testID('monitorstatus')}>
