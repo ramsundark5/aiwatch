@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { authorize, refresh, revoke } from 'react-native-app-auth';
 import { Switch } from 'react-native-paper';
 import { ToastAndroid } from 'react-native';
-import RNSmartCam from '../native/RNSmartCam';
 import Logger from '../common/Logger';
 
 //webClientId: '119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -49,10 +48,10 @@ export default class GoogleConnectStatusOauth extends Component{
     }
   
     async disconnectGoogleAccount(){
-        const { updateSettings, googleRefreshToken } = this.props;
+        const { updateSettings, settings } = this.props;
         try{
           await revoke(config, {
-            tokenToRevoke: googleRefreshToken
+            tokenToRevoke: settings.googleRefreshToken
           });
           updateSettings({ 
             isGoogleAccountConnected: false,
@@ -65,12 +64,13 @@ export default class GoogleConnectStatusOauth extends Component{
     }
 
     render(){
-      const { isGoogleAccountConnected } = this.props;
-        return (
-            <Switch
-              value={isGoogleAccountConnected}
-              onValueChange={value => this.onGoogleAccountSettingsChange(value)}
-            />
-        );
+      const { settings } = this.props;
+      let isGoogleAccountConnected = settings && settings.isGoogleAccountConnected ? true : false;
+      return (
+          <Switch
+            value={isGoogleAccountConnected}
+            onValueChange={value => this.onGoogleAccountSettingsChange(value)}
+          />
+      );
     }
 }

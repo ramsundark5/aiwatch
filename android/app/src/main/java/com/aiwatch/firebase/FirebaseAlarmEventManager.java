@@ -52,6 +52,9 @@ public class FirebaseAlarmEventManager {
     }
 
     protected void handleAlarmEventUpdates(QuerySnapshot querySnapshots, Context context){
+        LOGGER.d("Start handle of alarm event updates");
+        LOGGER.d("Number of alarm events to handle "+querySnapshots.getDocumentChanges().size());
+        GDriveServiceHelper gDriveServiceHelper = GdriveManager.getGDriveServiceHelper(context);
         for (DocumentChange dc : querySnapshots.getDocumentChanges()) {
             QueryDocumentSnapshot alarmEventSnapshot = dc.getDocument();
             if (alarmEventSnapshot == null || !alarmEventSnapshot.exists()) {
@@ -65,7 +68,7 @@ public class FirebaseAlarmEventManager {
                     case ADDED:
                         if(existingAlarmEvent == null){
                             //alarm event doesn't exist, so add it
-                            addNewAlarmEvent(alarmEvent, context);
+                            addNewAlarmEvent(alarmEvent, context, gDriveServiceHelper);
                         }
                         break;
                     case REMOVED:
@@ -81,16 +84,23 @@ public class FirebaseAlarmEventManager {
         }
     }
 
-    private void addNewAlarmEvent(AlarmEvent alarmEvent, Context context){
-        alarmEvent.setId(0L);
-        saveFileLocally(alarmEvent, context);
-        alarmEventDao.putEvent(alarmEvent);
-        notifyIfRecent(alarmEvent, context);
+    private void addNewAlarmEvent(AlarmEvent alarmEvent, Context context, GDriveServiceHelper gDriveServiceHelper){
+        try{
+            alarmEvent.setId(0L);
+            //firs add once to prevent unique exceptions
+            alarmEventDao.putEvent(alarmEvent);
+            saveFileLocally(alarmEvent, context, gDriveServiceHelper);
+            //update with local file path
+            alarmEventDao.putEvent(alarmEvent);
+            notifyIfRecent(alarmEvent, context);
+            LOGGER.d("added alarm event with UUID "+alarmEvent.getUuid());
+        }catch (Exception e){
+            LOGGER.e(e, "Error adding alarm event with UUID "+alarmEvent.getUuid());
+        }
     }
 
-    private void saveFileLocally(AlarmEvent alarmEvent, Context context){
+    private void saveFileLocally(AlarmEvent alarmEvent, Context context, GDriveServiceHelper gDriveServiceHelper){
         try{
-            GDriveServiceHelper gDriveServiceHelper = GdriveManager.getGDriveServiceHelper(context);
             if(gDriveServiceHelper == null){
                 return;
             }

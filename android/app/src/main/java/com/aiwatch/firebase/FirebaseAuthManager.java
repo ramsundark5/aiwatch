@@ -17,6 +17,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.android.gms.tasks.Tasks;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class FirebaseAuthManager {
 
     private static final Logger LOGGER = new Logger();
@@ -26,17 +29,11 @@ public class FirebaseAuthManager {
     public FirebaseUser getFirebaseUser(Context context) {
         FirebaseUser firebaseUser = null;
         try{
-            SettingsDao settingsDao = new SettingsDao();
-            Settings settings = settingsDao.getSettings();
-            if(settings == null || !settings.isGoogleAccountConnected() || settings.getGoogleRefreshToken() == null){
-                return null;
-            }
-            String refreshToken = settings.getGoogleRefreshToken();
-            if(refreshToken != null){
-                LOGGER.d("firebaseAuthWithGoogle:" + refreshToken);
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                String accessToken = refreshAccessToken(refreshToken);
+            TokenResponse response = getGoogleAccessToken();
+            if(response != null){
+                String accessToken = response.getAccessToken();
                 AuthCredential credential = GoogleAuthProvider.getCredential(null, accessToken);
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential);
                 AuthResult authResult = Tasks.await(authResultTask);
                 firebaseUser = authResult.getUser();
@@ -47,17 +44,28 @@ public class FirebaseAuthManager {
         return firebaseUser;
     }
 
-    public String refreshAccessToken(String refreshToken )  {
-        String accessToken = null;
+    public TokenResponse getGoogleAccessToken()  {
+        TokenResponse response = null;
         try {
-            TokenResponse response =
-                    new GoogleRefreshTokenRequest(new NetHttpTransport(), new JacksonFactory(),
-                            refreshToken, AppConstants.GOOOGLE_API_CLIENT_ID, null).execute();
-            accessToken = response.getAccessToken();
-            LOGGER.d("Access token: " + response.getAccessToken());
+            SettingsDao settingsDao = new SettingsDao();
+            Settings settings = settingsDao.getSettings();
+            if(settings == null || !settings.isGoogleAccountConnected() || settings.getGoogleRefreshToken() == null){
+                return null;
+            }
+            String refreshToken = settings.getGoogleRefreshToken();
+            if(refreshToken != null) {
+                GoogleRefreshTokenRequest googleRefreshTokenRequest = new GoogleRefreshTokenRequest(new NetHttpTransport(), new JacksonFactory(),
+                        refreshToken, AppConstants.GOOOGLE_API_CLIENT_ID, null);
+                List<String> scopes = Arrays.asList("openid", "profile", "https://www.googleapis.com/auth/drive.file");
+                googleRefreshTokenRequest.setScopes(scopes);
+                response =
+                        new GoogleRefreshTokenRequest(new NetHttpTransport(), new JacksonFactory(),
+                                refreshToken, AppConstants.GOOOGLE_API_CLIENT_ID, null).execute();
+                LOGGER.d("Access token: " + response.getAccessToken());
+            }
         } catch (Exception e) {
             LOGGER.e(e, "Error getting refresh token");
         }
-        return accessToken;
+        return response;
     }
 }

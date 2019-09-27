@@ -142,7 +142,7 @@ class Settings extends Component{
   renderGoogleAccountConnected() {
     const { settings, updateSettings } = this.props;
     return (
-      <GoogleConnectStatusOauth isGoogleAccountConnected={settings.isGoogleAccountConnected}
+      <GoogleConnectStatusOauth settings={settings}
           updateSettings={updateSettings}/>
     );
   }
