@@ -16,10 +16,11 @@ public class FirebaseAlarmEventDao {
     private static final Logger LOGGER = new Logger();
     private FirebaseAuthManager firebaseAuthManager = new FirebaseAuthManager();
 
-    public void addEvent(FirebaseUser firebaseUser, AlarmEvent alarmEvent){
+    public void addEvent(Context context, AlarmEvent alarmEvent){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
             try {
+                FirebaseUser firebaseUser = firebaseAuthManager.getFirebaseUser(context);
                 if(firebaseUser == null){
                     return;
                 }
