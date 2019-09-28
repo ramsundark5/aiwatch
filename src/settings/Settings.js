@@ -6,6 +6,7 @@ import Theme from '../common/Theme';
 import { withNavigation } from 'react-navigation';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { updateSettings } from '../store/SettingsStore';
+import GoogleConnectStatus from './GoogleConnectStatus';
 import GoogleConnectStatusOauth from './GoogleConnectStatusOauth';
 import { connect } from 'react-redux';
 import InAppPurchase from './InAppPurchase';

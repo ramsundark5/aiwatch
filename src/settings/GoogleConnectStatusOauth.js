@@ -5,7 +5,7 @@ import { ToastAndroid } from 'react-native';
 import Logger from '../common/Logger';
 
 //webClientId: '119466713568-o59oc7i1d9vr7blopd1396jnhs6cudtn.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-const config = {
+const googleOauthConfig = {
   issuer: 'https://accounts.google.com',
   clientId: '119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk.apps.googleusercontent.com',
   redirectUrl: 'com.googleusercontent.apps.119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk:/oauth2redirect/google',
@@ -34,7 +34,7 @@ export default class GoogleConnectStatusOauth extends Component{
         const { updateSettings } = this.props;
         try {
           // Log in to get an authentication token
-          const authState = await authorize(config);
+          const authState = await authorize(googleOauthConfig);
           console.log('refresh token is '+authState.refreshToken);
           updateSettings({ 
             isGoogleAccountConnected: true, 

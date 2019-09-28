@@ -47,7 +47,7 @@ export default class SmartthingsIntegration extends Component{
         try {
             console.log('starting authorize');
             // base config
-            const config = {
+            const smartthingsOauthConfig = {
               serviceConfiguration:{
                 authorizationEndpoint: 'https://graph.api.smartthings.com/oauth/authorize',
                 tokenEndpoint: 'https://graph.api.smartthings.com/oauth/token'
@@ -57,7 +57,7 @@ export default class SmartthingsIntegration extends Component{
               redirectUrl: 'com.aiwatch.oauth:/oauthredirect',
               scopes: ['app'],
             };
-            const result = await authorize(config);
+            const result = await authorize(smartthingsOauthConfig);
             console.log('smartthings token '+JSON.stringify(result));
             return result;
             // result includes accessToken, accessTokenExpirationDate and refreshToken
