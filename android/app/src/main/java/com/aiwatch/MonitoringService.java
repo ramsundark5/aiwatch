@@ -17,9 +17,9 @@ public class MonitoringService extends AbstractForegroundService {
     @Override
     public void onCreate() {
         LOGGER.i("Creating new monitoring service instance. Thread is "+Thread.currentThread().getName());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForgroundNotification();
-        }
+        //}
     }
 
     @Override

@@ -54,7 +54,7 @@ export default class SmartthingsIntegration extends Component{
               },
               clientId: smartthingsClientId,
               clientSecret: smartthingsClientSecret,
-              redirectUrl: 'com.aiwatch.oauth:/oauthredirect',
+              redirectUrl: 'com.googleusercontent.apps.119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk:/oauth2redirect/google',
               scopes: ['app'],
             };
             const result = await authorize(config);

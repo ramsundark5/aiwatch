@@ -36,6 +36,7 @@
             android:name=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize">
             <tools:validation testUrl="https://aiwatch.live/oauth2redirect" />
 
