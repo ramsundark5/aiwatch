@@ -6104,8 +6104,8 @@ react-native-animatable@^1.3.1:
     prop-types "^15.5.10"
 
 "react-native-app-auth@https://github.com/ramsundark5/react-native-app-auth":
-  version "5.0.1"
-  resolved "https://github.com/ramsundark5/react-native-app-auth#6d10bfa066122252ec7d99636d23f10279aa79ae"
+  version "5.0.2"
+  resolved "https://github.com/ramsundark5/react-native-app-auth#30e2dffbb284862d057423114f69ed4cc7c7ce4d"
 
 react-native-calendars@^1.212.0:
   version "1.212.0"
