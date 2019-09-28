@@ -1,5 +1,6 @@
 package com.aiwatch.postprocess;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.aiwatch.Logger;
+import com.aiwatch.MainActivity;
 import com.aiwatch.R;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.firebase.FirebaseNotificationDao;
@@ -80,10 +82,13 @@ public class NotificationManager {
 
     public static void sendStringNotification(Context context, String message, int notificationIcon){
         try{
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                    new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+            String NOTIFICATION_CHANNEL_ID = context.getString(R.string.channel_id);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentTitle(message)
-                    .setChannelId(context.getString(R.string.channel_id))
+                    .setContentIntent(contentIntent)
                     //.setContentText(alarmEvent.getMessage())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
             if(notificationIcon != 0){

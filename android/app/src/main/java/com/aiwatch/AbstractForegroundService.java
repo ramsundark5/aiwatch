@@ -87,7 +87,7 @@ public abstract class AbstractForegroundService extends Service {
             }
             // The PendingIntent to launch our activity if the user selects this notification
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                    new Intent(this, MainActivity.class), 0);
+                    new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
             String NOTIFICATION_CHANNEL_ID = getApplicationContext().getString(R.string.channel_id);
             // Set the info for the views that show in the notification panel.
             Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
