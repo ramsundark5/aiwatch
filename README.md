@@ -23,7 +23,8 @@ Todo
 - [x] External storage
 - [x] TTS
 - [x] Tablet optimize
-- [ ] Google signin refresh token
+- [x] Google signin refresh token
+- [ ] In app FAQ/Help screen
 - [ ] Face recognition
 
 
