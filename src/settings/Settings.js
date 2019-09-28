@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Linking, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import RNSmartCam from '../native/RNSmartCam';
 import { Button, Colors, List, Switch } from 'react-native-paper';
 import Theme from '../common/Theme';
 import { withNavigation } from 'react-navigation';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { updateSettings } from '../store/SettingsStore';
-import GoogleConnectStatus from './GoogleConnectStatus';
 import GoogleConnectStatusOauth from './GoogleConnectStatusOauth';
 import { connect } from 'react-redux';
 import InAppPurchase from './InAppPurchase';
@@ -141,9 +140,25 @@ class Settings extends Component{
 
   renderGoogleAccountConnected() {
     const { settings, updateSettings } = this.props;
+    if(!settings.isNoAdsPurchased){
+      return this.renderPremiumRequired();
+    }
     return (
       <GoogleConnectStatusOauth settings={settings}
           updateSettings={updateSettings}/>
+    );
+  }
+
+  renderNotificationEnabled() {
+    const { settings } = this.props;
+    if(!settings.isNoAdsPurchased){
+      return this.renderPremiumRequired();
+    }
+    return (
+      <Switch
+        value={settings.isNotificationEnabled}
+        onValueChange={value => this.onNotificationEnabledChange(value)}
+      />
     );
   }
 
@@ -160,16 +175,6 @@ class Settings extends Component{
     return (
       <AlexaIntegration alexaToken={settings.alexaToken} isAlexaConnected={settings.isAlexaConnected}
           updateSettings={updateSettings}/>
-    );
-  }
-
-  renderNotificationEnabled() {
-    const { settings } = this.props;
-    return (
-      <Switch
-        value={settings.isNotificationEnabled}
-        onValueChange={value => this.onNotificationEnabledChange(value)}
-      />
     );
   }
 
@@ -215,6 +220,14 @@ class Settings extends Component{
       <Button style={{marginLeft: 30, marginRight: 30}} mode='outlined' color={Theme.primary} loading={syncing} onPress={() => this.onSyncPress()}>
         Sync Configs
       </Button>
+    )
+  }
+
+  renderPremiumRequired(){
+    return(
+      <View style={{justifyContent: 'center'}}>
+        <Text style={{color: Colors.white, backgroundColor: Colors.blue300, paddingLeft: 5, paddingRight: 5, borderRadius: 5}}>Premium</Text>
+      </View>
     )
   }
 }
