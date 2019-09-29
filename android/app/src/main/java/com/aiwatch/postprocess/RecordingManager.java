@@ -9,15 +9,20 @@ import com.aiwatch.ai.ObjectDetectionResult;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.common.FileUtil;
 import com.aiwatch.media.FrameEvent;
+import com.aiwatch.models.AlarmEvent;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.google.common.net.MediaType;
+
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class RecordingManager {
 
@@ -40,10 +45,10 @@ public class RecordingManager {
         return shouldRecord;
     }
 
-    public static String recordToLocal(FrameEvent frameEvent){
+    public static String recordToLocal(FrameEvent frameEvent, AlarmEvent alarmEvent){
         String filePath = null;
         try{
-            File[] inputFileList = getInputFileList(frameEvent);
+            File[] inputFileList = getInputFileList(frameEvent, alarmEvent);
             File baseDirectory = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.EVENT_VIDEO_FOLDER);
             filePath = getFilePathToRecord(frameEvent.getCameraConfig().getId(), baseDirectory, DEFAULT_VIDEO_EXTENSION);
             if(inputFileList == null || inputFileList.length < 1){
@@ -111,26 +116,24 @@ public class RecordingManager {
         return outputFile.getAbsolutePath();
     }
 
-
-    private static File[] getInputFileList(FrameEvent frameEvent){
+    private static File[] getInputFileList(FrameEvent frameEvent, AlarmEvent alarmEvent){
         try{
             File videoFolder = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.TEMP_VIDEO_FOLDER);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
-
-            final long currentTime = System.currentTimeMillis();
-            int recordingDuration = cameraConfig.getRecordingDuration();
-            if(recordingDuration <= 1){
-                recordingDuration = 15;
-            }
-            long startDurationInSeconds = recordingDuration + ( 2 * AppConstants.PRE_RECORDING_BUFFER);
-            final long startTime = currentTime - (startDurationInSeconds * 1000);
-            final long endTime = currentTime - (AppConstants.PRE_RECORDING_BUFFER * 1000);
+            DateTime currentTime = new DateTime();
+            DateTime eventTime = new DateTime(alarmEvent.getDate());
+            DateTime startTime = eventTime.minusSeconds(AppConstants.PRE_RECORDING_BUFFER + 2);
+            DateTime endTime = currentTime.minusSeconds(2);
+            LOGGER.d("current Time " + currentTime.toString("HH:mm:ss"));
+            LOGGER.d("alarmevent time " + eventTime.toString("HH:mm:ss"));
+            LOGGER.d("recording startTime " + startTime.toString("HH:mm:ss"));
             File[] inputFiles = videoFolder.listFiles(file -> {
                 String cameraIdPrefix = cameraConfig.getId() + "-";
-                long lastModified = file.lastModified();
                 boolean isFileBelongToCamera = file.getName().startsWith(cameraIdPrefix);
                 boolean isFileBelongToTimeRange = false;
-                if( lastModified > startTime && lastModified < endTime){
+                DateTime fileLastModifiedTime = new DateTime(file.lastModified());
+                if( fileLastModifiedTime.isAfter(startTime) && fileLastModifiedTime.isBefore(endTime)){
+                    LOGGER.d("file to be merged lastmodified " + fileLastModifiedTime.toString("HH:mm:ss"));
                     isFileBelongToTimeRange = true;
                 }
                 return isFileBelongToCamera && isFileBelongToTimeRange;

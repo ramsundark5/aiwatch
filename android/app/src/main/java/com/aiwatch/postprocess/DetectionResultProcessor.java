@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class DetectionResultProcessor {
 
@@ -68,13 +69,17 @@ public class DetectionResultProcessor {
         }
         //now record
         if(shouldRecordVideo){
-            long waitTimeForRecording = cameraConfig.getRecordingDuration() + ( 2 * AppConstants.PRE_RECORDING_BUFFER );
+            int recordingDuration = cameraConfig.getRecordingDuration();
+            if(recordingDuration < 10){
+                recordingDuration = 15;
+            }
+            long waitTimeForRecording = TimeUnit.SECONDS.toMillis(recordingDuration + 2);
             try {
                 Thread.sleep(waitTimeForRecording);
             } catch (InterruptedException e) {
                LOGGER.e(e, "Error trying to wait till recording finishes");
             }
-            videoPath = RecordingManager.recordToLocal(frameEvent);
+            videoPath = RecordingManager.recordToLocal(frameEvent, alarmEvent);
             if(videoPath != null){
                 gdriveVideoPath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), videoPath, MediaType.MP4_VIDEO.toString(), RecordingManager.DEFAULT_VIDEO_EXTENSION);
             }
