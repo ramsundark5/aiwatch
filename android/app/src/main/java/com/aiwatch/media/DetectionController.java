@@ -22,6 +22,7 @@ public class DetectionController {
             //cameraConfig.setVideoCodec(AV_CODEC_ID_H264);
             stopSelectedVideoProcessor(cameraConfig.getId());
             if(!cameraConfig.isMonitoringEnabled()){
+                LOGGER.d("camera monitoring not started because isMonitoringEnabled flag is false");
                 return false;
             }
             MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);

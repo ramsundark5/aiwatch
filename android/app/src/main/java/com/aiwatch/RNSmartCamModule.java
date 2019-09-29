@@ -110,23 +110,24 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
                 throw new Exception("Error trying to save Camera Info. Please try again.");
             }
 
-            //start or stop service
-            Intent intent = new Intent(reactContext, MonitoringService.class);
-            intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.SAVE_CAMERA);
-            intent.putExtra(AppConstants.CAMERA_CONFIG_EXTRA, cameraConfig);
-            reactContext.startService(intent);
-
             LOGGER.d("camera config before update "+ cameraConfig.toString());
             LOGGER.d("camera config after update "+ updatedCameraConfig.toString());
+
             //return updated cameraconfig to UI
-            cameraConfig.setVideoUrlWithAuth(cameraConfig.getVideoUrlWithAuth());
-            String jsonString = gson.toJson(cameraConfig);
+            updatedCameraConfig.setVideoUrlWithAuth(updatedCameraConfig.getVideoUrlWithAuth());
+            String jsonString = gson.toJson(updatedCameraConfig);
             JSONObject updatedJsonObject = new JSONObject(jsonString);
             WritableMap cameraConfigMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
             promise.resolve(cameraConfigMap);
 
             //sync with firebase
-            firebaseCameraConfigDao.putCamera(reactContext, cameraConfig);
+            firebaseCameraConfigDao.putCamera(reactContext, updatedCameraConfig);
+
+            //start or stop service
+            Intent intent = new Intent(reactContext, MonitoringService.class);
+            intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.SAVE_CAMERA);
+            intent.putExtra(AppConstants.CAMERA_CONFIG_EXTRA, updatedCameraConfig);
+            reactContext.startService(intent);
         } catch (Exception e) {
             promise.reject(e);
             LOGGER.e(e.getMessage());

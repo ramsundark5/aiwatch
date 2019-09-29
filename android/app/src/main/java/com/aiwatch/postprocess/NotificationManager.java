@@ -122,14 +122,6 @@ public class NotificationManager {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             // notificationId is a unique int for each notification that you must define
             notificationManager.notify(alarmEvent.hashCode(), builder.build());
-/*
-            UiThreadUtil.runOnUiThread(() -> {
-                Toast toast = Toast.makeText(context, alarmEvent.getMessage(), Toast.LENGTH_SHORT);
-                ImageView imageView = new ImageView(context);
-                imageView.setImageBitmap(imageBitmap);
-                toast.setView(imageView);
-                toast.show();
-            });*/
 
             //send remote push notification
             FirebaseNotificationDao firebaseNotificationDao = new FirebaseNotificationDao();

@@ -89,8 +89,8 @@ public class FirebaseCameraManager {
         existingCameraConfig.setUuid(updatedCameraConfig.getUuid());
         //existingCameraConfig.setPassword(updatedCameraConfig.getPassword());
         existingCameraConfig.setVideoCodec(updatedCameraConfig.getVideoCodec());
-        cameraConfigDao.putCamera(existingCameraConfig);
-        notifyUI(existingCameraConfig, context);
+        CameraConfig cameraConfigAfterSave = cameraConfigDao.putCamera(existingCameraConfig);
+        notifyUI(cameraConfigAfterSave, context);
     }
 
     private void notifyUI(CameraConfig existingCameraConfig, Context context){
