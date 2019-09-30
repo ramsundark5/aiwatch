@@ -99,13 +99,14 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void putCamera(final ReadableMap readableMap, final Promise promise) {
+        CameraConfig updatedCameraConfig = null;
         try {
             //save cameraconfig
             JSONObject jsonObject = ConversionUtil.convertMapToJson(readableMap);
             CameraConfig cameraConfig = gson.fromJson(jsonObject.toString(), CameraConfig.class);
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             cameraConfig.setLastModified(new Date());
-            CameraConfig updatedCameraConfig = cameraConfigDao.putCamera(cameraConfig);
+            updatedCameraConfig = cameraConfigDao.putCamera(cameraConfig);
             if (cameraConfig.getId() == 0) {
                 throw new Exception("Error trying to save Camera Info. Please try again.");
             }
@@ -119,18 +120,25 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             JSONObject updatedJsonObject = new JSONObject(jsonString);
             WritableMap cameraConfigMap = ConversionUtil.convertJsonToMap(updatedJsonObject);
             promise.resolve(cameraConfigMap);
-
-            //sync with firebase
-            firebaseCameraConfigDao.putCamera(reactContext, updatedCameraConfig);
+        } catch (Exception e) {
+            promise.reject(e);
+            LOGGER.e(e, e.getMessage());
+        }
+        try{
+            if(updatedCameraConfig == null){
+                return;
+            }
 
             //start or stop service
             Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.SAVE_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_EXTRA, updatedCameraConfig);
             reactContext.startService(intent);
-        } catch (Exception e) {
-            promise.reject(e);
-            LOGGER.e(e.getMessage());
+
+            //sync with firebase
+            firebaseCameraConfigDao.putCamera(reactContext, updatedCameraConfig);
+        }catch(Exception e){
+            LOGGER.e(e, e.getMessage());
         }
     }
 

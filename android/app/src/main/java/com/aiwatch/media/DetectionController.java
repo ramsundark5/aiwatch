@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DetectionController {
 
@@ -26,8 +28,8 @@ public class DetectionController {
                 return false;
             }
             MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(monitoringRunnable);
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            executorService.schedule(monitoringRunnable, 2, TimeUnit.SECONDS);
             cameraMap.put(cameraConfig.getId(), new RunningThreadInfo(cameraConfig, executorService, monitoringRunnable));
             LOGGER.d("Monitoring started for camera "+ cameraConfig.getName() + cameraConfig.getId());
         } catch (Exception e) {
