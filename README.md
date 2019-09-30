@@ -24,7 +24,7 @@ Todo
 - [x] TTS
 - [x] Tablet optimize
 - [x] Google signin refresh token
-- [ ] Monitoring status sync
+- [x] Monitoring status sync
 - [ ] In app FAQ/Help screen
 - [ ] Face recognition
 
