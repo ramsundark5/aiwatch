@@ -109,11 +109,15 @@ public class NotificationManager {
 
     public static void sendImageNotification(Context context, AlarmEvent alarmEvent){
         try{
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                    new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+            String NOTIFICATION_CHANNEL_ID = context.getString(R.string.channel_id);
             Bitmap imageBitmap = BitmapFactory.decodeFile(alarmEvent.getThumbnailPath());
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.channel_id))
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentTitle(alarmEvent.getMessage())
                     .setContentText("")
+                    .setContentIntent(contentIntent)
                     .setLargeIcon(imageBitmap)
                     .setStyle(new NotificationCompat.BigPictureStyle()
                             .bigPicture(imageBitmap)
