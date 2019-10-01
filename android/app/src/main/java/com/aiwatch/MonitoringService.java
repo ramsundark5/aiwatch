@@ -26,7 +26,7 @@ public class MonitoringService extends AbstractForegroundService {
             @Override
             public void uncaughtException(Thread paramThread, Throwable t) {
                 LOGGER.e(t, "Uncaught exception "+ t.getCause().getMessage());
-                NotificationManager.sendStringNotification(getApplicationContext(), "aiwatch paused. Will restart in a moment.");
+                //NotificationManager.sendStringNotification(getApplicationContext(), "aiwatch paused. Will restart in a moment.");
             }
         });
     }
