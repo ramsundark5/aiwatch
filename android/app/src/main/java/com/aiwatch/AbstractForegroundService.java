@@ -62,15 +62,6 @@ public abstract class AbstractForegroundService extends Service {
     }
 
     @Override
-    public void onDestroy() {
-        postStopCleanup();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            stopForeground(true); //true will remove notification
-        }
-        Toast.makeText(this, "aiwatch monitoring is stopped", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");

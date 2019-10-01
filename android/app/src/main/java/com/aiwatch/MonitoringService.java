@@ -2,6 +2,8 @@ package com.aiwatch;
 
 import android.content.Intent;
 import android.os.Build;
+import android.widget.Toast;
+
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.DetectionController;
 import com.aiwatch.models.CameraConfig;
@@ -14,16 +16,24 @@ public class MonitoringService extends AbstractForegroundService {
     private static final Logger LOGGER = new Logger();
     private DetectionController detectionController = new DetectionController();
 
+    private boolean stopMonitoringRequested = false;
     @Override
     public void onCreate() {
         LOGGER.i("Creating new monitoring service instance. Thread is "+Thread.currentThread().getName());
         startForgroundNotification();
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread paramThread, Throwable t) {
+                LOGGER.e(t, "Uncaught exception "+ t.getMessage());
+            }
+        });
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         preStart(this);
         String action = intent != null ? intent.getStringExtra(AppConstants.ACTION_EXTRA) : null;
+        stopMonitoringRequested = false;
         LOGGER.i("Received onStartCommand with action " + action);
         if(action != null){
             switch (action) {
@@ -31,6 +41,7 @@ public class MonitoringService extends AbstractForegroundService {
                     startMonitoring();
                     break;
                 case AppConstants.STOP_MONITORING:
+                    stopMonitoringRequested = true;
                     stopMonitoring();
                     break;
                 case AppConstants.CONNECT_CAMERA:
@@ -81,6 +92,7 @@ public class MonitoringService extends AbstractForegroundService {
         }
 
         if(!isMonitoringStartedForAny){
+            stopMonitoringRequested = true;
             stopMonitoring();
         }
     }
@@ -88,5 +100,20 @@ public class MonitoringService extends AbstractForegroundService {
     private void stopMonitoring(){
         detectionController.stopAllDetecting();
         stopSelf();
+    }
+
+    @Override
+    public void onDestroy() {
+        if(stopMonitoringRequested){
+            LOGGER.d("Stop monitoring requested. Destroying monitoring service");
+            postStopCleanup();
+            stopForeground(true); //true will remove notification
+            Toast.makeText(this, "aiwatch monitoring is stopped", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Intent monitoringIntent = new Intent(getApplicationContext(), MonitoringService.class);
+            startService(monitoringIntent);
+            LOGGER.d("Restarted monitoring service");
+        }
     }
 }
