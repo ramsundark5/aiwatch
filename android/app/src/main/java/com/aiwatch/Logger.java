@@ -16,6 +16,9 @@ limitations under the License.
 package com.aiwatch;
 
 import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -185,6 +188,7 @@ public final class Logger {
   public void e(final Throwable t, final String format, final Object... args) {
     if (isLoggable(Log.ERROR)) {
       Log.e(tag, toMessage(format, args), t);
+      Crashlytics.logException(t);
     }
   }
 }

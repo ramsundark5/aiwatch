@@ -125,23 +125,6 @@ public class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, Com
             output += line + "\n";
             publishProgress(line);
         }
-            if (isCancelled()) {
-                process.destroy();
-                process.waitFor();
-                return;
-            }
-
-            if (quitPending) {
-                sendQ();
-                process = null;
-                return;
-            }
-
-            output += line + "\n";
-            publishProgress(line);
-
-            //this causes stackoverflow error
-            //readProgress();
     }
 
     private String readLine(SimpleTimeLimiter timeLimiter, BufferedReader reader) throws InterruptedException, ExecutionException, TimeoutException {

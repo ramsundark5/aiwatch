@@ -9,6 +9,7 @@ import com.aiwatch.media.DetectionController;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
+import com.crashlytics.android.Crashlytics;
 
 import java.util.List;
 
@@ -26,7 +27,10 @@ public class MonitoringService extends AbstractForegroundService {
             @Override
             public void uncaughtException(Thread paramThread, Throwable t) {
                 LOGGER.e(t, "Uncaught exception "+ t.getCause().getMessage());
-                //NotificationManager.sendStringNotification(getApplicationContext(), "aiwatch paused. Will restart in a moment.");
+                Crashlytics.log("Uncaught exception "+ t.getCause().getMessage());
+                Crashlytics.logException(t);
+                //restart monitorinn
+                startMonitoring();
             }
         });
     }
