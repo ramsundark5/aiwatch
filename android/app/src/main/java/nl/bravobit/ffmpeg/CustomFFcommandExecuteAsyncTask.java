@@ -99,6 +99,7 @@ public class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, Com
                 throw new TimeoutException("FFmpeg binary timed out");
             }
 
+            LOGGER.d("Reading progress");
             readProgress();
             LOGGER.i("finished ffmpeg processing");
         }

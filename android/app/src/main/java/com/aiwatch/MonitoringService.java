@@ -8,6 +8,7 @@ import com.aiwatch.common.AppConstants;
 import com.aiwatch.media.DetectionController;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
+import com.aiwatch.postprocess.NotificationManager;
 
 import java.util.List;
 
@@ -24,7 +25,8 @@ public class MonitoringService extends AbstractForegroundService {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread paramThread, Throwable t) {
-                LOGGER.e(t, "Uncaught exception "+ t.getMessage());
+                LOGGER.e(t, "Uncaught exception "+ t.getCause().getMessage());
+                NotificationManager.sendStringNotification(getApplicationContext(), "aiwatch paused. Will restart in a moment.");
             }
         });
     }
@@ -108,7 +110,8 @@ public class MonitoringService extends AbstractForegroundService {
             LOGGER.d("Stop monitoring requested. Destroying monitoring service");
             postStopCleanup();
             stopForeground(true); //true will remove notification
-            Toast.makeText(this, "aiwatch monitoring is stopped", Toast.LENGTH_SHORT).show();
+            NotificationManager.sendStringNotification(getApplicationContext(), "aiwatch monitoring is stopped");
+            //Toast.makeText(this, "aiwatch monitoring is stopped", Toast.LENGTH_SHORT).show();
         }
         else{
             Intent monitoringIntent = new Intent(getApplicationContext(), MonitoringService.class);
