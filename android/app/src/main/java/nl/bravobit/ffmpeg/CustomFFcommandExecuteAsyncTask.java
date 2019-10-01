@@ -108,8 +108,8 @@ public class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, Com
     private void readProgress() throws InterruptedException, ExecutionException, TimeoutException {
         SimpleTimeLimiter timeLimiter = SimpleTimeLimiter.create(Executors.newSingleThreadExecutor());
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        String line = timeLimiter.callWithTimeout(reader::readLine, AppConstants.FFMPEG_COMMAND_TIMEOUT, TimeUnit.SECONDS);
-        if (line != null) {
+        String line;
+        while( (line = readLine(timeLimiter, reader)) != null){
             if (isCancelled()) {
                 process.destroy();
                 process.waitFor();
@@ -124,10 +124,30 @@ public class CustomFFcommandExecuteAsyncTask extends AsyncTask<Void, String, Com
 
             output += line + "\n";
             publishProgress(line);
-            readProgress();
         }
+            if (isCancelled()) {
+                process.destroy();
+                process.waitFor();
+                return;
+            }
+
+            if (quitPending) {
+                sendQ();
+                process = null;
+                return;
+            }
+
+            output += line + "\n";
+            publishProgress(line);
+
+            //this causes stackoverflow error
+            //readProgress();
     }
 
+    private String readLine(SimpleTimeLimiter timeLimiter, BufferedReader reader) throws InterruptedException, ExecutionException, TimeoutException {
+        String line = timeLimiter.callWithTimeout(reader::readLine, AppConstants.FFMPEG_COMMAND_TIMEOUT, TimeUnit.SECONDS);
+        return line;
+    }
     public boolean isProcessCompleted() {
         LOGGER.d("status for process pid is "+ process.toString());
         return Util.isProcessCompleted(process);
