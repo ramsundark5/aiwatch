@@ -80,7 +80,7 @@ android {
         applicationId 'com.aiwatch'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 14
+        versionCode 15
         versionName "1.2.3"
         manifestPlaceholders = [
             appAuthRedirectScheme: "com.googleusercontent.apps.119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk"
