@@ -19,7 +19,7 @@ public class AlarmEventDao {
         Box<AlarmEvent> alarmEventBox = ObjectBox.get().boxFor(AlarmEvent.class);
         List<AlarmEvent> alarmEvents = alarmEventBox.query()
                 .between(AlarmEvent_.date, endDate, startDate)
-                .orderDesc(AlarmEvent_.id)
+                .orderDesc(AlarmEvent_.date)
                 .build().find();
         return alarmEvents;
     }

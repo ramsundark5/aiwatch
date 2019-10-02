@@ -16,7 +16,7 @@ public class ObjectDetectionService {
     private Classifier objectDetector;
 
     // Configuration values for the prepackaged SSD model.
-    private static final float DETECTION_CONFIDENCE_SENSITIVITY = 0.6f;
+    private static final float DETECTION_CONFIDENCE_SENSITIVITY = 0.65f;
     private static final int TF_OD_API_INPUT_SIZE = 300;
     private static final boolean TF_OD_API_IS_QUANTIZED = true;
 
@@ -47,8 +47,8 @@ public class ObjectDetectionService {
                         result.setConfidence(detection.getConfidence());
                         result.setLocation(detection.getLocation());
                         LOGGER.i("person detected with confidence "+detection.getConfidence());
+                        break;
                     }
-                    break;
                 case "bicycle":
                 case "boat":
                 case "car":
@@ -59,8 +59,8 @@ public class ObjectDetectionService {
                         result.setMessage(AppConstants.VEHICLE_DETECTED_MESSAGE);
                         result.setConfidence(detection.getConfidence());
                         result.setLocation(detection.getLocation());
+                        break;
                     }
-                    break;
                 case "bear":
                 case "bird":
                 case "cat":
@@ -74,8 +74,8 @@ public class ObjectDetectionService {
                         result.setMessage(AppConstants.ANIMAL_DETECTED_MESSAGE);
                         result.setConfidence(detection.getConfidence());
                         result.setLocation(detection.getLocation());
+                        break;
                     }
-                    break;
                 default:
                     //result.setCameraName(Events.OTHER_DETECTED_EVENT.getCameraName());
                     //result.setConfidence(detection.getConfidence());
