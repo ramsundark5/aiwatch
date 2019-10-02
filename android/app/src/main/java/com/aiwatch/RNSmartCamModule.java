@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -13,10 +14,7 @@ import com.aiwatch.common.AppConstants;
 import com.aiwatch.common.DeviceInfo;
 import com.aiwatch.common.DeviceType;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
-import com.aiwatch.firebase.FirebaseAlarmEventManager;
-import com.aiwatch.firebase.FirebaseAuthManager;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
-import com.aiwatch.firebase.FirebaseCameraManager;
 import com.aiwatch.firebase.FirebaseSyncManager;
 import com.aiwatch.firebase.FirebaseUserDataDao;
 import com.aiwatch.media.FFmpegConnectionTester;
@@ -32,7 +30,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.aiwatch.common.ConversionUtil;
 import com.aiwatch.models.AlarmEvent;
@@ -57,7 +54,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.evercam.network.CustomEvercamDiscover;
-import io.evercam.network.DiscoveryResult;
 
 public class RNSmartCamModule extends ReactContextBaseJavaModule {
     private static final Logger LOGGER = new Logger();
@@ -252,6 +248,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             String jsonString = gson.toJson(settings);
             JSONObject jsonObject = new JSONObject(jsonString);
             WritableMap settingsMap = ConversionUtil.convertJsonToMap(jsonObject);
+            settingsMap.putString("version", getVersion());
             promise.resolve(settingsMap);
         } catch (Exception e) {
             promise.reject(e);
@@ -394,6 +391,18 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         } finally {
             promise.resolve(deviceTypeStr);
         }
+    }
+
+    public String getVersion() {
+        String versionInfo = null;
+        try {
+            String versionName = BuildConfig.VERSION_NAME;
+            int versionCode = BuildConfig.VERSION_CODE;
+            versionInfo = versionName + "-"+ versionCode;
+        } catch(Exception e){
+            LOGGER.e(e, e.getMessage());
+        }
+        return versionInfo;
     }
 
     private void getFirebaseUpdates(){

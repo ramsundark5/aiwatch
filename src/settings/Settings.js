@@ -135,6 +135,7 @@ class Settings extends Component{
             {this.renderSyncButton()}
             <InAppPurchase {...this.props}/>
             {this.renderDeviceLogs()}
+            {this.renderVersion()}
           </KeyboardAwareScrollView>
       );
   }
@@ -229,6 +230,13 @@ class Settings extends Component{
       <View style={{justifyContent: 'center'}}>
         <Text style={{color: Colors.white, backgroundColor: Colors.blue300, paddingLeft: 5, paddingRight: 5, borderRadius: 5}}>Premium</Text>
       </View>
+    )
+  }
+
+  renderVersion(){
+    const { settings } = this.props;
+    return(
+      <Text style={{paddingLeft: 15}}>Version: {settings.version}</Text>
     )
   }
 }
