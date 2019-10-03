@@ -11,6 +11,6 @@ export const SettingsTabRoute = {
     screen: SettingsStack,
     navigationOptions: {
         tabBarLabel: 'Settings',
-        tabBarIcon: tabBarIcon('ios-settings')
+        tabBarIcon: tabBarIcon('settings')
     }
 }

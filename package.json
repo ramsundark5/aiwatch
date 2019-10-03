@@ -23,8 +23,8 @@
     "bugsnag-react-native": "^2.23.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "react": "16.9.0",
-    "react-native": "0.60.5",
+    "react": "16.10.1",
+    "react-native": "0.61.2",
     "react-native-admob": "git+https://github.com/ramsundark5/react-native-admob",
     "react-native-app-auth": "https://github.com/ramsundark5/react-native-app-auth",
     "react-native-calendars": "^1.212.0",
@@ -48,10 +48,11 @@
     "react-native-super-grid": "^3.1.0",
     "react-native-svg": "^9.9.4",
     "react-native-vector-icons": "^6.6.0",
+    "react-native-webview": "^7.4.0",
     "react-native-yz-vlcplayer": "https://github.com/ramsundark5/react-native-yz-vlcplayer",
-    "react-navigation": "4.0.9",
+    "react-navigation": "4.0.10",
     "react-navigation-material-bottom-tabs": "2.1.2",
-    "react-navigation-stack": "1.9.0",
+    "react-navigation-stack": "1.9.3",
     "react-navigation-tabs": "2.5.5",
     "react-redux": "^7.1.1",
     "redux-logger": "^3.0.6",
@@ -72,7 +73,7 @@
     "prettier": "1.18.2",
     "pretty-quick": "^1.11.1",
     "react-native-cli": "^2.0.1",
-    "react-test-renderer": "16.9.0"
+    "react-test-renderer": "16.10.1"
   },
   "jest": {
     "preset": "react-native"

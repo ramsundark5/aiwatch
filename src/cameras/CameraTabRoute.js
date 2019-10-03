@@ -30,6 +30,6 @@ export const CameraTabRoute = {
     screen: CameraStack,
     navigationOptions: {
         tabBarLabel: 'Camera',
-        tabBarIcon: tabBarIcon('ios-videocam')
+        tabBarIcon: tabBarIcon('video')
     }
 }

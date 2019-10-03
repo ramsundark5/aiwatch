@@ -24,6 +24,6 @@ export const EventTabRoute = {
     screen: EventStack,
     navigationOptions: {
         tabBarLabel: 'Events',
-        tabBarIcon: tabBarIcon('ios-calendar')
+        tabBarIcon: tabBarIcon('calendar-clock')
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const tabBarIcon = name => ({ tintColor, horizontal }) => (
-    <Ionicons name={name} color={tintColor} size={horizontal ? 17 : 24} />
+    <Icon name={name} color={tintColor} size={horizontal ? 17 : 24} />
 );

@@ -80,8 +80,8 @@ android {
         applicationId 'com.aiwatch'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "1.2.3"
+        versionCode 17
+        versionName "1.2.4"
         manifestPlaceholders = [
             appAuthRedirectScheme: "com.googleusercontent.apps.119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk"
         ]
@@ -158,12 +158,13 @@ crashlytics {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
     implementation 'androidx.core:core:1.1.0'
     implementation 'androidx.media:media:1.1.0'
     implementation 'com.facebook.react:react-native:+'
 
     if (enableHermes) {
-        def hermesPath = "../../node_modules/hermesvm/android/";
+        def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
         releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {

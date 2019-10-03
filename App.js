@@ -2,6 +2,7 @@ import React from 'react';
 import { CameraTabRoute } from './src/cameras/CameraTabRoute';
 import { EventTabRoute } from './src/events/EventTabRoute';
 import { SettingsTabRoute } from './src/settings/SettingsTabRoute';
+import { HelpTabRoute } from './src/help/HelpTabRoute';
 import { createAppContainer } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import Theme from './src/common/Theme';
@@ -17,12 +18,14 @@ const AppContainer = createAppContainer(
     {
       CameraTab: CameraTabRoute,
       EventsTab: EventTabRoute,
-      SettingsTab: SettingsTabRoute
+      SettingsTab: SettingsTabRoute,
+      HelpTab: HelpTabRoute
     },
     {
       barStyle: {backgroundColor: 'white'},
       activeColor: Theme.primary,
-      activeTintColor: Theme.primary
+      activeTintColor: Theme.primary,
+      shifting: false
     }
   )
 );
