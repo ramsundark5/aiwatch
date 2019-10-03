@@ -8,6 +8,15 @@ export default class HelpScreen extends Component{
         isLoading: false
     }
 
+    static navigationOptions = {
+        headerTitle: 'FAQ',
+        headerTintColor: Theme.primary,
+        headerTitleStyle: {
+          fontSize: 16,
+          fontWeight: 'normal',
+        }
+    };
+
     showSpinner(){
         this.setState({isLoading: true});
         //to be safe, dismiss the spinner after 2 mins
@@ -32,7 +41,7 @@ export default class HelpScreen extends Component{
                     animated={true}
                     cancelable={true}
                     indeterminate={false}
-                    visible={isLoading}/ >
+                    visible={isLoading} />
             </View>
         )
     }
