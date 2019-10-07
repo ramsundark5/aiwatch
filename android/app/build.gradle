@@ -211,6 +211,19 @@ dependencies {
     }
     implementation files('libs/evercam-java-1.2.0-android.jar')
 
+    //javacv
+    implementation "org.bytedeco:opencv:4.1.0-1.5.1"
+    implementation "org.bytedeco:opencv:4.1.0-1.5.1:android-arm"
+    implementation "org.bytedeco:opencv:4.1.0-1.5.1:android-arm64"
+    implementation "org.bytedeco:opencv:4.1.0-1.5.1:android-x86"
+    implementation "org.bytedeco:opencv:4.1.0-1.5.1:android-x86_64"
+
+    implementation "org.bytedeco:openblas:0.3.6-1.5.1"
+    implementation "org.bytedeco:openblas:0.3.6-1.5.1:android-arm"
+    implementation "org.bytedeco:openblas:0.3.6-1.5.1:android-arm64"
+    implementation "org.bytedeco:openblas:0.3.6-1.5.1:android-x86"
+    implementation "org.bytedeco:openblas:0.3.6-1.5.1:android-x86_64"
+
     //detox
     androidTestImplementation('com.wix:detox:+') { transitive = true }
     androidTestImplementation 'junit:junit:4.12'

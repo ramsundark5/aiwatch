@@ -13,11 +13,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.common.DeviceInfo;
 import com.aiwatch.common.DeviceType;
+import com.aiwatch.common.FileUtil;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseSyncManager;
 import com.aiwatch.firebase.FirebaseUserDataDao;
 import com.aiwatch.media.FFmpegConnectionTester;
+import com.aiwatch.media.FaceRecognitionProcessor;
 import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
 import com.facebook.react.bridge.Promise;
@@ -45,6 +47,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -390,6 +393,21 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             LOGGER.e(e, e.getMessage());
         } finally {
             promise.resolve(deviceTypeStr);
+        }
+    }
+
+    @ReactMethod
+    public void recognizeFace(final Promise promise) {
+        try{
+            FaceRecognitionProcessor faceRecognitionProcessor = new FaceRecognitionProcessor();
+            File trainingDir = FileUtil.getBaseDirectory(reactContext, "training");
+            File testImageDir = FileUtil.getBaseDirectory(reactContext, "recognition");
+            File testImagePath = new File(testImageDir, "trishna_test.jpg");
+            faceRecognitionProcessor.recognize(trainingDir.getAbsolutePath(), testImagePath.getAbsolutePath());
+        }catch(Exception e){
+            LOGGER.e(e, e.getMessage());
+        } finally {
+            promise.resolve("completed recogintion");
         }
     }
 
