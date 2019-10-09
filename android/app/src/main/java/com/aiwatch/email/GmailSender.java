@@ -78,14 +78,14 @@ public class GmailSender extends javax.mail.Authenticator
         else
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
         Transport.send(message);
-        LOGGER.d("");
+        LOGGER.d("Email notification sent");
 
     }
 
-    public void addAttachment(String filename) throws Exception
+    public void addAttachment(String filepath, String filename) throws Exception
     {
         BodyPart messageBodyPart = new MimeBodyPart();
-        DataSource source = new FileDataSource(filename);
+        DataSource source = new FileDataSource(filepath);
         messageBodyPart.setDataHandler(new DataHandler(source));
         messageBodyPart.setFileName(filename);
 

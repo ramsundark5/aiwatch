@@ -10,8 +10,8 @@ public class EmailNotificationManager {
 
     public void sendEmail(AlarmEvent alarmEvent){
         try{
-            GmailSender gmailSender = new GmailSender("aiwatchmonitor", "");
-            //gmailSender.addAttachment("");
+            GmailSender gmailSender = new GmailSender("aiwatchmonitor", "svce2512");
+            gmailSender.addAttachment(alarmEvent.getThumbnailPath(), "event.png");
             gmailSender.sendMail(alarmEvent.getMessage(), alarmEvent.getMessage(), "aiwatchmonitor", "ramsundark5@gmail.com");
         } catch (Exception e){
             LOGGER.e(e, "Error sending email");

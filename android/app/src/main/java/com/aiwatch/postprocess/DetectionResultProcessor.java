@@ -56,6 +56,7 @@ public class DetectionResultProcessor {
         boolean isResultInteresting = withinROI && (shouldRecordVideo || shouldNotify);
         if(isResultInteresting){
             thumbnailPath = saveImage(frameEvent, objectDetectionResult);
+            alarmEvent.setThumbnailPath(thumbnailPath);
         }
         if(shouldNotify){
             //first notify the event
@@ -65,7 +66,6 @@ public class DetectionResultProcessor {
             emailNotificationManager.sendEmail(alarmEvent);
             smartthingsNotificationManager.notifyHub();
             AlexaNotificationManager.notifyAlexa(alarmEvent);
-            alarmEvent.setThumbnailPath(thumbnailPath);
             String gdriveImagePath = RecordingManager.saveToGdrive(frameEvent.getContext(), frameEvent.getCameraConfig().getId(), thumbnailPath, MediaType.PNG.toString(), RecordingManager.DEFAULT_IMAGE_EXTENSION);
             alarmEvent.setCloudImagePath(gdriveImagePath);
             NotificationManager.sendImageNotification(frameEvent.getContext(), alarmEvent);
