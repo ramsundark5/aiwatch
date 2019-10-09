@@ -215,6 +215,10 @@ dependencies {
     androidTestImplementation('com.wix:detox:+') { transitive = true }
     androidTestImplementation 'junit:junit:4.12'
 
+    //mail
+    compile 'com.sun.mail:android-mail:1.6.2'
+    compile 'com.sun.mail:android-activation:1.6.2'
+
     //react native projects
     implementation project(':react-native-screens')
     implementation project(':react-native-gesture-handler')

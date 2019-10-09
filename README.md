@@ -25,7 +25,11 @@ Todo
 - [x] Tablet optimize
 - [x] Google signin refresh token
 - [x] Monitoring status sync
-- [ ] In app FAQ/Help screen
+- [x] In app FAQ/Help screen
+- [ ] Video and monitoring latency
+- [ ] Email notification
+- [ ] Google photos upload
+- [ ] Echo show integration
 - [ ] Face recognition
 
 

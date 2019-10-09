@@ -31,12 +31,14 @@ public class DetectionResultProcessor {
     private AlarmEventDao alarmEventDao;
     private FirebaseAlarmEventDao firebaseAlarmEventDao;
     private SmartthingsNotificationManager smartthingsNotificationManager;
+    private EmailNotificationManager emailNotificationManager;
     private TTSManager ttsManager;
 
     public DetectionResultProcessor(){
         this.alarmEventDao = new AlarmEventDao();
         this.firebaseAlarmEventDao = new FirebaseAlarmEventDao();
         this.smartthingsNotificationManager = new SmartthingsNotificationManager();
+        this.emailNotificationManager = new EmailNotificationManager();
         this.ttsManager = new TTSManager();
     }
 
@@ -60,6 +62,7 @@ public class DetectionResultProcessor {
             if(cameraConfig.isTtsEnabled()){
                 ttsManager.speakMessage(frameEvent.getContext(), notificationMessage);
             }
+            emailNotificationManager.sendEmail(alarmEvent);
             smartthingsNotificationManager.notifyHub();
             AlexaNotificationManager.notifyAlexa(alarmEvent);
             alarmEvent.setThumbnailPath(thumbnailPath);
