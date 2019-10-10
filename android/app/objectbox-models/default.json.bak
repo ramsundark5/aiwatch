@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "14:520228550785569471",
+      "lastPropertyId": "19:6897306962720489877",
       "name": "Settings",
       "properties": [
         {
@@ -55,6 +55,26 @@
         {
           "id": "14:520228550785569471",
           "name": "isExternalStorageEnabled"
+        },
+        {
+          "id": "15:4284917339507134961",
+          "name": "googleAccessToken"
+        },
+        {
+          "id": "16:6373558596602342167",
+          "name": "googleRefreshToken"
+        },
+        {
+          "id": "17:5961789512993524001",
+          "name": "emailUsername"
+        },
+        {
+          "id": "18:6854354800011108838",
+          "name": "emailPassword"
+        },
+        {
+          "id": "19:6897306962720489877",
+          "name": "isEmailEnabled"
         }
       ],
       "relations": []

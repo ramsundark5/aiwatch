@@ -45,12 +45,15 @@ export default class EditableText extends Component {
     }
 
     _renderViewMode(){
-        const {label, mask} = this.props;
+        const {label, mask, secureTextEntry} = this.props;
         const { editableText } = this.state;
         let maskedTextContent = editableText;
         if(mask && editableText && editableText.length >= 10){
             let lastFive = editableText.substr(editableText.length - 5); 
             maskedTextContent = 'xxxxxxxx'+lastFive;
+        }
+        if(secureTextEntry && editableText && editableText.length >= 1){
+            maskedTextContent = 'xxxxxxxxxx';
         }
         return(
             <TouchableOpacity style={[styles.inputContainer, this.props.viewInputContainerStyle, {paddingBottom: 0, paddingTop: 0}]}>

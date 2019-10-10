@@ -2,7 +2,9 @@ package com.aiwatch.postprocess;
 
 import com.aiwatch.Logger;
 import com.aiwatch.email.GmailSender;
+import com.aiwatch.media.db.SettingsDao;
 import com.aiwatch.models.AlarmEvent;
+import com.aiwatch.models.Settings;
 
 public class EmailNotificationManager {
 
@@ -10,9 +12,13 @@ public class EmailNotificationManager {
 
     public void sendEmail(AlarmEvent alarmEvent){
         try{
-            GmailSender gmailSender = new GmailSender("aiwatchmonitor", "svce2512");
-            gmailSender.addAttachment(alarmEvent.getThumbnailPath(), "event.png");
-            gmailSender.sendMail(alarmEvent.getMessage(), alarmEvent.getMessage(), "aiwatchmonitor", "ramsundark5@gmail.com");
+            SettingsDao settingsDao = new SettingsDao();
+            Settings settings = settingsDao.getSettings();
+            if(settings != null && settings.getEmailUsername() != null && settings.getEmailPassword() != null && settings.getReceiverEmailUsername() != null){
+                GmailSender gmailSender = new GmailSender(settings.getEmailUsername(), settings.getEmailPassword());
+                gmailSender.addAttachment(alarmEvent.getThumbnailPath(), "event.png");
+                gmailSender.sendMail(alarmEvent.getMessage(), alarmEvent.getMessage(), "aiwatchmonitor", settings.getReceiverEmailUsername());
+            }
         } catch (Exception e){
             LOGGER.e(e, "Error sending email");
         }

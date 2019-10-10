@@ -6,7 +6,7 @@ import Theme from '../common/Theme';
 import { withNavigation } from 'react-navigation';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { updateSettings } from '../store/SettingsStore';
-import GoogleConnectStatus from './GoogleConnectStatus';
+import _ from 'lodash';
 import GoogleConnectStatusOauth from './GoogleConnectStatusOauth';
 import { connect } from 'react-redux';
 import InAppPurchase from './InAppPurchase';
@@ -14,6 +14,7 @@ import {LogView} from 'react-native-device-log';
 import Logger from '../common/Logger';
 import SmartthingsIntegration from './SmartthingsIntegration';
 import AlexaIntegration from './AlexaIntegration';
+import EmailIntegration from './EmailIntegration';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 class Settings extends Component{
 
@@ -45,19 +46,12 @@ class Settings extends Component{
       console.log('component updating');
       const prevSettings  = prevProps.settings;
       const currentSettings = this.props.settings;
-      if (currentSettings.isGoogleAccountConnected !== prevSettings.isGoogleAccountConnected 
-        || currentSettings.isNotificationEnabled !== prevSettings.isNotificationEnabled 
-        || currentSettings.isNoAdsPurchased !== prevSettings.isNoAdsPurchased
-        || currentSettings.smartthingsAccessToken !== prevSettings.smartthingsAccessToken
-        || currentSettings.smartthingsAccessTokenExpiry !== prevSettings.smartthingsAccessTokenExpiry 
-        || currentSettings.smartAppEndpoint !== prevSettings.smartAppEndpoint
-        || currentSettings.alexaToken !== prevSettings.alexaToken
-        || currentSettings.smartthingsClientId !== prevSettings.smartthingsClientId
-        || currentSettings.smartthingsClientSecret !== prevSettings.smartthingsClientSecret
-        || currentSettings.isAlexaConnected !== prevSettings.isAlexaConnected
-        || currentSettings.isExternalStorageEnabled !== prevSettings.isExternalStorageEnabled
-        || currentSettings.googleAccessToken !== prevSettings.googleAccessToken
-        || currentSettings.googleRefreshToken !== prevSettings.googleRefreshToken ) {
+      let settingsChanged = !_.isEqual(
+        _.omit(currentSettings, ['isLoading', 'showDeviceLogs']),
+        _.omit(prevSettings, ['isLoading', 'showDeviceLogs'])
+      );
+
+      if (settingsChanged) {
           try{
             let updatedSettings = await RNSmartCam.putSettings(currentSettings);
             console.log('updatedSettings after save ' + JSON.stringify(updatedSettings));
@@ -126,6 +120,7 @@ class Settings extends Component{
                   right={() => this.renderNotificationEnabled()} />
               <List.Item title="Use External Storage"
                   right={() => this.renderExternalStorageEnabled()} />
+              {this.renderEmailEnabled()}
               {this.renderSmartthingsEnabled()}
               {this.renderAlexaEnabled()}
               <List.Item title="Show Device Logs"
@@ -187,6 +182,14 @@ class Settings extends Component{
         value={settings.isExternalStorageEnabled}
         onValueChange={value => this.onExternalStorageEnabledChange(value)}
       />
+    );
+  }
+
+  renderEmailEnabled(){
+    const { settings, updateSettings } = this.props;
+    return (
+      <EmailIntegration settings={settings}
+          updateSettings={updateSettings}/>
     );
   }
 

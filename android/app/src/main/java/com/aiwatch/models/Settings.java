@@ -23,6 +23,10 @@ public class Settings {
     private String smartAppEndpoint;
     private Date smartthingsAccessTokenExpiry;
     private String alexaToken;
+    private String emailUsername;
+    private String emailPassword;
+    private String receiverEmailUsername;
+    private boolean isEmailEnabled;
 
     public long getId() {
         return id;
@@ -134,5 +138,37 @@ public class Settings {
 
     public void setGoogleRefreshToken(String googleRefreshToken) {
         this.googleRefreshToken = googleRefreshToken;
+    }
+
+    public String getEmailUsername() {
+        return emailUsername;
+    }
+
+    public void setEmailUsername(String emailUsername) {
+        this.emailUsername = emailUsername;
+    }
+
+    public String getEmailPassword() {
+        return emailPassword;
+    }
+
+    public void setEmailPassword(String emailPassword) {
+        this.emailPassword = emailPassword;
+    }
+
+    public boolean isEmailEnabled() {
+        return isEmailEnabled;
+    }
+
+    public void setEmailEnabled(boolean emailEnabled) {
+        isEmailEnabled = emailEnabled;
+    }
+
+    public String getReceiverEmailUsername() {
+        return receiverEmailUsername;
+    }
+
+    public void setReceiverEmailUsername(String receiverEmailUsername) {
+        this.receiverEmailUsername = receiverEmailUsername;
     }
 }

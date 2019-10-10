@@ -18,7 +18,11 @@ const settingsSlice = createSlice({
       smartthingsClientId: null,
       smartthingsClientSecret: null,
       googleAccessToken: null,
-      googleRefreshToken: null
+      googleRefreshToken: null,
+      emailUsername: null,
+      emailPassword: null,
+      receiverEmailUsername:  null,
+      isEmailEnabled: false
     },
       
     reducers: {
