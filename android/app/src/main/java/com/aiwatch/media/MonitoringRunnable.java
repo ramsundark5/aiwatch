@@ -22,10 +22,12 @@ public class MonitoringRunnable implements Runnable {
     private ImageProcessor imageProcessor;
     private String imageFilePath;
     private OldMediaCleaner oldMediaCleaner;
-    private Timer ffmpegTimer = new Timer("ffmpegCheckTimer");
-    private Timer imageProcessTimer = new Timer("imageProcessTimer");
+    private Timer ffmpegTimer;
+    private Timer imageProcessTimer;
     private AtomicBoolean running = new AtomicBoolean(false);
 
+    private static final String FFMPEG_CHECK_TIMER_NAME = "ffmpegCheckTimer";
+    private static final String IMAGE_PROCESS_CHECK_TIMER_NAME = "imageProcessTimer";
     public MonitoringRunnable(CameraConfig cameraConfig, Context context) {
         try {
             this.cameraConfig = cameraConfig;
@@ -34,6 +36,8 @@ public class MonitoringRunnable implements Runnable {
             this.imageFilePath = getImageFilePath();
             this.imageProcessor = new ImageProcessor(context);
             this.oldMediaCleaner = new OldMediaCleaner();
+            this.ffmpegTimer = new Timer(FFMPEG_CHECK_TIMER_NAME);
+            this.imageProcessTimer = new Timer(IMAGE_PROCESS_CHECK_TIMER_NAME);
         } catch (Exception e) {
             LOGGER.e(e.getMessage());
         }
@@ -44,7 +48,9 @@ public class MonitoringRunnable implements Runnable {
         LOGGER.i("monitoring stop requested for camera "+cameraConfig.getId());
         ffmpegFrameExtractor.stop();
         ffmpegTimer.cancel();
+        ffmpegTimer = null;
         imageProcessTimer.cancel();
+        imageProcessTimer = null;
     }
 
     @Override
@@ -70,6 +76,9 @@ public class MonitoringRunnable implements Runnable {
                 oldMediaCleaner.cleanupMedia(context);
             }
         };
+        if(ffmpegTimer == null){
+            ffmpegTimer = new Timer(FFMPEG_CHECK_TIMER_NAME);
+        }
         ffmpegTimer.schedule(timerTask, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(30));
     }
 
@@ -89,6 +98,9 @@ public class MonitoringRunnable implements Runnable {
                 }
             }
         };
+        if(imageProcessTimer == null){
+            imageProcessTimer = new Timer(IMAGE_PROCESS_CHECK_TIMER_NAME);
+        }
         imageProcessTimer.schedule(timerTask, TimeUnit.SECONDS.toMillis(10), 500);
     }
 

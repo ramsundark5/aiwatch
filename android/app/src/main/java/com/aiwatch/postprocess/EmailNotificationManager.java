@@ -14,7 +14,7 @@ public class EmailNotificationManager {
         try{
             SettingsDao settingsDao = new SettingsDao();
             Settings settings = settingsDao.getSettings();
-            if(settings != null && settings.getEmailUsername() != null && settings.getEmailPassword() != null && settings.getReceiverEmailUsername() != null){
+            if(settings != null && settings.getEmailUsername() != null && settings.getEmailPassword() != null && settings.getReceiverEmailUsername() != null && settings.isEmailEnabled()){
                 GmailSender gmailSender = new GmailSender(settings.getEmailUsername(), settings.getEmailPassword());
                 gmailSender.addAttachment(alarmEvent.getThumbnailPath(), "event.png");
                 gmailSender.sendMail(alarmEvent.getMessage(), alarmEvent.getMessage(), "aiwatchmonitor", settings.getReceiverEmailUsername());
