@@ -15,6 +15,7 @@ public class Settings {
     private boolean isNoAdsPurchased;
     private boolean isAlexaConnected;
     private boolean isExternalStorageEnabled;
+    private boolean isGalleryAccessEnabled;
     private String googleAccessToken;
     private String googleRefreshToken;
     private String smartthingsClientId;
@@ -170,5 +171,13 @@ public class Settings {
 
     public void setReceiverEmailUsername(String receiverEmailUsername) {
         this.receiverEmailUsername = receiverEmailUsername;
+    }
+
+    public boolean isGalleryAccessEnabled() {
+        return isGalleryAccessEnabled;
+    }
+
+    public void setGalleryAccessEnabled(boolean galleryAccessEnabled) {
+        isGalleryAccessEnabled = galleryAccessEnabled;
     }
 }

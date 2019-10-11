@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.rnappauth.RNAppAuthPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
@@ -53,7 +54,8 @@ public class MainApplication extends Application implements ReactApplication {
             new OrientationPackage(),
             new ReactVlcPlayerPackage(),
             new RNSmartCamPackage(),
-            new RNCWebViewPackage()
+            new RNCWebViewPackage(),
+            new RNPermissionsPackage()
       );
     }
 

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "20:491526134952744448",
+      "lastPropertyId": "21:654407115583980822",
       "name": "Settings",
       "properties": [
         {
@@ -79,6 +79,10 @@
         {
           "id": "20:491526134952744448",
           "name": "receiverEmailUsername"
+        },
+        {
+          "id": "21:654407115583980822",
+          "name": "isGalleryAccessEnabled"
         }
       ],
       "relations": []

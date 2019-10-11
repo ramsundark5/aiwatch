@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class RecordingManager {
 
@@ -118,7 +117,7 @@ public class RecordingManager {
 
     private static File[] getInputFileList(FrameEvent frameEvent, AlarmEvent alarmEvent){
         try{
-            File videoFolder = FileUtil.getBaseDirectory(frameEvent.getContext(), AppConstants.TEMP_VIDEO_FOLDER);
+            File videoFolder = FileUtil.getApplicationDirectory(frameEvent.getContext(), AppConstants.TEMP_VIDEO_FOLDER);
             CameraConfig cameraConfig = frameEvent.getCameraConfig();
             DateTime currentTime = new DateTime();
             DateTime eventTime = new DateTime(alarmEvent.getDate());

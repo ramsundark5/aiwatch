@@ -12,6 +12,7 @@ const settingsSlice = createSlice({
       smartAppEndpoint: null,
       alexaToken: null,
       isAlexaConnected: false,
+      isGalleryAccessEnabled: false,
       isExternalStorageEnabled: false,
       isLoading: false,
       showDeviceLogs: false,

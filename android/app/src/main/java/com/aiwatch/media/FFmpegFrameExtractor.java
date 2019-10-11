@@ -8,8 +8,6 @@ import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
 import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import nl.bravobit.ffmpeg.CustomFFcommandExecuteAsyncTask;
 import nl.bravobit.ffmpeg.CustomFFmpeg;
@@ -46,7 +44,7 @@ public class FFmpegFrameExtractor {
         if(imageFile.exists()){
             imageFile.delete();
         }
-        File videoFolder = FileUtil.getBaseDirectory(context, AppConstants.TEMP_VIDEO_FOLDER);
+        File videoFolder = FileUtil.getApplicationDirectory(context, AppConstants.TEMP_VIDEO_FOLDER);
         String videoPath = videoFolder.getAbsolutePath();
 
         File cvrFolder = FileUtil.getBaseDirectory(context, AppConstants.CVR_VIDEO_FOLDER);

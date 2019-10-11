@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "19:6897306962720489877",
+      "lastPropertyId": "20:491526134952744448",
       "name": "Settings",
       "properties": [
         {
@@ -75,6 +75,10 @@
         {
           "id": "19:6897306962720489877",
           "name": "isEmailEnabled"
+        },
+        {
+          "id": "20:491526134952744448",
+          "name": "receiverEmailUsername"
         }
       ],
       "relations": []

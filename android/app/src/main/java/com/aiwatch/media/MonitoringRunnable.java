@@ -105,7 +105,7 @@ public class MonitoringRunnable implements Runnable {
     }
 
     private String getImageFilePath(){
-        File imageFolder = FileUtil.getBaseDirectory(context, AppConstants.TEMP_IMAGES_FOLDER);
+        File imageFolder = FileUtil.getApplicationDirectory(context, AppConstants.TEMP_IMAGES_FOLDER);
         String imageFolderPath = imageFolder.getAbsolutePath();
         File imageFile = new File(imageFolderPath, "/" + cameraConfig.getId() + "-camera.png");
         return imageFile.getAbsolutePath();

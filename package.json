@@ -39,6 +39,7 @@
     "react-native-modal": "11.4.0",
     "react-native-orientation": "https://github.com/ramsundark5/react-native-orientation",
     "react-native-paper": "3.0.0-alpha.3",
+    "react-native-permissions": "^2.0.2",
     "react-native-progress": "git+https://github.com/ramsundark5/react-native-progress",
     "react-native-reanimated": "^1.2.0",
     "react-native-screens": "^2.0.0-alpha.3",

@@ -16,6 +16,8 @@ import SmartthingsIntegration from './SmartthingsIntegration';
 import AlexaIntegration from './AlexaIntegration';
 import EmailIntegration from './EmailIntegration';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+
 class Settings extends Component{
 
     state = {
@@ -78,6 +80,29 @@ class Settings extends Component{
       }
     }
 
+    async onGalleryAccessEnabledChange(value){
+      const { updateSettings } = this.props;
+        updateSettings({ isLoading: true });
+        let galleryAccessEnabled = false;
+        try{
+          //if exernal storage access enable requested
+          if(value){
+            let galleryAccessResult = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+            if(galleryAccessResult != RESULTS.GRANTED){
+              let accessResult = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+              if(accessResult == RESULTS.GRANTED){
+                galleryAccessEnabled = true;
+              }
+            }else{
+              galleryAccessEnabled = true;
+            }
+          }
+          updateSettings({ isGalleryAccessEnabled: galleryAccessEnabled });
+        }finally{
+          updateSettings({ isLoading: false });
+        }
+    }
+
     onExternalStorageEnabledChange(value){
         const { updateSettings } = this.props;
         updateSettings({ isLoading: true });
@@ -120,6 +145,9 @@ class Settings extends Component{
                   right={() => this.renderNotificationEnabled()} />
               <List.Item title="Use External Storage"
                   right={() => this.renderExternalStorageEnabled()} />
+              <List.Item title="Save media to Gallery"
+                  description="Required for upload to Google photos"
+                  right={() => this.renderSaveToGalleryEnabled()} />
               {this.renderEmailEnabled()}
               {this.renderSmartthingsEnabled()}
               {this.renderAlexaEnabled()}
@@ -181,6 +209,16 @@ class Settings extends Component{
       <Switch
         value={settings.isExternalStorageEnabled}
         onValueChange={value => this.onExternalStorageEnabledChange(value)}
+      />
+    );
+  }
+
+  renderSaveToGalleryEnabled() {
+    const { settings } = this.props;
+    return (
+      <Switch
+        value={settings.isGalleryAccessEnabled}
+        onValueChange={value => this.onGalleryAccessEnabledChange(value)}
       />
     );
   }
