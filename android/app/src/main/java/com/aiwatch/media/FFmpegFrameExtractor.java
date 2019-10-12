@@ -30,7 +30,7 @@ public class FFmpegFrameExtractor {
             LOGGER.d("Tried to start process when its already running. Skipping the restart for camera "+cameraConfig.getId());
             return;
         }
-        if(!cameraConfig.isMonitoringEnabled()){
+        if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled()){
             LOGGER.d("all monitoring flags are turned off. Skipping monitorinng for camera " + cameraConfig.getId());
             return;
         }
