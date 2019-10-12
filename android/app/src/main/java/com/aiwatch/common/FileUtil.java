@@ -1,5 +1,6 @@
 package com.aiwatch.common;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -76,15 +77,14 @@ public class FileUtil {
     }
 
     private static boolean isGalleryAccessible(Context context){
-        String permission = "WRITE_EXTERNAL_STORAGE";
-        boolean galleryAccessible = false;
+        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        boolean galleryAccessible;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             galleryAccessible = context.checkPermission(permission, android.os.Process.myPid(), android.os.Process.myUid())
                     == PackageManager.PERMISSION_GRANTED;
         }else{
             galleryAccessible = context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
         }
-        //return galleryAccessible;
-        return true;
+        return galleryAccessible;
     }
 }
