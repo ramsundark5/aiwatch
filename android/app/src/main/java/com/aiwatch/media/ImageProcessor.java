@@ -67,7 +67,8 @@ public class ImageProcessor {
     private boolean shouldProcess(FrameEvent frameEvent){
         boolean isPaused = isProcessingInPause(frameEvent.getCameraConfig());
         boolean imageModified = isImageModified(frameEvent);
-        return !isPaused && imageModified;
+        boolean isMonitoringEnabled = frameEvent.getCameraConfig().isMonitoringEnabled();
+        return isMonitoringEnabled && !isPaused && imageModified;
     }
 
     private boolean isProcessingInPause(CameraConfig cameraConfig){
