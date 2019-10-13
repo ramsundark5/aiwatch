@@ -30,8 +30,9 @@ public class CameraConfig implements Serializable {
     private String password;
 
     private int videoCodec;
-    private int recordingDuration;
-    private int waitPeriodAfterDetection;
+    private int recordingDuration = 15;
+    private int waitPeriodAfterDetection = 5;
+
     private boolean notifyPersonDetect;
     private boolean notifyAnimalDetect;
     private boolean notifyVehicleDetect;
@@ -39,6 +40,7 @@ public class CameraConfig implements Serializable {
     private boolean recordAnimalDetect;
     private boolean recordVehicleDetect;
     private boolean testModeEnabled;
+
     private boolean cvrEnabled;
     private boolean ttsEnabled;
     private boolean disconnected;

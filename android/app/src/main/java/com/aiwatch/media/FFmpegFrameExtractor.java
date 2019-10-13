@@ -55,13 +55,14 @@ public class FFmpegFrameExtractor {
         if(cameraConfig.isCvrEnabled()){
             cvrCommand = getRecordCommand(cvrPath, AppConstants.CVR_RECORDING_DURATION);
         }
-        String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
+        String frameExtractCommand = " -vf scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
         //String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
+        String lowLatencyPrefix = "";//"-fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 ";
         String rtspPrefix = "-rtsp_transport tcp ";
         if(videoUrl != null && !videoUrl.startsWith("rtsp")){
             rtspPrefix = "";
         }
-        String command = rtspPrefix + "-i " + videoUrl + frameExtractCommand + recordCommand + cvrCommand;
+        String command = lowLatencyPrefix + rtspPrefix + "-i " + videoUrl + frameExtractCommand + recordCommand + cvrCommand;
         String[] ffmpegCommand = command.split("\\s+");
         ffmpeg.setTimeout(AppConstants.FFMPEG_COMMAND_TIMEOUT * 1000); //80 seconds
         ffTask = (CustomFFcommandExecuteAsyncTask) ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
