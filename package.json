@@ -27,7 +27,7 @@
     "react-native": "0.61.2",
     "react-native-admob": "git+https://github.com/ramsundark5/react-native-admob",
     "react-native-app-auth": "https://github.com/ramsundark5/react-native-app-auth",
-    "react-native-calendars": "^1.212.0",
+    "react-native-calendars": "https://github.com/ramsundark5/react-native-calendars",
     "react-native-config": "^0.11.7",
     "react-native-device-log": "git+https://github.com/ramsundark5/react-native-device-log",
     "react-native-gesture-handler": "^1.4.1",

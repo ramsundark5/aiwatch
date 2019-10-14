@@ -26,11 +26,13 @@ Todo
 - [x] Google signin refresh token
 - [x] Monitoring status sync
 - [x] In app FAQ/Help screen
-- [ ] Video and monitoring latency
-- [ ] Email notification
-- [ ] Google photos upload
+- [x] Video and monitoring latency
+- [x] Email notification
+- [x] Google photos upload
+- [ ] Agenda calendar issue https://github.com/wix/react-native-calendars/pull/486
 - [ ] Echo show integration
 - [ ] Face recognition
+
 
 
 For installing detox, if issues, run as sudo user.

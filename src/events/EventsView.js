@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import EventCard from './EventCard';
 import RNSmartCam from '../native/RNSmartCam';
-import { Button } from 'react-native-paper';
+import { Colors, Button } from 'react-native-paper';
 import moment from 'moment';
 import _ from 'lodash';
 import { loadEvents, deleteSelectedEvents, toggleEventSelection } from '../store/EventsStore';
@@ -139,8 +139,13 @@ class EventsView extends React.Component {
                     renderEmptyDate={() => {return (<View/>);}}
                       // specify what should be rendered instead of ActivityIndicator
                     renderEmptyData = {() => this.renderEmptyData()}
-                    rowHasChanged={(r1, r2) => this.rowHasChanged(r1, r2)}/>
-                    
+                    rowHasChanged={(r1, r2) => this.rowHasChanged(r1, r2)}
+                    // agenda theme
+                    theme={{
+                        'stylesheet.calendar.header': { monthText: { paddingTop: 12} },
+                        agendaKnobColor: Colors.grey100,
+                        dotColor: Colors.deepOrange800
+                    }}/>
                     {this.renderDeleteButton()}
             </View>
         )
@@ -205,10 +210,10 @@ export default withNavigation(connectedEventsView);
 
 const styles = StyleSheet.create({
     firstEventPadding: {
-      paddingTop: 15,
+        paddingTop: 15,
     },
     emptyStyle: {
-
+        
     },
     deleteButtonStyle:{
         bottom: 0,
