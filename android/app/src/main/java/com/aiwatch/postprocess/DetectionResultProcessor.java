@@ -42,6 +42,15 @@ public class DetectionResultProcessor {
         this.ttsManager = new TTSManager();
     }
 
+    public boolean isResultInteresting(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
+        CameraConfig cameraConfig = frameEvent.getCameraConfig();
+        boolean withinROI = isWithinROI(cameraConfig, objectDetectionResult.getLocation());
+        boolean shouldRecordVideo = RecordingManager.shouldStartRecording(objectDetectionResult, frameEvent.getCameraConfig());
+        boolean shouldNotify = NotificationManager.shouldNotifyResult(objectDetectionResult, frameEvent.getCameraConfig());
+        boolean isResultInteresting = withinROI && (shouldRecordVideo || shouldNotify);
+        return isResultInteresting;
+    }
+
     public boolean processObjectDetectionResult(FrameEvent frameEvent, ObjectDetectionResult objectDetectionResult){
         String videoPath = null;
         String gdriveVideoPath = null;

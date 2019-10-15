@@ -29,7 +29,7 @@ Todo
 - [x] Video and monitoring latency
 - [x] Email notification
 - [x] Google photos upload
-- [ ] Agenda calendar issue https://github.com/wix/react-native-calendars/pull/486
+- [x] Agenda calendar issue https://github.com/wix/react-native-calendars/pull/486
 - [ ] Echo show integration
 - [ ] Face recognition
 
