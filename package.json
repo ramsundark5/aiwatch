@@ -16,7 +16,8 @@
     "test:android-release": "detox test --configuration android.emu.release -l verbose",
     "test:jest-circus:android-release": "detox test --configuration android.emu.release -l verbose -o e2e/config-circus.json",
     "lint": "eslint .",
-    "jetify": "npx jetify"
+    "jetify": "npx jetify",
+    "postversion": "react-native-version"
   },
   "dependencies": {
     "@react-native-community/netinfo": "^4.2.2",
@@ -74,6 +75,7 @@
     "prettier": "1.18.2",
     "pretty-quick": "^1.11.1",
     "react-native-cli": "^2.0.1",
+    "react-native-version": "^3.2.0",
     "react-test-renderer": "16.10.1"
   },
   "jest": {
