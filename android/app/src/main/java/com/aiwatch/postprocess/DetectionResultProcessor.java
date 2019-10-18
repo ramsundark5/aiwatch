@@ -85,6 +85,7 @@ public class DetectionResultProcessor {
             if(recordingDuration < 10){
                 recordingDuration = 15;
             }
+            LOGGER.d("recording duration is "+recordingDuration);
             long waitTimeForRecording = TimeUnit.SECONDS.toMillis(recordingDuration + 2);
             try {
                 Thread.sleep(waitTimeForRecording);
