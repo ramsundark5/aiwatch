@@ -20,7 +20,8 @@ export default class EmailIntegration extends Component{
     }
 
     onChangeEmailStatus(emailEnabled){
-      const { emailUsername, emailPassword, receiverEmailUsername, updateSettings } = this.props.settings;
+      const { updateSettings } = this.props;
+      const { emailUsername, emailPassword, receiverEmailUsername } = this.props.settings;
       if(emailEnabled && (!emailUsername || !emailPassword || !receiverEmailUsername)){
         ToastAndroid.showWithGravity('Email username and password required.', ToastAndroid.SHORT, ToastAndroid.CENTER);
         return;
