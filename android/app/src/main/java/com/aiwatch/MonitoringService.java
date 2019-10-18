@@ -47,7 +47,6 @@ public class MonitoringService extends AbstractForegroundService {
                     startMonitoring();
                     break;
                 case AppConstants.STOP_MONITORING:
-                    stopMonitoringRequested = true;
                     stopMonitoring();
                     break;
                 case AppConstants.CONNECT_CAMERA:
@@ -98,12 +97,12 @@ public class MonitoringService extends AbstractForegroundService {
         }
 
         if(!isMonitoringStartedForAny){
-            stopMonitoringRequested = true;
             stopMonitoring();
         }
     }
 
     private void stopMonitoring(){
+        stopMonitoringRequested = true;
         detectionController.stopAllDetecting();
         stopSelf();
     }
