@@ -30,6 +30,8 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
 import com.aiwatch.common.ConversionUtil;
 import com.aiwatch.models.AlarmEvent;
@@ -245,6 +247,8 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             if(settings == null){
                 settings = new Settings();
             }
+            boolean googlePlayAvailable = this.isGooglePlayAvailable();
+            settings.setGooglePlayAvailable(googlePlayAvailable);
             String jsonString = gson.toJson(settings);
             JSONObject jsonObject = new JSONObject(jsonString);
             WritableMap settingsMap = ConversionUtil.convertJsonToMap(jsonObject);
@@ -391,6 +395,18 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
         } finally {
             promise.resolve(deviceTypeStr);
         }
+    }
+
+    public boolean isGooglePlayAvailable(){
+        boolean googlePlayAvailable = false;
+        try{
+            GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+            int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(reactContext);
+            googlePlayAvailable = resultCode == ConnectionResult.SUCCESS;
+        }catch(Exception e){
+            LOGGER.e(e, e.getMessage());
+        }
+        return googlePlayAvailable;
     }
 
     public String getVersion() {

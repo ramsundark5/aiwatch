@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4531654298763147475",
-      "lastPropertyId": "21:654407115583980822",
+      "lastPropertyId": "22:430184877010295164",
       "name": "Settings",
       "properties": [
         {
@@ -83,6 +83,10 @@
         {
           "id": "21:654407115583980822",
           "name": "isGalleryAccessEnabled"
+        },
+        {
+          "id": "22:430184877010295164",
+          "name": "isGooglePlayAvailable"
         }
       ],
       "relations": []

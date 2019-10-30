@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Text, View } from 'react-native';
 import RNSmartCam from '../native/RNSmartCam';
 import { Button, Colors, List, Switch } from 'react-native-paper';
@@ -138,11 +138,7 @@ class Settings extends Component{
               visible={isLoading}
               textContent={'Loading...'} />
             <List.Section>
-              <List.Item title="Enable cloud sync" 
-                  description="Required for remote viewing and notification"
-                  right={() => this.renderGoogleAccountConnected()} />
-              <List.Item title="Enable Notification"
-                  right={() => this.renderNotificationEnabled()} />
+              {this.renderGoogleAccountConnectAndNotification()}
               <List.Item title="Use External Storage"
                   right={() => this.renderExternalStorageEnabled()} />
               <List.Item title="Save media to Gallery"
@@ -156,13 +152,28 @@ class Settings extends Component{
                   right={() => this.renderDeviceLogsEnabled()} />
             </List.Section>
             {this.renderSyncButton()}
-            <InAppPurchase {...this.props}/>
+            {this.renderInAppPurchase()}
             {this.renderDeviceLogs()}
             {this.renderVersion()}
           </KeyboardAwareScrollView>
       );
   }
 
+  renderGoogleAccountConnectAndNotification(){
+    const { settings } = this.props;
+    if(!settings.isGooglePlayAvailable){
+      return null;
+    }
+    return(
+      <Fragment>
+        <List.Item title="Enable cloud sync" 
+                    description="Required for remote viewing and notification"
+                    right={() => this.renderGoogleAccountConnected()} />
+        <List.Item title="Enable Notification"
+            right={() => this.renderNotificationEnabled()} />
+      </Fragment>
+    );
+  }
   renderGoogleAccountConnected() {
     const { settings, updateSettings } = this.props;
     if(!settings.isNoAdsPurchased){
@@ -278,6 +289,16 @@ class Settings extends Component{
     const { settings } = this.props;
     return(
       <Text style={{paddingLeft: 15}}>Version: {settings.version}</Text>
+    )
+  }
+
+  renderInAppPurchase(){
+    const { settings } = this.props;
+    if(!settings.isGooglePlayAvailable){
+      return null;
+    }
+    return(
+      <InAppPurchase {...this.props}/>
     )
   }
 }

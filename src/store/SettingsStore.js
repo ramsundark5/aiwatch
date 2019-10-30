@@ -23,7 +23,8 @@ const settingsSlice = createSlice({
       emailUsername: null,
       emailPassword: null,
       receiverEmailUsername:  null,
-      isEmailEnabled: false
+      isEmailEnabled: false,
+      isGooglePlayAvailable: true
     },
       
     reducers: {

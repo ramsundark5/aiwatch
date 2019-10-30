@@ -28,6 +28,7 @@ public class Settings {
     private String emailPassword;
     private String receiverEmailUsername;
     private boolean isEmailEnabled;
+    private boolean isGooglePlayAvailable;
 
     public long getId() {
         return id;
@@ -179,5 +180,13 @@ public class Settings {
 
     public void setGalleryAccessEnabled(boolean galleryAccessEnabled) {
         isGalleryAccessEnabled = galleryAccessEnabled;
+    }
+
+    public boolean isGooglePlayAvailable() {
+        return isGooglePlayAvailable;
+    }
+
+    public void setGooglePlayAvailable(boolean googlePlayAvailable) {
+        isGooglePlayAvailable = googlePlayAvailable;
     }
 }
