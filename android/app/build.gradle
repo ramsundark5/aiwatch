@@ -80,8 +80,8 @@ android {
         applicationId 'com.aiwatch'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 22
-        versionName "1.2.7"
+        versionCode 23
+        versionName "1.2.8"
         manifestPlaceholders = [
             appAuthRedirectScheme: "com.googleusercontent.apps.119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk"
         ]
@@ -220,20 +220,8 @@ dependencies {
     compile 'com.sun.mail:android-activation:1.6.2'
 
     //react native projects
-    implementation project(':react-native-screens')
-    implementation project(':react-native-gesture-handler')
     implementation project(':react-native-yz-vlcplayer')
-    implementation project(':react-native-vector-icons')
-    implementation project(':react-native-orientation')
-    implementation project(':react-native-google-signin')
-    implementation project(':bugsnag-react-native')
-    implementation project(':react-native-config')
-    implementation project(':react-native-splash-screen')
-    implementation project(':react-native-iap')
-    implementation project(':@react-native-community_netinfo')
     implementation project(':react-native-admob')
-    implementation project(':react-native-svg')
-    implementation project(':react-native-app-auth')
 }
 
 repositories {
