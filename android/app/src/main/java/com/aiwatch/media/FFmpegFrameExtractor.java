@@ -55,7 +55,7 @@ public class FFmpegFrameExtractor {
         if(cameraConfig.isCvrEnabled()){
             cvrCommand = getRecordCommand(cvrPath, AppConstants.CVR_RECORDING_DURATION);
         }
-        String frameExtractCommand = " -vf scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
+        String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
         //String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
         String lowLatencyPrefix = "-fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 ";
         String rtspPrefix = "-rtsp_transport tcp ";

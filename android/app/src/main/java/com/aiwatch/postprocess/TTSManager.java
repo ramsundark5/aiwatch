@@ -20,7 +20,7 @@ public class TTSManager {
                 }
                 Bundle bundle = new Bundle();
                 bundle.putString(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));*/
-                int returnVal = textToSpeechSystem.speak(message, TextToSpeech.QUEUE_ADD, null, null);
+                int returnVal = textToSpeechSystem.speak(message, TextToSpeech.QUEUE_FLUSH, null, null);
                 LOGGER.d("TTS notify completed with status "+ returnVal);
             }
         });
