@@ -42,6 +42,10 @@ public class AppConstants {
     public static final int PRE_RECORDING_BUFFER                = 10; //in seconds
     public static final int CVR_RECORDING_DURATION              = 20 * 60; //in seconds - 20 mins
 
+    public static final String APP_SHARED_PREFERENCE            = "AIWATCH_SHARED_PREFERENCE";
+    public static final String STOP_MONITORING_REQUESTED        = "STOP_MONITORING_REQUESTED";
+    public static final String CAMERA_MONITOR_STATUS_PREFIX     = "MONITORING_CAMERA_STATUS_";
+
     public static final String GOOOGLE_API_CLIENT_ID            = "119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk";
 
     public static final String DEVICE_DISCOVERY_PROGRESS_JS_EVENT         = "DEVICE_DISCOVERY_PROGRESS_JS_EVENT";

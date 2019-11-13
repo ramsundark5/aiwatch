@@ -13,6 +13,8 @@ import com.dooboolab.RNIap.RNIapPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.bugsnag.BugsnagReactNative;
+
+import cn.nodemedia.react_native_nodemediaclient.NodeMediaReactPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.horcrux.svg.SvgPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
@@ -55,7 +57,8 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactVlcPlayerPackage(),
             new RNSmartCamPackage(),
             new RNCWebViewPackage(),
-            new RNPermissionsPackage()
+            new RNPermissionsPackage(),
+            new NodeMediaReactPackage()
       );
     }
 

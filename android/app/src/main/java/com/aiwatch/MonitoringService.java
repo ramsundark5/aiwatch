@@ -1,10 +1,9 @@
 package com.aiwatch;
 
 import android.content.Intent;
-import android.os.Build;
-import android.widget.Toast;
 
 import com.aiwatch.common.AppConstants;
+import com.aiwatch.common.SharedPreferenceUtil;
 import com.aiwatch.media.DetectionController;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
@@ -18,20 +17,16 @@ public class MonitoringService extends AbstractForegroundService {
     private static final Logger LOGGER = new Logger();
     private DetectionController detectionController = new DetectionController();
 
-    private boolean stopMonitoringRequested = false;
     @Override
     public void onCreate() {
         LOGGER.i("Creating new monitoring service instance. Thread is "+Thread.currentThread().getName());
         startForgroundNotification();
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread paramThread, Throwable t) {
-                LOGGER.e(t, "Uncaught exception "+ t.getCause().getMessage());
-                Crashlytics.log("Uncaught exception "+ t.getCause().getMessage());
-                Crashlytics.logException(t);
-                //restart monitorinn
-                startMonitoring();
-            }
+        Thread.setDefaultUncaughtExceptionHandler((paramThread, t) -> {
+            LOGGER.e(t, "Uncaught exception "+ t.getCause().getMessage());
+            Crashlytics.log("Uncaught exception "+ t.getCause().getMessage());
+            Crashlytics.logException(t);
+            //restart monitoring
+            startMonitoring();
         });
     }
 
@@ -39,7 +34,7 @@ public class MonitoringService extends AbstractForegroundService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         preStart(this);
         String action = intent != null ? intent.getStringExtra(AppConstants.ACTION_EXTRA) : null;
-        stopMonitoringRequested = false;
+        SharedPreferenceUtil.setStopMonitoringRequested(this, false);
         LOGGER.i("Received onStartCommand with action " + action);
         if(action != null){
             switch (action) {
@@ -56,14 +51,6 @@ public class MonitoringService extends AbstractForegroundService {
                 case AppConstants.DISCONNECT_CAMERA:
                     long disconnectCameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
                     detectionController.stopDetecting(disconnectCameraId);
-                    break;
-                case AppConstants.SAVE_CAMERA:
-                    CameraConfig cameraConfig = (CameraConfig) intent.getSerializableExtra(AppConstants.CAMERA_CONFIG_EXTRA);
-                    detectionController.startDetection(cameraConfig, getApplicationContext());
-                    break;
-                case AppConstants.REMOVE_CAMERA:
-                    long cameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
-                    detectionController.stopDetecting(cameraId);
                     break;
                 default:
                     LOGGER.i("unknown command sent to monitoring service "+ action);
@@ -102,19 +89,22 @@ public class MonitoringService extends AbstractForegroundService {
     }
 
     private void stopMonitoring(){
-        stopMonitoringRequested = true;
+        SharedPreferenceUtil.setStopMonitoringRequested(this,true);
         detectionController.stopAllDetecting();
         stopSelf();
     }
 
     @Override
     public void onDestroy() {
-        if(stopMonitoringRequested){
+        if(SharedPreferenceUtil.isStopMonitoringRequested(this)){
             LOGGER.d("Stop monitoring requested. Destroying monitoring service");
             postStopCleanup();
             stopForeground(true); //true will remove notification
             NotificationManager.sendStringNotification(getApplicationContext(), "aiwatch monitoring is stopped");
             //Toast.makeText(this, "aiwatch monitoring is stopped", Toast.LENGTH_SHORT).show();
+
+            //just in case some rogue threads are running, stop everything one more time
+            detectionController.stopAllDetecting();
         }
         else{
             Intent monitoringIntent = new Intent(getApplicationContext(), MonitoringService.class);

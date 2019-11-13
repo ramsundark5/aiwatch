@@ -3,6 +3,7 @@ package com.aiwatch.media;
 import android.content.Context;
 import com.aiwatch.Logger;
 import com.aiwatch.common.FileUtil;
+import com.aiwatch.common.SharedPreferenceUtil;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.common.AppConstants;
 
@@ -10,8 +11,6 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 
 public class MonitoringRunnable implements Runnable {
 
@@ -24,7 +23,6 @@ public class MonitoringRunnable implements Runnable {
     private OldMediaCleaner oldMediaCleaner;
     private Timer ffmpegTimer;
     private Timer imageProcessTimer;
-    private AtomicBoolean running = new AtomicBoolean(false);
 
     private static final String FFMPEG_CHECK_TIMER_NAME = "ffmpegCheckTimer";
     private static final String IMAGE_PROCESS_CHECK_TIMER_NAME = "imageProcessTimer";
@@ -44,7 +42,7 @@ public class MonitoringRunnable implements Runnable {
     }
 
     public void stop() {
-        running.set(false);
+        SharedPreferenceUtil.setCameraMonitorStatus(context, cameraConfig.getId(), false);
         LOGGER.i("monitoring stop requested for camera "+cameraConfig.getId());
         ffmpegFrameExtractor.stop();
         ffmpegTimer.cancel();
@@ -56,7 +54,7 @@ public class MonitoringRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            running.set(true);
+            SharedPreferenceUtil.setCameraMonitorStatus(context, cameraConfig.getId(), true);
             LOGGER.i("Creating new VideoProcessor runnable instance. Thread is "+Thread.currentThread().getName());
             ffmpegFrameExtractor.start(imageFilePath);
             startFFmpegCheckTimer();
@@ -87,7 +85,7 @@ public class MonitoringRunnable implements Runnable {
             @Override
             public void run() {
                 try{
-                    if(running.get()){
+                    if(SharedPreferenceUtil.isCameraMonitorRunning(context, cameraConfig.getId())){
                         FrameEvent frameEvent = new FrameEvent(cameraConfig, imageFilePath, context);
                         imageProcessor.processImage(frameEvent);
                     }else{
