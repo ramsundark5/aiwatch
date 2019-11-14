@@ -45,10 +45,16 @@ class EditCamera extends Component {
   }
 
   async onSaveCameraConfig() {
-    const { cameraConfig } = this.state;
+    let { cameraConfig } = this.state;
     const { editCamera } = this.props;
     try{
       this.setState({loading: true});
+      if(!cameraConfig.recordingDuration || cameraConfig.recordingDuration < 10){
+        cameraConfig.recordingDuration = 15;
+      }
+      if(!cameraConfig.waitPeriodAfterDetection || cameraConfig.waitPeriodAfterDetection < 1){
+        cameraConfig.waitPeriodAfterDetection = 5;
+      }
       let updatedCameraConfig = await RNSmartCam.putCamera(cameraConfig);
       this.setState({
         cameraConfig: updatedCameraConfig

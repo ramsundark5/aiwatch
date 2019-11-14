@@ -57,10 +57,11 @@ public class FFmpegFrameExtractor {
         }
         String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
         //String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
-        String lowLatencyPrefix = "-fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 ";
+        String lowLatencyPrefix = "";
         String rtspPrefix = "-rtsp_transport tcp ";
         if(videoUrl != null && !videoUrl.startsWith("rtsp")){
             rtspPrefix = "";
+            //lowLatencyPrefix = "-fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 ";
         }
         String command = lowLatencyPrefix + rtspPrefix + "-i " + videoUrl + frameExtractCommand + recordCommand + cvrCommand;
         String[] ffmpegCommand = command.split("\\s+");

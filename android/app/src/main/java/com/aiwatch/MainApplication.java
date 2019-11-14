@@ -3,6 +3,7 @@ package com.aiwatch;
 import android.app.Application;
 import android.content.Context;
 
+import com.bugsnag.android.Bugsnag;
 import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
@@ -14,7 +15,6 @@ import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.bugsnag.BugsnagReactNative;
 
-import cn.nodemedia.react_native_nodemediaclient.NodeMediaReactPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.horcrux.svg.SvgPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
@@ -57,8 +57,7 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactVlcPlayerPackage(),
             new RNSmartCamPackage(),
             new RNCWebViewPackage(),
-            new RNPermissionsPackage(),
-            new NodeMediaReactPackage()
+            new RNPermissionsPackage()
       );
     }
 

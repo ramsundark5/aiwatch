@@ -11,9 +11,6 @@ public class AppConstants {
     public static final String STOP_MONITORING                  = "stop_monitoring";
     public static final String CONNECT_CAMERA                   = "CONNECT_CAMERA";
     public static final String DISCONNECT_CAMERA                = "DISCONNECT_CAMERA";
-    public static final String SAVE_CAMERA                      = "save_camera";
-    public static final String REMOVE_CAMERA                    = "remove_camera";
-    public static final String CAMERA_CONFIG_EXTRA              = "camera_config_extra";
     public static final String CAMERA_CONFIG_ID_EXTRA           = "camera_config_id_extra";
     public static final String ACTION_EXTRA                     = "action_extra";
 
@@ -34,11 +31,7 @@ public class AppConstants {
     public static final String VEHICLE_DETECTED_MESSAGE         = "Vehicle detected";
     public static final String OTHER_DETECTED_MESSAGE           = "Other event detected";
 
-    public static final String ADD_ALARM_EVENT                  = "ADD_ALARM_EVENT";
-    public static final String UPDATE_ALARM_EVENT               = "UPDATE_ALARM_EVENT";
-    public static final String DELETE_ALARM_EVENT               = "DELETE_ALARM_EVENT";
-
-    public static final long FFMPEG_COMMAND_TIMEOUT             = 100; //in seconds
+    public static final long FFMPEG_COMMAND_TIMEOUT             = 80; //in seconds
     public static final int PRE_RECORDING_BUFFER                = 10; //in seconds
     public static final int CVR_RECORDING_DURATION              = 20 * 60; //in seconds - 20 mins
 

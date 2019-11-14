@@ -130,7 +130,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             //start or stop service
             Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.CONNECT_CAMERA);
-            intent.putExtra(AppConstants.CAMERA_CONFIG_EXTRA, updatedCameraConfig.getId());
+            intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, updatedCameraConfig.getId());
             reactContext.startService(intent);
 
             //sync with firebase
@@ -151,6 +151,7 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             Intent intent = new Intent(reactContext, MonitoringService.class);
             intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.DISCONNECT_CAMERA);
             intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraId);
+            reactContext.startService(intent);
 
             promise.resolve("camera deleted and object detection stopped");
             cameraConfigDao.deleteCamera(cameraId);

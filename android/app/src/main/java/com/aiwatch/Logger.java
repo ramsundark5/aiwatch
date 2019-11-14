@@ -17,6 +17,7 @@ package com.aiwatch;
 
 import android.util.Log;
 
+import com.bugsnag.android.Bugsnag;
 import com.crashlytics.android.Crashlytics;
 
 import java.util.HashSet;
@@ -183,12 +184,23 @@ public final class Logger {
     if (isLoggable(Log.ERROR)) {
       Log.e(tag, toMessage(format, args));
     }
+    try{
+      Crashlytics.log(toMessage(format, args));
+      Bugsnag.notify(new Exception(toMessage(format, args)));
+    }catch(Exception e){
+
+    }
   }
 
   public void e(final Throwable t, final String format, final Object... args) {
     if (isLoggable(Log.ERROR)) {
       Log.e(tag, toMessage(format, args), t);
       Crashlytics.logException(t);
+      try{
+        Bugsnag.notify(t);
+      }catch(Exception e){
+
+      }
     }
   }
 }
