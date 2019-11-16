@@ -3,6 +3,7 @@ package com.aiwatch;
 import android.app.Application;
 import android.content.Context;
 
+import com.bugsnag.android.Bugsnag;
 import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
@@ -13,6 +14,7 @@ import com.dooboolab.RNIap.RNIapPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.bugsnag.BugsnagReactNative;
+
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.horcrux.svg.SvgPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
