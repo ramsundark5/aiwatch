@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { VlcSimplePlayer } from 'react-native-yz-vlcplayer';
-import Orientation from 'react-native-orientation';
 
 export default class RTSPVideoPlayer extends Component {
   render() {
