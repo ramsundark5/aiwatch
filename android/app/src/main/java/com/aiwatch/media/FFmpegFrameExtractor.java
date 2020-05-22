@@ -8,7 +8,11 @@ import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
 import java.io.File;
+import java.util.concurrent.Executors;
+
 import com.arthenica.mobileffmpeg.FFmpeg;
+import com.arthenica.mobileffmpeg.util.AsyncSingleFFmpegExecuteTask;
+import com.arthenica.mobileffmpeg.util.SingleExecuteCallback;
 
 import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL;
 import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
@@ -59,26 +63,30 @@ public class FFmpegFrameExtractor {
                 //lowLatencyPrefix = "-fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 ";
             }
             String command = lowLatencyPrefix + rtspPrefix + "-i " + videoUrl + frameExtractCommand + recordCommand + cvrCommand;
-            String[] ffmpegCommand = command.split("\\s+");
+            //String[] ffmpegCommand = command.split("\\s+");
 
-            LOGGER.d("ffmpeg extraction starting. Thread is "+ Thread.currentThread().getName());
+            LOGGER.i("ffmpeg extraction starting. Thread is "+ Thread.currentThread().getName());
             notifyAndUpdateCameraStatus(false);
-            int ffmpegResponse = FFmpeg.execute(ffmpegCommand);
 
-            if (ffmpegResponse == RETURN_CODE_SUCCESS) {
+            final AsyncSingleFFmpegExecuteTask asyncCommandTask = new AsyncSingleFFmpegExecuteTask(command, new SingleExecuteCallback() {
+                @Override
+                public void apply(int returnCode, String executeOutput) {
+                    if (returnCode == RETURN_CODE_SUCCESS) {
 
-            } else if (ffmpegResponse == RETURN_CODE_CANCEL) {
-                LOGGER.i("Command execution cancelled by user.");
-            } else {
-                LOGGER.i("ffmpeg extraction failed with response " + ffmpegResponse);
-            }
+                    } else if (returnCode == RETURN_CODE_CANCEL) {
+                        LOGGER.i("Command execution cancelled by user.");
+                    } else {
+                        LOGGER.i("ffmpeg extraction failed with response " + returnCode);
+                    }
+                    LOGGER.i("ffmpeg extraction completed for camera "+cameraConfig.getId());
+                    isfftaskCompleted = true;
+                    notifyAndUpdateCameraStatus(true);
+                }
+            });
+            asyncCommandTask.executeOnExecutor(Executors.newSingleThreadExecutor());
+
         }catch(Exception e){
             LOGGER.e("Error starting ffmpeg extraction "+e);
-        }
-        finally {
-            LOGGER.i("ffmpeg extraction completed for camera "+cameraConfig.getId());
-            isfftaskCompleted = true;
-            notifyAndUpdateCameraStatus(true);
         }
     }
 
