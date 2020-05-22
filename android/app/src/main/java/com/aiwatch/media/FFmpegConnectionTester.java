@@ -7,12 +7,13 @@ import android.util.Base64;
 
 import com.aiwatch.Logger;
 import com.aiwatch.models.CameraConfig;
+import com.arthenica.mobileffmpeg.FFmpeg;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
-import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.CustomResponseHandler;
+import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL;
+import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
 
 public class FFmpegConnectionTester {
 
@@ -22,9 +23,6 @@ public class FFmpegConnectionTester {
         String base64image = null;
         File outputFile = null;
         try{
-            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
-            boolean isffmpegSupported = ffmpeg.isSupported();
-            LOGGER.i("ffmpeg supported "+isffmpegSupported);
             String fileName = "test" + System.currentTimeMillis()+".jpg";
             outputFile = new File(context.getFilesDir(), fileName);
             String frameExtractCommand =  " -s 300x300 -vframes 1 "+outputFile;
@@ -35,9 +33,17 @@ public class FFmpegConnectionTester {
             }
             String command = rtspPrefix + "-i " + videoUrl + frameExtractCommand;
             String[] ffmpegCommand = command.split("\\s+");
-            ffmpeg.executeSync(ffmpegCommand, new CustomResponseHandler("connection tester"));
-            Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
-            base64image = imageToBase64(bitmapOutput);
+
+            int ffmpegResponse = FFmpeg.execute(ffmpegCommand);
+
+            if (ffmpegResponse == RETURN_CODE_SUCCESS) {
+                Bitmap bitmapOutput = BitmapFactory.decodeFile(outputFile.getAbsolutePath());
+                base64image = imageToBase64(bitmapOutput);
+            } else if (ffmpegResponse == RETURN_CODE_CANCEL) {
+                LOGGER.i("Tester Command execution cancelled by user.");
+            } else {
+                LOGGER.i("ffmpeg testing failed with response" + ffmpegResponse);
+            }
         }catch(Exception e){
             LOGGER.e(e, "Error getting image from camera "+cameraConfig.getId());
         }finally {

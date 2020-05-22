@@ -8,6 +8,7 @@ import com.aiwatch.media.DetectionController;
 import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
+import com.arthenica.mobileffmpeg.Config;
 import com.crashlytics.android.Crashlytics;
 
 import java.util.List;
@@ -85,7 +86,10 @@ public class MonitoringService extends AbstractForegroundService {
 
         if(!isMonitoringStartedForAny){
             stopMonitoring();
+            return;
         }
+
+        Config.enableLogCallback(message -> LOGGER.d(message.getText()));
     }
 
     private void stopMonitoring(){
