@@ -76,7 +76,7 @@ public class FFmpegFrameExtractor {
                     } else if (returnCode == RETURN_CODE_CANCEL) {
                         LOGGER.i("Command execution cancelled by user.");
                     } else {
-                        LOGGER.i("ffmpeg extraction failed with response " + returnCode);
+                        LOGGER.i("ffmpeg extraction failed with response " + executeOutput);
                     }
                     LOGGER.i("ffmpeg extraction completed for camera "+cameraConfig.getId());
                     isfftaskCompleted = true;
