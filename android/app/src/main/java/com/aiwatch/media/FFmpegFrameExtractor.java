@@ -72,13 +72,12 @@ public class FFmpegFrameExtractor {
                 @Override
                 public void apply(int returnCode, String executeOutput) {
                     if (returnCode == RETURN_CODE_SUCCESS) {
-
+                        LOGGER.i("ffmpeg extraction completed for camera "+cameraConfig.getId());
                     } else if (returnCode == RETURN_CODE_CANCEL) {
                         LOGGER.i("Command execution cancelled by user.");
                     } else {
                         LOGGER.i("ffmpeg extraction failed with response " + executeOutput);
                     }
-                    LOGGER.i("ffmpeg extraction completed for camera "+cameraConfig.getId());
                     isfftaskCompleted = true;
                     notifyAndUpdateCameraStatus(true);
                 }
