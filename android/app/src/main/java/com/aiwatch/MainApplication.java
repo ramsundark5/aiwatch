@@ -22,7 +22,6 @@ import com.aiwatch.media.db.ObjectBox;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.yuanzhou.vlc.ReactVlcPlayerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.github.yamill.orientation.OrientationPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -53,7 +52,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNScreensPackage(),
             new RNGestureHandlerPackage(),
             new VectorIconsPackage(),
-            new OrientationPackage(),
             new ReactVlcPlayerPackage(),
             new RNSmartCamPackage(),
             new RNCWebViewPackage(),
