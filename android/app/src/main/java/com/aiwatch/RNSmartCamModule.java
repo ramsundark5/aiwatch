@@ -13,6 +13,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.aiwatch.common.AppConstants;
 import com.aiwatch.common.DeviceInfo;
 import com.aiwatch.common.DeviceType;
+import com.aiwatch.common.FileUtil;
 import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseSyncManager;
@@ -47,6 +48,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -395,6 +397,19 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             LOGGER.e(e, e.getMessage());
         } finally {
             promise.resolve(deviceTypeStr);
+        }
+    }
+
+    @ReactMethod
+    public void geBaseHLSPath(final Promise promise) {
+        String videoFilesPath = null;
+        try{
+            File videoFolder = FileUtil.getApplicationDirectory(reactContext, AppConstants.TEMP_VIDEO_FOLDER);
+            videoFilesPath = videoFolder.getAbsolutePath();
+        }catch(Exception e){
+            LOGGER.e("Error getting video path for camera ", e.getMessage());
+        } finally {
+            promise.resolve(videoFilesPath);
         }
     }
 

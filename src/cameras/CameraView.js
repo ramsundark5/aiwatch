@@ -19,6 +19,7 @@ class CameraView extends Component {
   constructor(props) {
     super(props);
     this.deviceType = null; 
+    this.baseHLSPath = null;
   }
 
   static navigationOptions = {
@@ -41,6 +42,7 @@ class CameraView extends Component {
     try{
       this.deviceType = await RNSmartCam.getDeviceInfo();
       let cameras = await RNSmartCam.getAllCameras();
+      this.baseHLSPath = await RNSmartCam.geBaseHLSPath();
       loadCameras(cameras);
     }catch(err){
       Logger.error(err);
@@ -123,6 +125,7 @@ class CameraView extends Component {
     }
     let playerHeight = verticalScale(211.5);
     let playerMaxWidth = moderateScale(400);
+    let hlsVideoUrl = this.baseHLSPath + "/camera" + cameraConfig.id + ".m3u8";
     console.log('player height '+playerHeight);
     return(
       <View style={[styles.container, {alignSelf: 'center', maxWidth: playerMaxWidth}]} key={cameraConfig.id}>
@@ -132,7 +135,7 @@ class CameraView extends Component {
               isLive={true}
               showFullScreen={true}
               key={cameraConfig.id}
-              url={cameraConfig.videoUrlWithAuth}
+              url={hlsVideoUrl}
               onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
           <CameraControl {...this.props} cameraConfig={cameraConfig}/>
       </View>

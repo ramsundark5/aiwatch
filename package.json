@@ -48,6 +48,7 @@
     "react-native-super-grid": "^3.1.0",
     "react-native-svg": "^9.13.3",
     "react-native-vector-icons": "^6.6.0",
+    "react-native-video": "^4.4.5",
     "react-native-webview": "^7.5.1",
     "react-native-yz-vlcplayer": "https://github.com/ramsundark5/react-native-yz-vlcplayer",
     "react-navigation": "4.0.10",
