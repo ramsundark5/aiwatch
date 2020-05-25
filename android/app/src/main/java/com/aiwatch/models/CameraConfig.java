@@ -44,6 +44,7 @@ public class CameraConfig implements Serializable {
     private boolean cvrEnabled;
     private boolean ttsEnabled;
     private boolean disconnected;
+    private boolean liveHLSViewEnabled;
     private Date lastModified;
 
     private float topLeftX = 0;
@@ -201,6 +202,15 @@ public class CameraConfig implements Serializable {
         this.cvrEnabled = cvrEnabled;
     }
 
+
+    public boolean isLiveHLSViewEnabled() {
+        return liveHLSViewEnabled;
+    }
+
+    public void setLiveHLSViewEnabled(boolean liveHLSViewEnabled) {
+        this.liveHLSViewEnabled = liveHLSViewEnabled;
+    }
+
     public boolean isTtsEnabled() {
         return ttsEnabled;
     }
@@ -344,6 +354,7 @@ public class CameraConfig implements Serializable {
                 ", recordVehicleDetect=" + recordVehicleDetect +
                 ", testModeEnabled=" + testModeEnabled +
                 ", cvrEnabled=" + cvrEnabled +
+                ", liveHLSViewEnabled=" + liveHLSViewEnabled +
                 ", disconnected=" + disconnected +
                 ", lastModified=" + lastModified +
                 ", topLeftX=" + topLeftX +

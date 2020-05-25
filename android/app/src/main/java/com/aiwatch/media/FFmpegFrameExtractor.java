@@ -49,29 +49,40 @@ public class FFmpegFrameExtractor {
             File cvrFolder = FileUtil.getBaseDirectory(context, AppConstants.CVR_VIDEO_FOLDER);
             String cvrPath = cvrFolder.getAbsolutePath();
 
-            String recordCommand = getRecordCommand(videoPath, AppConstants.PRE_RECORDING_BUFFER);
             String cvrCommand = "";
             if(cameraConfig.isCvrEnabled()){
                 cvrCommand = getRecordCommand(cvrPath, AppConstants.CVR_RECORDING_DURATION);
             }
 
+            String preBufferRecordCommand = "";
+
+            String frameExtractCommand = "";
+            if(cameraConfig.isMonitoringEnabled()){
+                //frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
+                frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
+                preBufferRecordCommand = getRecordCommand(videoPath, AppConstants.PRE_RECORDING_BUFFER);
+            }
+
             String hlsSegmentFileName = videoPath + "/" + cameraConfig.getId() +"-%d.ts ";
             String hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() +".m3u8 ";
-            //String frameExtractCommand = " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -updatefirst 1 -vsync vfr " + imageFile.getAbsolutePath();
-            String frameExtractCommand =  " -vf select=eq(pict_type\\,PICT_TYPE_I),scale=300:300 -update 1 -vsync vfr " + imageFile.getAbsolutePath();
-            String hlsSegmentCommand = "-f hls -vsync 0 -copyts -vcodec copy -acodec copy " +
+            File hlsindexFile = new File(hlsIndexFileName);
+            if(hlsindexFile.exists()){
+                hlsindexFile.delete();
+            }
+            String liveViewCommand = "-f hls -vsync 0 -copyts -vcodec copy -acodec copy " +
                     " -movflags frag_keyframe+empty_moov " +
                     " -hls_flags delete_segments+append_list " +
                     " -hls_time 10 " +
                     " -hls_segment_filename " + hlsSegmentFileName +
                      hlsIndexFileName;
+
             String lowLatencyPrefix = "";
             String rtspPrefix = "-rtsp_transport tcp ";
             if(videoUrl != null && !videoUrl.startsWith("rtsp")){
                 rtspPrefix = "";
                 //lowLatencyPrefix = "-fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 ";
             }
-            String command = lowLatencyPrefix + rtspPrefix + "-i " + videoUrl + frameExtractCommand + recordCommand + cvrCommand + hlsSegmentCommand;
+            String command = lowLatencyPrefix + rtspPrefix + "-i " + videoUrl + frameExtractCommand + preBufferRecordCommand + cvrCommand + liveViewCommand;
             //String[] ffmpegCommand = command.split("\\s+");
 
             LOGGER.i("ffmpeg extraction starting. Thread is "+ Thread.currentThread().getName());
