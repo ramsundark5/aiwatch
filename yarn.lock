@@ -6228,10 +6228,6 @@ react-native-webview@^7.5.1:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
-"react-native-yz-vlcplayer@https://github.com/ramsundark5/react-native-yz-vlcplayer":
-  version "1.2.0"
-  resolved "https://github.com/ramsundark5/react-native-yz-vlcplayer#0d79fed7a70ee4bbf993739f882a00f046fd203b"
-
 react-native@0.61.4:
   version "0.61.4"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.61.4.tgz#9ec6e8a2aa8eac57143dcfa39115c7d9a139bc2c"

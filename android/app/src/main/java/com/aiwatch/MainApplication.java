@@ -21,7 +21,6 @@ import com.horcrux.svg.SvgPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
 import com.aiwatch.media.db.ObjectBox;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.yuanzhou.vlc.ReactVlcPlayerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -54,7 +53,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNScreensPackage(),
             new RNGestureHandlerPackage(),
             new VectorIconsPackage(),
-            new ReactVlcPlayerPackage(),
             new RNSmartCamPackage(),
             new RNCWebViewPackage(),
             new RNPermissionsPackage()
