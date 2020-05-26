@@ -34,7 +34,6 @@
     "react-native-gesture-handler": "^1.5.0",
     "react-native-google-signin": "git+https://github.com/ramsundark5/react-native-google-signin",
     "react-native-iap": "4.3.0",
-    "react-native-image-overlay": "^0.1.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-loading-spinner-overlay": "^1.0.1",
     "react-native-media-controls": "^2.0.3",

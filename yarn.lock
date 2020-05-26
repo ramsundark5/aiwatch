@@ -5897,7 +5897,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -6066,13 +6066,6 @@ react-native-iap@4.3.0:
   integrity sha512-l8d1405YcNfVHJTtqAVO/S1RPkwsNtm+SNaSfz4ptTj0AEigCMTtHSqQOe3HIgqdS9hBC+hG/9dmQaO5iquAZA==
   dependencies:
     dooboolab-welcome "^1.1.1"
-
-react-native-image-overlay@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-image-overlay/-/react-native-image-overlay-0.1.2.tgz#9a8be747ae081140fb8125e1c0c66fc7b80fc3d1"
-  integrity sha512-0bM8Zc8/GZWvvbGccADPmw1onhE9ZVrq/brOSoNIoJU0Kp+8G7lJ2w5+7Us3wIVKHi6Syji/KNypS91svCH8gA==
-  dependencies:
-    prop-types "^15.6.1"
 
 react-native-invertible-scroll-view@^1.1.0:
   version "1.1.1"
