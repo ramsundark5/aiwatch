@@ -17,10 +17,10 @@ const RTSPVideoPlayer = (props) => {
   };
 
   const onPaused = async(playerState) => {
-    if(!paused && props.onPaused){
+    if(playerState == PLAYER_STATES.PLAYING && props.onPaused){
         setIsLoading(true);
         //invoke the callback
-        await props.onPaused(paused);
+        await props.onPaused(false);
         //show spinner for 3 seconds as it takes time to setup rtsp connection
         setTimeout(() => {
           setIsLoading(false);
@@ -32,7 +32,7 @@ const RTSPVideoPlayer = (props) => {
 
   const onReplay = () => {
     setPlayerState(PLAYER_STATES.PLAYING);
-    videoPlayer?.seek(0);
+    //videoPlayer?.seek(0);
   };
 
   const onProgress = data => {

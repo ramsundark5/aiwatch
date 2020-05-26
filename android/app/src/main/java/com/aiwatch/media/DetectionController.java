@@ -21,15 +21,24 @@ public class DetectionController {
 
     public synchronized boolean startDetection(CameraConfig cameraConfig, final Context context) {
         try {
-            //cameraConfig.setVideoCodec(AV_CODEC_ID_H264);
-            stopSelectedVideoProcessor(cameraConfig.getId());
             if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled() && !cameraConfig.isLiveHLSViewEnabled()){
-                LOGGER.d("camera monitoring not started because isMonitoringEnabled flag is false");
+                LOGGER.d("camera monitoring not started because isMonitoringEnabled, isCvrEnabled and isLiveHLSViewEnabled flag is false");
                 return false;
             }
+            //stop the ffmpeg only if monitoring or cvr is enabled
+            if(cameraConfig.isMonitoringEnabled() || cameraConfig.isCvrEnabled()){
+                stopSelectedVideoProcessor(cameraConfig.getId());
+            }else if(cameraConfig.isLiveHLSViewEnabled()){
+                //only isLiveHLSViewEnabled. don't restart the service if its already running
+                RunningThreadInfo runningThreadInfo = cameraMap.get(cameraConfig.getId());
+                if(runningThreadInfo != null){
+                    return false;
+                }
+            }
+
             MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-            executorService.schedule(monitoringRunnable, 2, TimeUnit.SECONDS);
+            executorService.schedule(monitoringRunnable, 1, TimeUnit.SECONDS);
             cameraMap.put(cameraConfig.getId(), new RunningThreadInfo(cameraConfig, executorService, monitoringRunnable));
             LOGGER.d("Monitoring started for camera "+ cameraConfig.getName() + cameraConfig.getId());
         } catch (Exception e) {

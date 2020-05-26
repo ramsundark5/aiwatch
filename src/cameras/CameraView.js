@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import RTSPVideoPlayer from './RTSPVideoPlayer';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Colors, FAB, Headline, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
-import CameraControl from './CameraControl';
 import Logger from '../common/Logger';
 import MonitoringStatus from './MonitoringStatus';
 import AiwatchUtil from '../common/AiwatchUtil';
@@ -13,13 +11,12 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
 import testID from '../common/testID';
 import { FlatGrid } from 'react-native-super-grid';
-import { moderateScale, verticalScale } from 'react-native-size-matters';
+import WatchCamera from './WatchCamera';
 class CameraView extends Component {
   
   constructor(props) {
     super(props);
     this.deviceType = null; 
-    this.baseHLSPath = null;
   }
 
   static navigationOptions = {
@@ -42,7 +39,6 @@ class CameraView extends Component {
     try{
       this.deviceType = await RNSmartCam.getDeviceInfo();
       let cameras = await RNSmartCam.getAllCameras();
-      this.baseHLSPath = await RNSmartCam.geBaseHLSPath();
       loadCameras(cameras);
     }catch(err){
       Logger.error(err);
@@ -62,29 +58,6 @@ class CameraView extends Component {
 
   onScanCamera(){
     this.props.navigation.navigate('ScanCamera');
-  }
-
-  onPlayVideoFullScreen(videoUrl){
-    this.props.navigation.navigate('FullScreenVideo', {
-      videoUrl: videoUrl
-    });
-  }
-
-  onCloseFullScreen(){
-    this.setState({ isFull: false});
-  }
-
-  async onPaused(paused, cameraConfig){
-    try{
-      let camerConfigUpdate = Object.assign({}, cameraConfig);
-      camerConfigUpdate.liveHLSViewEnabled = false;
-      if(!paused && cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
-        camerConfigUpdate.liveHLSViewEnabled = true;
-      }
-      await RNSmartCam.putCamera(camerConfigUpdate);
-    }catch(err){
-      Logger.error(err);
-    }
   }
 
   render() {
@@ -109,9 +82,10 @@ class CameraView extends Component {
   renderCameras(){
     const { cameras } = this.props;
     if(cameras && cameras.length === 1){
+      let cameraConfigProp = cameras[0];
       return (
         <ScrollView style={{flex: 1}}>
-          {this.renderSingleCamera(cameras[0])}
+          {this.renderSingleCamera(cameraConfigProp)}
         </ScrollView>
       )
     }
@@ -132,30 +106,9 @@ class CameraView extends Component {
     )
   }
 
-  renderSingleCamera(cameraConfig){
-    if(!cameraConfig){
-      return null;
-    }
-    let playerHeight = verticalScale(211.5);
-    let playerMaxWidth = moderateScale(400);
-    let videUrlForView = cameraConfig.videoUrl;
-    if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
-      videUrlForView = this.baseHLSPath + "/camera" + cameraConfig.id + ".m3u8";
-    }
-    console.log('player height '+playerHeight);
+  renderSingleCamera(cameraConfigProp){
     return(
-      <View style={[styles.container, {alignSelf: 'center', maxWidth: playerMaxWidth}]} key={cameraConfig.id}>
-        <Text>{cameraConfig.name}</Text>
-        <RTSPVideoPlayer
-              style={{width:'100%', height: playerHeight}}
-              isLive={true}
-              showFullScreen={true}
-              onPaused={(paused) => this.onPaused(paused, cameraConfig)}
-              key={cameraConfig.id}
-              url={videUrlForView}
-              onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
-          <CameraControl {...this.props} cameraConfig={cameraConfig}/>
-      </View>
+      <WatchCamera cameraConfig={cameraConfigProp} />
     )
   }
 
