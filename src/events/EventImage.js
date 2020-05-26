@@ -21,7 +21,6 @@ export default class EventImage extends PureComponent{
     }
     
     renderImageItem(event){
-        let playerHeight = verticalScale(120);
         return(
             <ImageBackground
                 source={{isStatic:true, uri: 'file://'+event.thumbnailPath}}

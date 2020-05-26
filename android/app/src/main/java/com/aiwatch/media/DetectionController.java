@@ -23,7 +23,7 @@ public class DetectionController {
         try {
             //cameraConfig.setVideoCodec(AV_CODEC_ID_H264);
             stopSelectedVideoProcessor(cameraConfig.getId());
-            if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled()){
+            if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled() && !cameraConfig.isLiveHLSViewEnabled()){
                 LOGGER.d("camera monitoring not started because isMonitoringEnabled flag is false");
                 return false;
             }

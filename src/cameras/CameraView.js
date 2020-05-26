@@ -74,6 +74,19 @@ class CameraView extends Component {
     this.setState({ isFull: false});
   }
 
+  async onPaused(paused, cameraConfig){
+    try{
+      let camerConfigUpdate = Object.assign({}, cameraConfig);
+      camerConfigUpdate.liveHLSViewEnabled = false;
+      if(!paused && cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
+        camerConfigUpdate.liveHLSViewEnabled = true;
+      }
+      await RNSmartCam.putCamera(camerConfigUpdate);
+    }catch(err){
+      Logger.error(err);
+    }
+  }
+
   render() {
     const { isFull, isLoading } = this.state;
     return (
@@ -125,7 +138,10 @@ class CameraView extends Component {
     }
     let playerHeight = verticalScale(211.5);
     let playerMaxWidth = moderateScale(400);
-    let hlsVideoUrl = this.baseHLSPath + "/camera" + cameraConfig.id + ".m3u8";
+    let videUrlForView = cameraConfig.videoUrl;
+    if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
+      videUrlForView = this.baseHLSPath + "/camera" + cameraConfig.id + ".m3u8";
+    }
     console.log('player height '+playerHeight);
     return(
       <View style={[styles.container, {alignSelf: 'center', maxWidth: playerMaxWidth}]} key={cameraConfig.id}>
@@ -134,8 +150,9 @@ class CameraView extends Component {
               style={{width:'100%', height: playerHeight}}
               isLive={true}
               showFullScreen={true}
+              onPaused={(paused) => this.onPaused(paused, cameraConfig)}
               key={cameraConfig.id}
-              url={hlsVideoUrl}
+              url={videUrlForView}
               onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
           <CameraControl {...this.props} cameraConfig={cameraConfig}/>
       </View>

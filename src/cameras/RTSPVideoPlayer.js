@@ -9,14 +9,23 @@ const RTSPVideoPlayer = (props) => {
   const [duration, setDuration] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [paused, setPaused] = useState(false);
-  const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
+  const [paused, setPaused] = useState(true);
+  const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
 
   const onSeek = seek => {
     videoPlayer?.current.seek(seek);
   };
 
-  const onPaused = playerState => {
+  const onPaused = async(playerState) => {
+    if(!paused && props.onPaused){
+        setIsLoading(true);
+        //invoke the callback
+        await props.onPaused(paused);
+        //show spinner for 3 seconds as it takes time to setup rtsp connection
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000 * 3);
+    } 
     setPaused(!paused);
     setPlayerState(playerState);
   };
@@ -38,6 +47,10 @@ const RTSPVideoPlayer = (props) => {
     setIsLoading(false);
   };
 
+  const onError = (err) => {
+    setIsLoading(false);
+  };
+  
   const onFullScreen = (isFullScreen) => setIsFullScreen(isFullScreen);
 
   const onLoadStart = () => setIsLoading(true);
@@ -50,6 +63,7 @@ const RTSPVideoPlayer = (props) => {
     <View style={styles.container}>
       <Video
         onEnd={onEnd}
+        onError={onError}
         onLoad={onLoad}
         onLoadStart={onLoadStart}
         onProgress={onProgress}

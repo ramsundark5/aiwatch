@@ -30,7 +30,7 @@ public class FFmpegFrameExtractor {
     }
 
     public void start(String imageFilePath) {
-        if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled()){
+        if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled() && !cameraConfig.isLiveHLSViewEnabled()){
             LOGGER.d("all monitoring flags are turned off. Skipping monitorinng for camera " + cameraConfig.getId());
             return;
         }
@@ -63,18 +63,21 @@ public class FFmpegFrameExtractor {
                 preBufferRecordCommand = getRecordCommand(videoPath, AppConstants.PRE_RECORDING_BUFFER);
             }
 
-            String hlsSegmentFileName = videoPath + "/" + cameraConfig.getId() +"-%d.ts ";
-            String hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() +".m3u8 ";
-            File hlsindexFile = new File(hlsIndexFileName);
-            if(hlsindexFile.exists()){
-                hlsindexFile.delete();
+            String liveViewCommand = "";
+            if(cameraConfig.isLiveHLSViewEnabled()){
+                String hlsSegmentFileName = videoPath + "/" + cameraConfig.getId() +"-%d.ts ";
+                String hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() +".m3u8 ";
+                File hlsindexFile = new File(hlsIndexFileName);
+                if(hlsindexFile.exists()){
+                    hlsindexFile.delete();
+                }
+                liveViewCommand = " -f hls -vsync 0 -copyts -vcodec copy -acodec copy " +
+                        " -movflags frag_keyframe+empty_moov " +
+                        " -hls_flags delete_segments+append_list " +
+                        " -hls_time 2 " +
+                        " -hls_segment_filename " + hlsSegmentFileName +
+                        hlsIndexFileName;
             }
-            String liveViewCommand = "-f hls -vsync 0 -copyts -vcodec copy -acodec copy " +
-                    " -movflags frag_keyframe+empty_moov " +
-                    " -hls_flags delete_segments+append_list " +
-                    " -hls_time 10 " +
-                    " -hls_segment_filename " + hlsSegmentFileName +
-                     hlsIndexFileName;
 
             String lowLatencyPrefix = "";
             String rtspPrefix = "-rtsp_transport tcp ";

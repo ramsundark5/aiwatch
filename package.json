@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "postinstall": "npx jetify && react-native link",
+    "postinstall": "npx jetify",
     "start": "react-native start",
     "test": "jest",
     "release": "cd android && ./gradlew clean bundleRelease",
