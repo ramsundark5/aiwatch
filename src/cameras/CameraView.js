@@ -108,7 +108,7 @@ class CameraView extends Component {
 
   renderSingleCamera(cameraConfigProp){
     return(
-      <WatchCamera cameraConfig={cameraConfigProp} />
+      <WatchCamera cameraConfig={cameraConfigProp} {...this.props}/>
     )
   }
 

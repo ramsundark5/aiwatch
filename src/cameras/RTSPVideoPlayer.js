@@ -8,7 +8,7 @@ const RTSPVideoPlayer = (props) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [paused, setPaused] = useState(true);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
 
@@ -20,12 +20,12 @@ const RTSPVideoPlayer = (props) => {
     if(playerState == PLAYER_STATES.PLAYING && props.onPaused){
         setIsLoading(true);
         //invoke the callback
-        await props.onPaused(false);
+        await props.enableHLSLiveView(false);
         //show spinner for 3 seconds as it takes time to setup rtsp connection
         setTimeout(() => {
           setIsLoading(false);
         }, 1000 * 3);
-    } 
+    }
     setPaused(!paused);
     setPlayerState(playerState);
   };

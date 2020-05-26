@@ -39,14 +39,14 @@ class WatchCamera extends Component {
         this.setState({ isFull: false});
     }
 
-    async onPaused(paused, cameraConfig){
+    async enableHLSLiveView(paused, cameraConfig){
         try{
             let camerConfigUpdate = Object.assign({}, cameraConfig);
             camerConfigUpdate.liveHLSViewEnabled = false;
-            if(!paused && cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
+            if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
                 camerConfigUpdate.liveHLSViewEnabled = true;
+                await RNSmartCam.putCamera(camerConfigUpdate);
             }
-            await RNSmartCam.putCamera(camerConfigUpdate);
         }catch(err){
             Logger.error(err);
         }
@@ -71,7 +71,7 @@ class WatchCamera extends Component {
             <Text>{cameraConfig.name}</Text>
             <RTSPVideoPlayer
                   style={{width:'100%', height: playerHeight}}
-                  onPaused={(paused) => this.onPaused(paused, cameraConfig)}
+                  enableHLSLiveView={(paused) => this.enableHLSLiveView(paused, cameraConfig)}
                   key={cameraConfig.id}
                   url={videUrlForView}
                   onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
