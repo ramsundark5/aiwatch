@@ -93,7 +93,7 @@
     },
     {
       "id": "2:4322453221154582630",
-      "lastPropertyId": "32:79586835420613341",
+      "lastPropertyId": "33:45235929917833820",
       "name": "CameraConfig",
       "properties": [
         {
@@ -224,6 +224,10 @@
         {
           "id": "32:79586835420613341",
           "name": "ttsEnabled"
+        },
+        {
+          "id": "33:45235929917833820",
+          "name": "liveHLSViewEnabled"
         }
       ],
       "relations": []

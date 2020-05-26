@@ -13,6 +13,8 @@ import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.sbugert.rnadmob.RNAdMobPackage;
 import com.dooboolab.RNIap.RNIapPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import org.wonday.orientation.OrientationPackage;
+
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.bugsnag.BugsnagReactNative;
 
@@ -55,6 +57,7 @@ public class MainApplication extends Application implements ReactApplication {
             new VectorIconsPackage(),
             new RNSmartCamPackage(),
             new RNCWebViewPackage(),
+            new OrientationPackage(),
             new RNPermissionsPackage()
       );
     }

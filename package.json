@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@react-native-community/netinfo": "^4.6.1",
+    "@react-native-community/slider": "^2.0.9",
     "bugsnag-react-native": "^2.23.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
@@ -36,7 +37,9 @@
     "react-native-image-overlay": "^0.1.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-loading-spinner-overlay": "^1.0.1",
+    "react-native-media-controls": "^2.0.3",
     "react-native-modal": "11.5.3",
+    "react-native-orientation-locker": "^1.1.8",
     "react-native-paper": "3.2.1",
     "react-native-permissions": "^2.0.3",
     "react-native-progress": "git+https://github.com/ramsundark5/react-native-progress",
