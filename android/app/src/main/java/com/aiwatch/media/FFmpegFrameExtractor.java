@@ -113,13 +113,14 @@ public class FFmpegFrameExtractor {
     }
 
     public boolean isStopped(){
-        LOGGER.d("is ffmpeg process stopped ? "+isfftaskCompleted);
+        LOGGER.i("is ffmpeg process stopped ? "+isfftaskCompleted);
         return isfftaskCompleted;
     }
 
     public void stop(){
         try{
            FFmpeg.cancel();
+           LOGGER.i("ffmpeg cancelled from camera ? "+cameraConfig.getId());
         }catch(Exception e){
             LOGGER.e(e, "Error stopping ffmpeg");
         }

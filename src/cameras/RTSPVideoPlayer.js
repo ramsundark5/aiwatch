@@ -17,7 +17,7 @@ const RTSPVideoPlayer = (props) => {
   };
 
   const onPaused = async(playerState) => {
-    if(playerState == PLAYER_STATES.PLAYING && props.onPaused){
+    if(playerState == PLAYER_STATES.PLAYING && props.enableHLSLiveView){
         setIsLoading(true);
         //invoke the callback
         await props.enableHLSLiveView(false);
@@ -32,7 +32,7 @@ const RTSPVideoPlayer = (props) => {
 
   const onReplay = () => {
     setPlayerState(PLAYER_STATES.PLAYING);
-    //videoPlayer?.seek(0);
+    videoPlayer?.seek(0);
   };
 
   const onProgress = data => {

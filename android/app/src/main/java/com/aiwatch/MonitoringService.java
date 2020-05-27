@@ -9,6 +9,7 @@ import com.aiwatch.models.CameraConfig;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
 import com.arthenica.mobileffmpeg.Config;
+import com.arthenica.mobileffmpeg.FFmpeg;
 import com.crashlytics.android.Crashlytics;
 
 import java.util.List;
@@ -95,6 +96,7 @@ public class MonitoringService extends AbstractForegroundService {
     private void stopMonitoring(){
         SharedPreferenceUtil.setStopMonitoringRequested(this,true);
         detectionController.stopAllDetecting();
+        FFmpeg.cancel();
         stopSelf();
     }
 
