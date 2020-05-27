@@ -38,8 +38,8 @@ public class DetectionController {
 
             MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-            executorService.schedule(monitoringRunnable, 1, TimeUnit.SECONDS);
             cameraMap.put(cameraConfig.getId(), new RunningThreadInfo(cameraConfig, executorService, monitoringRunnable));
+            executorService.schedule(monitoringRunnable, 1, TimeUnit.SECONDS);
             LOGGER.d("Monitoring started for camera "+ cameraConfig.getName() + cameraConfig.getId());
         } catch (Exception e) {
             LOGGER.e("Exception starting detection "+e.getMessage());

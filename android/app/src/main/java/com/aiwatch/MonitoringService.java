@@ -96,7 +96,6 @@ public class MonitoringService extends AbstractForegroundService {
     private void stopMonitoring(){
         SharedPreferenceUtil.setStopMonitoringRequested(this,true);
         detectionController.stopAllDetecting();
-        FFmpeg.cancel();
         stopSelf();
     }
 

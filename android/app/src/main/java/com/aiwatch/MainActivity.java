@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import org.devio.rn.splashscreen.SplashScreen;
+
+import com.aiwatch.common.AppConstants;
 import com.aiwatch.firebase.FirebaseUserDataDao;
-import com.aiwatch.media.DetectionController;
 import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.models.CameraConfig;
 import com.facebook.react.ReactActivity;
@@ -73,8 +74,10 @@ public class MainActivity extends ReactActivity {
                         !cameraConfig.isCvrEnabled()){
                     cameraConfig.setLiveHLSViewEnabled(false);
                     cameraConfigDao.putCamera(cameraConfig);
-                    DetectionController detectionController = new DetectionController();
-                    detectionController.stopDetecting(cameraConfig.getId());
+                    Intent intent = new Intent(getApplicationContext(), MonitoringService.class);
+                    intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.DISCONNECT_CAMERA);
+                    intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraConfig.getId());
+                    getApplicationContext().startService(intent);
                 }
             }
         }catch (Exception e){
