@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Video from "react-native-video";
-import MediaControls, { PLAYER_STATES } from 'react-native-media-controls';
+import MediaControls, { PLAYER_STATES } from '../videoplayer';
 
 const RTSPVideoPlayer = (props) => {
   const videoPlayer = useRef(null);
@@ -10,6 +10,7 @@ const RTSPVideoPlayer = (props) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [paused, setPaused] = useState(true);
+  const [resizeMode, setResizeMode] = useState('content');
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
 
   const onSeek = seek => {
@@ -51,7 +52,14 @@ const RTSPVideoPlayer = (props) => {
     setIsLoading(false);
   };
   
-  const onFullScreen = (isFullScreen) => setIsFullScreen(isFullScreen);
+  const onFullScreen = (isFullScreen) => {
+    let screenType = 'content';
+    if (isFullScreen){
+      screenType = 'cover';
+    } 
+    setResizeMode(screenType);
+    setIsFullScreen(isFullScreen);
+  }
 
   const onLoadStart = () => setIsLoading(true);
 
@@ -69,7 +77,7 @@ const RTSPVideoPlayer = (props) => {
         onProgress={onProgress}
         paused={paused}
         ref={ref => (videoPlayer.current = ref)}
-        resizeMode="cover"
+        resizeMode={resizeMode}
         source={{uri: props.url}}
         useTextureView={true}
         style={styles.mediaPlayer}
