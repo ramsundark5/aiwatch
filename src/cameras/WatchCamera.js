@@ -74,6 +74,8 @@ class WatchCamera extends Component {
                   enableHLSLiveView={(paused) => this.enableHLSLiveView(paused, cameraConfig)}
                   key={cameraConfig.id}
                   url={videUrlForView}
+                  showSlider={false}
+                  showDuration={false}
                   onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
               <CameraControl {...this.props} cameraConfig={cameraConfig}/>
           </View>
