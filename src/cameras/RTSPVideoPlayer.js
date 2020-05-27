@@ -63,7 +63,13 @@ const RTSPVideoPlayer = (props) => {
 
   const onLoadStart = () => setIsLoading(true);
 
-  const onEnd = () => setPlayerState(PLAYER_STATES.ENDED);
+  const onEnd = () => {
+    if(props.showSlider){
+      setPlayerState(PLAYER_STATES.ENDED);
+    }else{
+      setPlayerState(PLAYER_STATES.PAUSED);
+    }
+  }
 
   const onSeeking = currentTime => setCurrentTime(currentTime);
 
@@ -83,6 +89,8 @@ const RTSPVideoPlayer = (props) => {
         style={styles.mediaPlayer}
       />
       <MediaControls
+        showSlider={props.showSlider}
+        showDuration={props.showDuration}
         isFullScreen={isFullScreen}
         duration={duration}
         isLoading={isLoading}

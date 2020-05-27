@@ -24,6 +24,8 @@ const MediaControls = props => {
     onSeeking,
     playerState,
     progress,
+    showSlider = true,
+    showDuration = true,
     showOnStart = true,
   } = props;
   const { initialOpacity, initialIsVisible } = (() => {
@@ -124,6 +126,8 @@ const MediaControls = props => {
               playerState={playerState}
             />
             <Slider
+              showSlider={showSlider}
+              showDuration={showDuration}
               progress={progress}
               duration={duration}
               mainColor={mainColor}

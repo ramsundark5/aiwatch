@@ -8,7 +8,7 @@ import { PLAYER_STATES } from "./constants/playerStates";
 const fullScreenImage = require("./assets/ic_fullscreen.png");
 
 const Slider = props => {
-  const { progress, duration, mainColor, onFullScreen, onPause } = props;
+  const { progress, duration, mainColor, onFullScreen, onPause, showDuration, showSlider } = props;
 
   const dragging = (value) => {
     const { onSeeking, playerState } = props;
@@ -29,6 +29,7 @@ const Slider = props => {
   return (
     <View style={[styles.controlsRow, styles.progressContainer]}>
       <View style={styles.progressColumnContainer}>
+      {showDuration && (
         <View style={[styles.timerLabelsContainer]}>
           <Text style={styles.timerLabel}>
             {humanizeVideoDuration(progress)}
@@ -37,16 +38,19 @@ const Slider = props => {
             {humanizeVideoDuration(duration)}
           </Text>
         </View>
-        <RNSlider
-          style={styles.progressSlider}
-          onValueChange={dragging}
-          onSlidingComplete={seekVideo}
-          maximumValue={Math.floor(duration)}
-          value={Math.floor(progress)}
-          trackStyle={styles.track}
-          thumbStyle={[styles.thumb, { borderColor: mainColor }]}
-          minimumTrackTintColor={mainColor}
-        />
+        )}
+        {showSlider && (
+          <RNSlider
+            style={styles.progressSlider}
+            onValueChange={dragging}
+            onSlidingComplete={seekVideo}
+            maximumValue={Math.floor(duration)}
+            value={Math.floor(progress)}
+            trackStyle={styles.track}
+            thumbStyle={[styles.thumb, { borderColor: mainColor }]}
+            minimumTrackTintColor={mainColor}
+          />
+        )}
       </View>
       {Boolean(onFullScreen) && (
         <TouchableOpacity
