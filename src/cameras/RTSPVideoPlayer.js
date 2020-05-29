@@ -50,14 +50,10 @@ const RTSPVideoPlayer = (props) => {
 
   const onError = (err) => {
     setIsLoading(false);
+    setPlayerState(PLAYER_STATES.PAUSED);
   };
   
   const onFullScreen = (isFullScreen) => {
-    let screenType = 'content';
-    if (isFullScreen){
-      screenType = 'cover';
-    } 
-    setResizeMode(screenType);
     setIsFullScreen(isFullScreen);
   }
 
@@ -83,9 +79,10 @@ const RTSPVideoPlayer = (props) => {
         onProgress={onProgress}
         paused={paused}
         ref={ref => (videoPlayer.current = ref)}
-        resizeMode={resizeMode}
+        resizeMode="contain"
         source={{uri: props.url}}
         useTextureView={true}
+        fullscreen={isFullScreen}
         style={styles.mediaPlayer}
       />
       <MediaControls
