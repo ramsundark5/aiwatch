@@ -64,13 +64,11 @@ public class FFmpegFrameExtractor {
             }
 
             String liveViewCommand = "";
+            String hlsIndexFileName = "";
             if(cameraConfig.isLiveHLSViewEnabled()){
                 String hlsSegmentFileName = videoPath + "/" + cameraConfig.getId() +"-%d.ts ";
-                String hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() +".m3u8 ";
-                File hlsindexFile = new File(hlsIndexFileName);
-                if(hlsindexFile.exists()){
-                    hlsindexFile.delete();
-                }
+                //hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() + ".m3u8 ";
+                hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() + System.currentTimeMillis() +".m3u8 ";
                 liveViewCommand = " -f hls -vsync 0 -copyts -vcodec copy -acodec copy " +
                         " -movflags frag_keyframe+empty_moov " +
                         " -hls_flags delete_segments+append_list " +
@@ -89,7 +87,7 @@ public class FFmpegFrameExtractor {
             //String[] ffmpegCommand = command.split("\\s+");
 
             LOGGER.i("ffmpeg extraction starting. Thread is "+ Thread.currentThread().getName());
-            notifyAndUpdateCameraStatus(false);
+            notifyAndUpdateCameraStatus(false, hlsIndexFileName);
 
             final AsyncSingleFFmpegExecuteTask asyncCommandTask = new AsyncSingleFFmpegExecuteTask(command, new SingleExecuteCallback() {
                 @Override
@@ -102,7 +100,7 @@ public class FFmpegFrameExtractor {
                         LOGGER.i("ffmpeg extraction failed with response " + executeOutput);
                     }
                     isfftaskCompleted = true;
-                    notifyAndUpdateCameraStatus(true);
+                    notifyAndUpdateCameraStatus(true, null);
                 }
             });
             asyncCommandTask.executeOnExecutor(Executors.newSingleThreadExecutor());
@@ -132,7 +130,7 @@ public class FFmpegFrameExtractor {
         return recordCommand;
     }
 
-    public void notifyAndUpdateCameraStatus(boolean disconnected){
+    public void notifyAndUpdateCameraStatus(boolean disconnected, String rtspUrl){
         try{
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             CameraConfig previousCameraConfig = cameraConfigDao.getCamera(cameraConfig.getId());
@@ -141,7 +139,9 @@ public class FFmpegFrameExtractor {
             String status = disconnected ? "disconnected" : "connected";
             cameraConfig.setDisconnected(disconnected);
             CameraConfig updatedCameraConfig = cameraConfigDao.updateCameraStatus(cameraConfig.getId(), disconnected);
-            LOGGER.d("camera monitoring enabled status "+cameraConfig.isMonitoringEnabled());
+            LOGGER.d("camera monitoring enabled status "+updatedCameraConfig.isMonitoringEnabled());
+            updatedCameraConfig = cameraConfigDao.updateRtspUrl(cameraConfig.getId(), rtspUrl);
+            LOGGER.d("camera rtspUrl "+cameraConfig.getRtspUrl());
             NotificationManager.sendUINotification(context, updatedCameraConfig);
             if(previousCameraConfig.isDisconnected() == disconnected){
                 NotificationManager.sendStringNotification(context, "Camera "+ cameraConfig.getName() + " "+ status);

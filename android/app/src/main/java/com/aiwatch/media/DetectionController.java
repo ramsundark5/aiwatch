@@ -13,10 +13,22 @@ import java.util.concurrent.TimeUnit;
 public class DetectionController {
 
     private static final Logger LOGGER = new Logger();
-    private  Map<Long, RunningThreadInfo> cameraMap;
+    private static volatile DetectionController sInstance;
+    private static volatile Map<Long, RunningThreadInfo> cameraMap = new ConcurrentHashMap<>();
 
-    public DetectionController() {
-        cameraMap = new ConcurrentHashMap<>();
+    private DetectionController() {
+    }
+
+    public static DetectionController INSTANCE() {
+        if  (sInstance == null) {
+            synchronized (DetectionController.class) {
+                if (sInstance == null) {
+                    sInstance = new DetectionController();
+                    cameraMap = new ConcurrentHashMap<>();
+                }
+            }
+        }
+        return sInstance;
     }
 
     public synchronized boolean startDetection(CameraConfig cameraConfig, final Context context) {
@@ -30,8 +42,8 @@ public class DetectionController {
                 stopSelectedVideoProcessor(cameraConfig.getId());
             }else if(cameraConfig.isLiveHLSViewEnabled()){
                 //only isLiveHLSViewEnabled. don't restart the service if its already running
-                RunningThreadInfo runningThreadInfo = cameraMap.get(cameraConfig.getId());
-                if(runningThreadInfo != null){
+                boolean cameraRunning = isCameraRunning(cameraConfig.getId());
+                if(cameraRunning){
                     return false;
                 }
             }
@@ -39,12 +51,25 @@ public class DetectionController {
             MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
             cameraMap.put(cameraConfig.getId(), new RunningThreadInfo(cameraConfig, executorService, monitoringRunnable));
-            executorService.schedule(monitoringRunnable, 1, TimeUnit.SECONDS);
+            executorService.submit(monitoringRunnable);
             LOGGER.d("Monitoring started for camera "+ cameraConfig.getName() + cameraConfig.getId());
         } catch (Exception e) {
             LOGGER.e("Exception starting detection "+e.getMessage());
         }
         return true;
+    }
+
+    public boolean isCameraRunning(final long cameraId){
+        boolean cameraRunning = false;
+        try{
+            RunningThreadInfo runningThreadInfo = cameraMap.get(cameraId);
+            if(runningThreadInfo != null){
+                cameraRunning = true;
+            }
+        } catch (Exception e) {
+            LOGGER.e("Exception getting camera status "+e.getMessage());
+        }
+        return cameraRunning;
     }
 
     public synchronized void stopAllDetecting(){

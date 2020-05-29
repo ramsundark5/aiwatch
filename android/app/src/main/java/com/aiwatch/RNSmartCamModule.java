@@ -18,6 +18,7 @@ import com.aiwatch.firebase.FirebaseAlarmEventDao;
 import com.aiwatch.firebase.FirebaseCameraConfigDao;
 import com.aiwatch.firebase.FirebaseSyncManager;
 import com.aiwatch.firebase.FirebaseUserDataDao;
+import com.aiwatch.media.DetectionController;
 import com.aiwatch.media.FFmpegConnectionTester;
 import com.aiwatch.models.Settings;
 import com.aiwatch.media.db.SettingsDao;
@@ -278,6 +279,20 @@ public class RNSmartCamModule extends ReactContextBaseJavaModule {
             LOGGER.i("Monitoring service is NOT running");
         }
         promise.resolve(isRunning);
+    }
+
+
+    @ReactMethod
+    public void getCameraMonitoringStatus(Integer cameraId, final Promise promise) {
+        boolean cameraRunning = false;
+        try {
+            DetectionController detectionController = DetectionController.INSTANCE();
+            cameraRunning = detectionController.isCameraRunning(cameraId);
+        } catch (Exception e) {
+            LOGGER.e(e, "error updating camera monitoring");
+        }finally {
+            promise.resolve(cameraRunning);
+        }
     }
 
     @ReactMethod

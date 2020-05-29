@@ -21,6 +21,7 @@ public class CameraConfig implements Serializable {
     private String brand;
     private String model;
     private String videoUrl;
+    private String rtspUrl;
 
     @Exclude
     private String videoUrlWithAuth;
@@ -96,6 +97,14 @@ public class CameraConfig implements Serializable {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public String getRtspUrl() {
+        return rtspUrl;
+    }
+
+    public void setRtspUrl(String rtspUrl) {
+        this.rtspUrl = rtspUrl;
     }
 
     public String getUsername() {
@@ -340,6 +349,7 @@ public class CameraConfig implements Serializable {
                 ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", videoUrl='" + videoUrl + '\'' +
+                ", rtspUrl='" + rtspUrl + '\'' +
                 ", videoUrlWithAuth='" + videoUrlWithAuth + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +

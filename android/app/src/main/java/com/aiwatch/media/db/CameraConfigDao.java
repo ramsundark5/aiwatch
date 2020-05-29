@@ -66,4 +66,16 @@ public class CameraConfigDao {
         }
         return null;
     }
+
+    public CameraConfig updateRtspUrl(long cameraId, String rtspUrl){
+        try{
+            CameraConfigDao cameraConfigDao = new CameraConfigDao();
+            CameraConfig cameraToUpdate = cameraConfigDao.getCamera(cameraId);
+            cameraToUpdate.setRtspUrl(rtspUrl);
+            return cameraConfigDao.putCamera(cameraToUpdate);
+        }catch(Exception e){
+            LOGGER.e(e, "error updating camera rtspUrl");
+        }
+        return null;
+    }
 }

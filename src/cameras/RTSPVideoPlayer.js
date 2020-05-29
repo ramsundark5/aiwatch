@@ -12,7 +12,7 @@ const RTSPVideoPlayer = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [paused, setPaused] = useState(true);
   const [resizeMode, setResizeMode] = useState('content');
-  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(props.url);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
 
   const onSeek = seek => {
@@ -70,6 +70,7 @@ const RTSPVideoPlayer = (props) => {
 
   const onSeeking = currentTime => setCurrentTime(currentTime);
 
+  console.log('url used for render '+props.rtspUrl);
   return (
     <View style={styles.container}>
       <Video
@@ -81,7 +82,7 @@ const RTSPVideoPlayer = (props) => {
         paused={paused}
         ref={ref => (videoPlayer.current = ref)}
         resizeMode="contain"
-        source={{uri: props.url}}
+        source={{uri: props.rtspUrl}}
         useTextureView={true}
         fullscreen={isFullScreen}
         style={styles.mediaPlayer}

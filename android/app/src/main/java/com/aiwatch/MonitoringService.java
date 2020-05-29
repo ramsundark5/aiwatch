@@ -17,7 +17,7 @@ import java.util.List;
 public class MonitoringService extends AbstractForegroundService {
 
     private static final Logger LOGGER = new Logger();
-    private DetectionController detectionController = new DetectionController();
+    private DetectionController detectionController = DetectionController.INSTANCE();
 
     @Override
     public void onCreate() {
@@ -52,7 +52,7 @@ public class MonitoringService extends AbstractForegroundService {
                     break;
                 case AppConstants.DISCONNECT_CAMERA:
                     long disconnectCameraId = intent.getLongExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, -1);
-                    detectionController.stopDetecting(disconnectCameraId);
+                    disconnectCamera(disconnectCameraId);
                     break;
                 default:
                     LOGGER.i("unknown command sent to monitoring service "+ action);
@@ -68,6 +68,27 @@ public class MonitoringService extends AbstractForegroundService {
         CameraConfigDao cameraConfigDao = new CameraConfigDao();
         CameraConfig cameraConfig = cameraConfigDao.getCamera(cameraId);
         detectionController.startDetection(cameraConfig, getApplicationContext());
+    }
+
+    private void disconnectCamera(long cameraId){
+        detectionController.stopDetecting(cameraId);
+
+        CameraConfigDao cameraConfigDao = new CameraConfigDao();
+        List<CameraConfig> cameraConfigList = cameraConfigDao.getAllCameras();
+        if(cameraConfigList == null || cameraConfigList.isEmpty()){
+            stopMonitoring();
+            return;
+        }
+
+        boolean isMonitoringStartedForAny = false;
+        for(CameraConfig cameraConfig : cameraConfigList){
+            boolean cameraRunning = detectionController.isCameraRunning(cameraConfig.getId());
+            isMonitoringStartedForAny = isMonitoringStartedForAny || cameraRunning;
+        }
+        if(!isMonitoringStartedForAny){
+            stopMonitoring();
+            return;
+        }
     }
 
     private void startMonitoring(){
