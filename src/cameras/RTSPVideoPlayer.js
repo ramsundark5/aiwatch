@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Video from "react-native-video";
 import MediaControls, { PLAYER_STATES } from '../videoplayer';
+import AiwatchUtl from '../common/AiwatchUtil';
 
 const RTSPVideoPlayer = (props) => {
   const videoPlayer = useRef(null);
@@ -11,6 +12,7 @@ const RTSPVideoPlayer = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [paused, setPaused] = useState(true);
   const [resizeMode, setResizeMode] = useState('content');
+  const [videoUrl, setVideoUrl] = useState(null);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
 
   const onSeek = seek => {
@@ -22,10 +24,9 @@ const RTSPVideoPlayer = (props) => {
         setIsLoading(true);
         //invoke the callback
         await props.enableHLSLiveView(false);
-        //show spinner for 3 seconds as it takes time to setup rtsp connection
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000 * 3);
+        //sleep for 5 seconds so ffmpeg can init rtsp
+        //await AiwatchUtl.sleep(5000);
+        setIsLoading(false);
     }
     setPaused(!paused);
     setPlayerState(playerState);
