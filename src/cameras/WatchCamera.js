@@ -65,17 +65,10 @@ class WatchCamera extends Component {
         }
         let playerHeight = verticalScale(211.5);
         let playerMaxWidth = moderateScale(400);
-        let rtspUrl = '';
-        if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
-          let rtspUrlOld = baseHLSPath + "/camera" + cameraConfig.id + ".m3u8";
-          console.log('old rtsp video url for view '+rtspUrlOld);
-          rtspUrl = cameraConfig.rtspUrl;
-        }
         let videUrlForView = cameraConfig.videoUrl;
-        if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
-          videUrlForView = "file://" + baseHLSPath + "/camera" + cameraConfig.id + ".m3u8";
+        if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp') && cameraConfig.rtspUrl && cameraConfig.rtspUrl.length > 1){
+          videUrlForView = "file://" + cameraConfig.rtspUrl;
         }
-        console.log('rtsp video url for view '+rtspUrl);
         console.log('player height '+playerHeight);
         return(
           <View style={[styles.container, {alignSelf: 'center', maxWidth: playerMaxWidth}]} key={cameraConfig.id}>
@@ -85,7 +78,6 @@ class WatchCamera extends Component {
                   enableHLSLiveView={(paused) => this.enableHLSLiveView(paused, cameraConfig)}
                   key={cameraConfig.id}
                   url={videUrlForView}
-                  rtspUrl={rtspUrl}
                   showSlider={false}
                   showDuration={false}
                   onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
