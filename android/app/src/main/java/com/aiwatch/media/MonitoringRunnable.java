@@ -64,6 +64,10 @@ public class MonitoringRunnable implements Runnable {
         }
     }
 
+    public boolean isFFmmpegStopped(){
+        return ffmpegFrameExtractor.isStopped();
+    }
+
     private void startFFmpegCheckTimer(){
         TimerTask timerTask = new TimerTask() {
             @Override

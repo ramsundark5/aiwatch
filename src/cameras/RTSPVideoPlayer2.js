@@ -3,12 +3,11 @@ import { StyleSheet, Text, View } from "react-native";
 import Video from "react-native-video";
 import MediaControls, { PLAYER_STATES } from '../videoplayer';
 
-class RTSPVideoPlayer2 extends React.Component{
+class RTSPVideoPlayer2 extends React.PureComponent{
 
   constructor(props){
     super(props);
-    this.videoPlayer = {};
-    this.videoPlayer.current = null;
+    this.videoPlayer = null;
   }
 
   state = {
@@ -18,16 +17,11 @@ class RTSPVideoPlayer2 extends React.Component{
     isLoading: false,
     paused: true,
     resizeMode: 'contain',
-    videoUrl: null,
     playerState: PLAYER_STATES.PAUSED
   }
 
-  componentDidMount(){
-    this.setState({videoUrl: this.props.rtspUrl});
-  }
-
   onSeek = seek => {
-    this.videoPlayer?.current.seek(seek);
+    this.videoPlayer?.seek(seek);
   };
 
   onPaused = async(playerState) => {
@@ -36,7 +30,7 @@ class RTSPVideoPlayer2 extends React.Component{
         this.setState({ isLoading: true });
         //invoke the callback
         await enableHLSLiveView(false);
-        this.setState({ videoUrl: this.props.rtspUrl, isLoading: false });
+        this.setState({ isLoading: false });
     }
     this.setState({ paused: !this.state.paused, playerState: playerState });
   };
@@ -84,8 +78,12 @@ class RTSPVideoPlayer2 extends React.Component{
   render(){
     const { onEnd, onError, onLoad, onLoadStart, onProgress, onFullScreen, onPaused, onReplay, onSeek, onSeeking} = this;
     const { paused, videoUrl, isFullScreen, duration, isLoading, playerState, currentTime } = this.state;
-    const { showDuration, showSlider } = this.props;
-    console.log('rtsp url in render '+ videoUrl);
+    const { showDuration, showSlider, url } = this.props;
+    console.log('video url in render '+ url);
+    if(!url){
+      console.log('video url is null');
+      return null;
+    }
     return (
       <View style={styles.container}>
         <Video
@@ -95,9 +93,9 @@ class RTSPVideoPlayer2 extends React.Component{
           onLoadStart={onLoadStart}
           onProgress={onProgress}
           paused={paused}
-          ref={ref => (this.videoPlayer.current = ref)}
+          ref={ref => (this.videoPlayer = ref)}
           resizeMode="contain"
-          source={{uri: videoUrl}}
+          source={{uri: url}}
           useTextureView={true}
           fullscreen={isFullScreen}
           style={styles.mediaPlayer}

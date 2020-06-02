@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
 import RNSmartCam from '../native/RNSmartCam';
 import CameraControl from './CameraControl';
-import Logger from '../common/Logger';
 import { moderateScale, verticalScale } from 'react-native-size-matters';
 import AiwatchUtl from '../common/AiwatchUtil';
 class WatchCamera extends Component {
@@ -14,19 +13,6 @@ class WatchCamera extends Component {
 
     state = {
         baseHLSPath: null,
-    }
-
-    componentDidMount(){
-        this.init();
-    }
-
-    async init(){
-        try{
-          let basePath = await RNSmartCam.geBaseHLSPath();
-          this.setState({baseHLSPath: basePath});
-        }catch(err){
-          Logger.error(err);
-        }
     }
 
     onPlayVideoFullScreen(videoUrl){
@@ -53,13 +39,12 @@ class WatchCamera extends Component {
                 }
             }
         }catch(err){
-            Logger.error(err);
+          console.log('error enabling hls ' + err);
         }
     }
   
     render(){
         const cameraConfig = this.props.cameraConfig;
-        const baseHLSPath = this.state.baseHLSPath;
         if(!cameraConfig){
           return null;
         }

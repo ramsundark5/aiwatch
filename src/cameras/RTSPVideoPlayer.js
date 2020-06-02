@@ -16,7 +16,7 @@ const RTSPVideoPlayer = (props) => {
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
 
   const onSeek = seek => {
-    videoPlayer?.current.seek(seek);
+    videoPlayer?.seek(seek);
   };
 
   const onPaused = async(playerState) => {
@@ -80,7 +80,7 @@ const RTSPVideoPlayer = (props) => {
         onLoadStart={onLoadStart}
         onProgress={onProgress}
         paused={paused}
-        ref={ref => (videoPlayer.current = ref)}
+        ref={ref => (videoPlayer = ref)}
         resizeMode="contain"
         source={{uri: props.url}}
         useTextureView={true}
