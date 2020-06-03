@@ -7,7 +7,7 @@ class RTSPVideoPlayer2 extends React.PureComponent{
 
   constructor(props){
     super(props);
-    this.videoPlayer = null;
+    this.videoPlayer = {};
   }
 
   state = {
@@ -20,8 +20,15 @@ class RTSPVideoPlayer2 extends React.PureComponent{
     playerState: PLAYER_STATES.PAUSED
   }
 
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    // You can also log the error to an error reporting service
+    console.log(error, info);
+    //this.props.navigateTo('CameraView');
+  }
+
   onSeek = seek => {
-    this.videoPlayer?.seek(seek);
+    //this.videoPlayer?.seek(seek);
   };
 
   onPaused = async(playerState) => {
@@ -32,12 +39,24 @@ class RTSPVideoPlayer2 extends React.PureComponent{
         await enableHLSLiveView(false);
         this.setState({ isLoading: false });
     }
-    this.setState({ paused: !this.state.paused, playerState: playerState });
+    let paused = true;
+    if(playerState == PLAYER_STATES.PLAYING){
+      paused = false;
+    }
+    this.setState({ paused: paused, playerState: playerState });
+  };
+
+  onPlaybackRateChange = (playbackRate) => {
+    if(playbackRate === 0){
+      this.setState({ paused: true, playerState: PLAYER_STATES.PAUSED });
+    }else{
+      this.setState({ paused: false, playerState: PLAYER_STATES.PLAYING });
+    }
   };
 
   onReplay = () => {
     this.setState({ playerState: PLAYER_STATES.PLAYING });
-    this.videoPlayer?.seek(0);
+    //this.videoPlayer?.seek(0);
   };
 
   onProgress = data => {
@@ -76,7 +95,7 @@ class RTSPVideoPlayer2 extends React.PureComponent{
   }
 
   render(){
-    const { onEnd, onError, onLoad, onLoadStart, onProgress, onFullScreen, onPaused, onReplay, onSeek, onSeeking} = this;
+    const { onEnd, onError, onLoad, onLoadStart, onProgress, onFullScreen, onPaused, onReplay, onSeek, onSeeking, onPlaybackRateChange} = this;
     const { paused, videoUrl, isFullScreen, duration, isLoading, playerState, currentTime } = this.state;
     const { showDuration, showSlider, url } = this.props;
     console.log('video url in render '+ url);
@@ -87,17 +106,13 @@ class RTSPVideoPlayer2 extends React.PureComponent{
     return (
       <View style={styles.container}>
         <Video
-          onEnd={onEnd}
-          onError={onError}
-          onLoad={onLoad}
-          onLoadStart={onLoadStart}
-          onProgress={onProgress}
           paused={paused}
           ref={ref => (this.videoPlayer = ref)}
           resizeMode="contain"
           source={{uri: url}}
           useTextureView={true}
           fullscreen={isFullScreen}
+          onPlaybackRateChange={onPlaybackRateChange}
           style={styles.mediaPlayer}
         />
         <MediaControls
@@ -113,9 +128,8 @@ class RTSPVideoPlayer2 extends React.PureComponent{
           onSeek={onSeek}
           onSeeking={onSeeking}
           playerState={playerState}
-          progress={currentTime}
-        >
-          <MediaControls.Toolbar>
+          progress={currentTime}>
+        <MediaControls.Toolbar>
             <View style={styles.toolbar}>
               <Text>I'm a custom toolbar </Text>
             </View>

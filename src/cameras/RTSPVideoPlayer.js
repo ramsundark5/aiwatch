@@ -143,4 +143,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RTSPVideoPlayer;
+export default React.memo(RTSPVideoPlayer);
