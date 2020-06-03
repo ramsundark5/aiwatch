@@ -36,6 +36,16 @@ const RTSPVideoPlayer = (props) => {
     setPlayerState(playerState);
   };
 
+  const onPlaybackRateChange = (playbackRate) => {
+    if(playbackRate === 0){
+      setPaused(true);
+      setPlayerState(PLAYER_STATES.PAUSED);
+    }else{
+      setPaused(false);
+      setPlayerState(PLAYER_STATES.PLAYING);
+    }
+  };
+
   const onReplay = () => {
     setPlayerState(PLAYER_STATES.PLAYING);
     videoPlayer?.seek(0);
@@ -89,9 +99,29 @@ const RTSPVideoPlayer = (props) => {
         source={{uri: props.url}}
         useTextureView={true}
         fullscreen={isFullScreen}
+        onPlaybackRateChange={onPlaybackRateChange}
         style={styles.mediaPlayer}
-        controls
       />
+      <MediaControls
+        showSlider={props.showSlider}
+        showDuration={props.showDuration}
+        isFullScreen={isFullScreen}
+        duration={duration}
+        isLoading={isLoading}
+        mainColor="red"
+        onFullScreen={onFullScreen}
+        onPaused={onPaused}
+        onReplay={onReplay}
+        onSeek={onSeek}
+        onSeeking={onSeeking}
+        playerState={playerState}
+        progress={currentTime}>
+      <MediaControls.Toolbar>
+          <View style={styles.toolbar}>
+            <Text>I'm a custom toolbar </Text>
+          </View>
+        </MediaControls.Toolbar>
+      </MediaControls>
     </View>
   );
 };
