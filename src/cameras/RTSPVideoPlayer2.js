@@ -28,7 +28,7 @@ class RTSPVideoPlayer2 extends React.PureComponent{
   }
 
   onSeek = seek => {
-    //this.videoPlayer?.seek(seek);
+    this.videoPlayer?.seek(seek);
   };
 
   onPaused = async(playerState) => {
@@ -56,21 +56,21 @@ class RTSPVideoPlayer2 extends React.PureComponent{
 
   onReplay = () => {
     this.setState({ playerState: PLAYER_STATES.PLAYING });
-    //this.videoPlayer?.seek(0);
+    this.videoPlayer?.seek(0);
   };
 
   onProgress = data => {
     const { isLoading, playerState } = this.state;
     // Video Player will continue progress even if the video already ended
-    if (!isLoading && playerState !== PLAYER_STATES.ENDED) {
+    if (!isLoading && !this.props.showDuration && playerState !== PLAYER_STATES.ENDED) {
       this.setState({ currentTime: data.currentTime });
     }
   };
 
   onLoad = data => {
-    if(data && data.currentTime){
+    //if(data && data.currentTime){
       this.setState({ currentTime: data.currentTime, isLoading: false });
-    }
+    //}
   };
 
   onError = (err) => {
@@ -113,7 +113,6 @@ class RTSPVideoPlayer2 extends React.PureComponent{
           paused={paused}
           onLoad={onLoad}
           onLoadStart={onLoadStart}
-          onProgress={onProgress}
           onError={onError}
           onEnd={onEnd}
           ref={ref => (this.videoPlayer = ref)}

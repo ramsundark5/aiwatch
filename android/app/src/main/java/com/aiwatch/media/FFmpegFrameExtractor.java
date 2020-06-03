@@ -141,7 +141,7 @@ public class FFmpegFrameExtractor {
             CameraConfig updatedCameraConfig = cameraConfigDao.updateCameraStatus(cameraConfig.getId(), disconnected);
             LOGGER.d("camera monitoring enabled status "+updatedCameraConfig.isMonitoringEnabled());
             updatedCameraConfig = cameraConfigDao.updateRtspUrl(cameraConfig.getId(), rtspUrl);
-            LOGGER.d("camera rtspUrl "+cameraConfig.getRtspUrl());
+            LOGGER.d("camera rtspUrl "+updatedCameraConfig.getRtspUrl());
             NotificationManager.sendUINotification(context, updatedCameraConfig);
             if(previousCameraConfig.isDisconnected() == disconnected){
                 NotificationManager.sendStringNotification(context, "Camera "+ cameraConfig.getName() + " "+ status);
