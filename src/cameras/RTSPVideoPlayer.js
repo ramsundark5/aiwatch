@@ -28,7 +28,11 @@ const RTSPVideoPlayer = (props) => {
         //await AiwatchUtl.sleep(5000);
         setIsLoading(false);
     }
-    setPaused(!paused);
+    if(playerState == PLAYER_STATES.PLAYING){
+      setPaused(false);
+    }else{
+      setPaused(true);
+    }
     setPlayerState(playerState);
   };
 
@@ -86,28 +90,8 @@ const RTSPVideoPlayer = (props) => {
         useTextureView={true}
         fullscreen={isFullScreen}
         style={styles.mediaPlayer}
+        controls
       />
-      <MediaControls
-        showSlider={props.showSlider}
-        showDuration={props.showDuration}
-        isFullScreen={isFullScreen}
-        duration={duration}
-        isLoading={isLoading}
-        mainColor="red"
-        onFullScreen={onFullScreen}
-        onPaused={onPaused}
-        onReplay={onReplay}
-        onSeek={onSeek}
-        onSeeking={onSeeking}
-        playerState={playerState}
-        progress={currentTime}
-      >
-        <MediaControls.Toolbar>
-          <View style={styles.toolbar}>
-            <Text>I'm a custom toolbar </Text>
-          </View>
-        </MediaControls.Toolbar>
-      </MediaControls>
     </View>
   );
 };

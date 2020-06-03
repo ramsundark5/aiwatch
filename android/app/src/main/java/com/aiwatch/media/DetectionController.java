@@ -65,7 +65,7 @@ public class DetectionController {
             RunningThreadInfo runningThreadInfo = cameraMap.get(cameraId);
             if(runningThreadInfo != null){
                 MonitoringRunnable monitoringRunnable = runningThreadInfo.getMonitoringRunnable();
-                if(monitoringRunnable != null && monitoringRunnable.isFFmmpegStopped()){
+                if(monitoringRunnable != null && !monitoringRunnable.isFFmmpegStopped()){
                     cameraRunning = true;
                 }
             }
