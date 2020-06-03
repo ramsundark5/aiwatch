@@ -60,6 +60,7 @@ class RTSPVideoPlayer2 extends React.PureComponent{
   };
 
   onProgress = data => {
+    const { isLoading, playerState } = this.state;
     // Video Player will continue progress even if the video already ended
     if (!isLoading && playerState !== PLAYER_STATES.ENDED) {
       this.setState({ currentTime: data.currentTime });
@@ -67,10 +68,13 @@ class RTSPVideoPlayer2 extends React.PureComponent{
   };
 
   onLoad = data => {
-    this.setState({ currentTime: data.currentTime, isLoading: false });
+    if(data && data.currentTime){
+      this.setState({ currentTime: data.currentTime, isLoading: false });
+    }
   };
 
   onError = (err) => {
+    console.log('error playing video '+ err);
     this.setState({ playerState: PLAYER_STATES.PAUSED, isLoading: false });
   };
   
@@ -96,7 +100,7 @@ class RTSPVideoPlayer2 extends React.PureComponent{
 
   render(){
     const { onEnd, onError, onLoad, onLoadStart, onProgress, onFullScreen, onPaused, onReplay, onSeek, onSeeking, onPlaybackRateChange} = this;
-    const { paused, videoUrl, isFullScreen, duration, isLoading, playerState, currentTime } = this.state;
+    const { paused, isFullScreen, duration, isLoading, playerState, currentTime } = this.state;
     const { showDuration, showSlider, url } = this.props;
     console.log('video url in render '+ url);
     if(!url){
@@ -107,6 +111,11 @@ class RTSPVideoPlayer2 extends React.PureComponent{
       <View style={styles.container}>
         <Video
           paused={paused}
+          onLoad={onLoad}
+          onLoadStart={onLoadStart}
+          onProgress={onProgress}
+          onError={onError}
+          onEnd={onEnd}
           ref={ref => (this.videoPlayer = ref)}
           resizeMode="contain"
           source={{uri: url}}
