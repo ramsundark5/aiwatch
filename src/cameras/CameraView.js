@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Colors, FAB, Headline, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
 import { connect } from 'react-redux';
 import Logger from '../common/Logger';
-import MonitoringStatus from './MonitoringStatus';
 import AiwatchUtil from '../common/AiwatchUtil';
 import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
 import testID from '../common/testID';
-import { FlatGrid } from 'react-native-super-grid';
 import WatchCamera from './WatchCamera';
+import { ScrollView, Container } from '../videoplayer';
+
 class CameraView extends Component {
   
   constructor(props) {
@@ -19,10 +19,19 @@ class CameraView extends Component {
     this.deviceType = null; 
   }
 
-  static navigationOptions = {
-    header: null,
-  };
-
+  static navigationOptions = ({ navigation }) => {
+    const { state } = navigation
+    // Setup the header and tabBarVisible status
+    const header = null;
+    const tabBarVisible = state.params ? state.params.fullscreen : true
+    return {
+      // For stack navigators, you can hide the header bar like so
+      header,
+      // For the tab navigators, you can hide the tab bar like so
+      tabBarVisible,
+    }
+  }
+  
   state = {
     isFull: false,
     open: false,
@@ -69,7 +78,6 @@ class CameraView extends Component {
               visible={isLoading}
               textContent={'Loading...'} />
             <View {...testID('cameraHome')} style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
-              <MonitoringStatus loadAllCameras={() => this.loadAllCameras()} {...this.props}/>
               {this.renderEmptyMessage()}
               {this.renderCameras()}
               {this.renderAddCameraButton()}
@@ -81,34 +89,18 @@ class CameraView extends Component {
 
   renderCameras(){
     const { cameras } = this.props;
-    if(cameras && cameras.length === 1){
-      let cameraConfigProp = cameras[0];
-      return (
-        <ScrollView style={{flex: 1}}>
-          {this.renderSingleCamera(cameraConfigProp)}
-        </ScrollView>
-      )
-    }
-    //render multiple cameras in grid
-    let playerSize = 300;
-    if(this.deviceType == 'Small_Tablet'){
-      playerSize = 400;
-    }
-    if(this.deviceType == 'Large_Tablet'){
-      playerSize = 600;
-    }
-    return(
-      <FlatGrid
-        spacing={0}
-        itemDimension={playerSize}
-        items={cameras}
-        renderItem={({ item, index }) => this.renderSingleCamera(item, index)}/>
+    return (
+      <ScrollView style={{flex: 1}}>
+          {cameras.map((cameraConfig, index) => (
+            this.renderSingleCamera(cameraConfig)
+          ))}
+      </ScrollView>
     )
   }
 
   renderSingleCamera(cameraConfigProp){
     return(
-      <WatchCamera cameraConfig={cameraConfigProp} {...this.props}/>
+        <WatchCamera cameraConfig={cameraConfigProp} {...this.props}/>
     )
   }
 
@@ -176,6 +168,12 @@ export default connect(
 )(CameraView);
 
 const styles = StyleSheet.create({
+  videoContainer: {
+    flex: 1
+  },
+  videoContainer: {
+    margin: 10
+  },
   container: {
     flex: 1,
     width: '100%',

@@ -16,17 +16,27 @@ class RTSPVideoPlayer extends React.PureComponent{
     }
   };
 
+  onFullScreen(status) {
+    if(!this.props.navigation){
+      return;
+    }
+    // Set the params to pass in fullscreen status to navigationOptions
+    this.props.navigation.setParams({
+      fullscreen: !status
+    })
+  }
+
   render(){
-    const { showDuration, showSlider, url } = this.props;
+    const { showDuration, showSlider, title, url } = this.props;
     return(
-      <View style={styles.container}>
         <VideoPlayer 
           url={url} 
           onPlay={this.onPlay}
+          title={title}
           hideFullScreenControl={false}
           hideScrubber={true}
-          hideTime={true}/>
-      </View>
+          hideTime={true}
+          onFullScreen={status => this.onFullScreen(status)}/>
     )
   }
 }
