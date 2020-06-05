@@ -22,7 +22,10 @@ class RTSPVideoPlayer extends React.PureComponent{
       <View style={styles.container}>
         <VideoPlayer 
           url={url} 
-          onPlay={this.onPlay}/>
+          onPlay={this.onPlay}
+          hideFullScreenControl={false}
+          hideScrubber={true}
+          hideTime={true}/>
       </View>
     )
   }

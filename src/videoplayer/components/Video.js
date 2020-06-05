@@ -350,7 +350,9 @@ class Video extends Component {
       playInBackground,
       playWhenInactive,
       controlDuration,
-      hideFullScreenControl
+      hideFullScreenControl,
+      hideScrubber,
+      hideTime
     } = this.props
 
     const inline = {
@@ -421,6 +423,8 @@ class Video extends Component {
           inlineOnly={inlineOnly}
           controlDuration={controlDuration}
           hideFullScreenControl={hideFullScreenControl}
+          hideScrubber={hideScrubber}
+          hideTime={hideTime}
         />
       </Animated.View>
     )

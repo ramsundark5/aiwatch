@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { ToggleIcon, Time, Scrubber } from './'
 
@@ -24,29 +24,37 @@ const ControlBar = (props) => {
     fullscreen,
     theme,
     inlineOnly,
-    hideFullScreenControl
+    hideFullScreenControl,
+    hideScrubber,
+    hideTime
   } = props
 
   return (
     <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)']} style={styles.container}>
-      <Time time={currentTime} theme={theme.seconds} />
-      <Scrubber
-        onSeek={pos => onSeek(pos)}
-        onSeekRelease={pos => onSeekRelease(pos)}
-        progress={progress}
-        theme={{ scrubberThumb: theme.scrubberThumb, scrubberBar: theme.scrubberBar }}
-      />
-      <ToggleIcon
-        paddingLeft
-        theme={theme.volume}
-        onPress={() => props.toggleMute()}
-        isOn={muted}
-        iconOff="volume-up"
-        iconOn="volume-mute"
-        size={20}
-      />
-      <Time time={duration} theme={theme.duration} />
-      { !inlineOnly || !hideFullScreenControl &&
+      { !hideTime &&
+        <Time time={currentTime} theme={theme.seconds} />
+      }
+      { !hideScrubber &&
+        <Scrubber
+          onSeek={pos => onSeek(pos)}
+          onSeekRelease={pos => onSeekRelease(pos)}
+          progress={progress}
+          theme={{ scrubberThumb: theme.scrubberThumb, scrubberBar: theme.scrubberBar }}
+        />
+      }
+        <ToggleIcon
+          paddingLeft
+          theme={theme.volume}
+          onPress={() => props.toggleMute()}
+          isOn={muted}
+          iconOff="volume-up"
+          iconOn="volume-mute"
+          size={20}
+        />
+      { !hideTime &&
+        <Time time={duration} theme={theme.duration} />
+      }
+      { !hideFullScreenControl &&
       <ToggleIcon
         paddingRight
         onPress={() => props.toggleFS()}

@@ -128,7 +128,9 @@ class Controls extends Component {
       duration,
       theme,
       inlineOnly,
-      hideFullScreenControl
+      hideFullScreenControl,
+      hideScrubber,
+      hideTime
     } = this.props
 
     const { center, ...controlBar } = theme
@@ -166,6 +168,8 @@ class Controls extends Component {
             theme={controlBar}
             inlineOnly={inlineOnly}
             hideFullScreenControl={hideFullScreenControl}
+            hideScrubber={hideScrubber}
+            hideTime={hideTime}
           />
         </Animated.View>
       </Touchable>
