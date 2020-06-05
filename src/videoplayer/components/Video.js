@@ -11,12 +11,10 @@ import {
   Alert
 } from 'react-native'
 import VideoPlayer from 'react-native-video'
-// import KeepAwake from '../../react-native-keep-awake'
 import Orientation from 'react-native-orientation-locker'
 import Icons from 'react-native-vector-icons/MaterialIcons'
-import { Controls } from '.'
+import { Controls } from './'
 import { checkSource } from './utils'
-
 const Win = Dimensions.get('window')
 const backgroundColor = '#000'
 
@@ -49,7 +47,7 @@ const defaultTheme = {
   seconds: '#FFF',
   duration: '#FFF',
   progress: '#FFF',
-  loading:  '#FFF'
+  loading: '#FFF'
 }
 
 class Video extends Component {
@@ -92,7 +90,7 @@ class Video extends Component {
     this.props.onLoad(data)
     const { height, width } = data.naturalSize
     const ratio = height === 'undefined' && width === 'undefined' ?
-      (9 / 16) : (9 / 16)
+      (9 / 16) : (height / width)
     const inlineHeight = this.props.lockRatio ?
       (Win.width / this.props.lockRatio)
       : (Win.width * ratio)
@@ -105,7 +103,6 @@ class Video extends Component {
       Animated.timing(this.animInline, { toValue: inlineHeight, duration: 200 }).start()
       this.props.onPlay(!this.state.paused)
       if (!this.state.paused) {
-        // KeepAwake.activate()
         if (this.props.fullScreenOnly) {
           this.setState({ fullScreen: true }, () => {
             this.props.onFullScreen(this.state.fullScreen)
@@ -228,10 +225,7 @@ class Video extends Component {
               if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
             })
           }
-          // KeepAwake.activate()
         } else {
-          // KeepAwake.deactivate()
-          return;
         }
       })
     })
@@ -242,7 +236,8 @@ class Video extends Component {
       Orientation.getOrientation((e, orientation) => {
         if (this.state.fullScreen) {
           const initialOrient = Orientation.getInitialOrientation()
-          const height = this.props.fullscreenHeight || Dimensions.get('window').height
+          const height = orientation !== initialOrient ?
+            Win.width : Win.height
           this.props.onFullScreen(this.state.fullScreen)
           if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
           this.animToFullscreen(height)
@@ -289,7 +284,7 @@ class Video extends Component {
     const percent = seconds / this.state.duration
     if (seconds > this.state.duration) {
       throw new Error(`Current time (${seconds}) exceeded the duration ${this.state.duration}`)
-
+      return false
     }
     return this.onSeekRelease(percent)
   }
@@ -353,7 +348,9 @@ class Video extends Component {
       onMorePress,
       inlineOnly,
       playInBackground,
-      playWhenInactive
+      playWhenInactive,
+      controlDuration,
+      hideFullScreenControl
     } = this.props
 
     const inline = {
@@ -422,6 +419,8 @@ class Video extends Component {
           onMorePress={() => onMorePress()}
           theme={setTheme}
           inlineOnly={inlineOnly}
+          controlDuration={controlDuration}
+          hideFullScreenControl={hideFullScreenControl}
         />
       </Animated.View>
     )
@@ -453,6 +452,7 @@ Video.propTypes = {
   loop: PropTypes.bool,
   autoPlay: PropTypes.bool,
   inlineOnly: PropTypes.bool,
+  hideFullScreenControl: PropTypes.bool,
   fullScreenOnly: PropTypes.bool,
   playInBackground: PropTypes.bool,
   playWhenInactive: PropTypes.bool,
@@ -472,7 +472,8 @@ Video.propTypes = {
   logo: PropTypes.string,
   title: PropTypes.string,
   theme: PropTypes.object,
-  resizeMode: PropTypes.string
+  resizeMode: PropTypes.string,
+  controlDuration: PropTypes.number,
 }
 
 Video.defaultProps = {
@@ -487,21 +488,22 @@ Video.defaultProps = {
   playWhenInactive: false,
   rotateToFullScreen: false,
   lockPortraitOnFsExit: false,
-  onEnd: () => { },
-  onLoad: () => { },
-  onPlay: () => { },
-  onError: () => { },
-  onProgress: () => { },
+  onEnd: () => {},
+  onLoad: () => {},
+  onPlay: () => {},
+  onError: () => {},
+  onProgress: () => {},
   onMorePress: undefined,
-  onFullScreen: () => { },
-  onTimedMetadata: () => { },
+  onFullScreen: () => {},
+  onTimedMetadata: () => {},
   rate: 1,
   volume: 1,
   lockRatio: undefined,
   logo: undefined,
   title: '',
   theme: defaultTheme,
-  resizeMode: 'contain'
+  resizeMode: 'contain',
+  controlDuration: 3,
 }
 
 export default Video

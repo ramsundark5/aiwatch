@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { StyleSheet } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { ToggleIcon, Time, Scrubber } from '.'
+import { ToggleIcon, Time, Scrubber } from './'
 
 const styles = StyleSheet.create({
   container: {
@@ -23,11 +23,12 @@ const ControlBar = (props) => {
     muted,
     fullscreen,
     theme,
-    inlineOnly
+    inlineOnly,
+    hideFullScreenControl
   } = props
 
   return (
-    <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)']} style={[styles.container, { marginBottom: 10 }]}>
+    <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)']} style={styles.container}>
       <Time time={currentTime} theme={theme.seconds} />
       <Scrubber
         onSeek={pos => onSeek(pos)}
@@ -45,15 +46,15 @@ const ControlBar = (props) => {
         size={20}
       />
       <Time time={duration} theme={theme.duration} />
-      {!inlineOnly &&
-        <ToggleIcon
-          paddingRight
-          onPress={() => props.toggleFS()}
-          iconOff="fullscreen"
-          iconOn="fullscreen-exit"
-          isOn={fullscreen}
-          theme={theme.fullscreen}
-        />}
+      { !inlineOnly || !hideFullScreenControl &&
+      <ToggleIcon
+        paddingRight
+        onPress={() => props.toggleFS()}
+        iconOff="fullscreen"
+        iconOn="fullscreen-exit"
+        isOn={fullscreen}
+        theme={theme.fullscreen}
+      />}
     </LinearGradient>
   )
 }
@@ -66,6 +67,7 @@ ControlBar.propTypes = {
   fullscreen: PropTypes.bool.isRequired,
   muted: PropTypes.bool.isRequired,
   inlineOnly: PropTypes.bool.isRequired,
+  hideFullScreenControl: PropTypes.bool.isRequired,
   progress: PropTypes.number.isRequired,
   currentTime: PropTypes.number.isRequired,
   duration: PropTypes.number.isRequired,
