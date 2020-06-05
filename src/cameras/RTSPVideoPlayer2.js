@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Video from "react-native-video";
 import MediaControls, { PLAYER_STATES } from '../videoplayer';
+import VideoPlayer from '../videoplayer2';
 
 class RTSPVideoPlayer2 extends React.PureComponent{
 
@@ -44,6 +45,16 @@ class RTSPVideoPlayer2 extends React.PureComponent{
       paused = false;
     }
     this.setState({ paused: paused, playerState: playerState });
+  };
+
+  onPlay = async(playing) => {
+    const { enableHLSLiveView } = this.props;
+    if(playing && enableHLSLiveView){
+        this.setState({ isLoading: true });
+        //invoke the callback
+        await enableHLSLiveView(false);
+        this.setState({ isLoading: false });
+    }
   };
 
   onPlaybackRateChange = (playbackRate) => {
@@ -99,6 +110,15 @@ class RTSPVideoPlayer2 extends React.PureComponent{
   }
 
   render(){
+    const { showDuration, showSlider, url } = this.props;
+    return(
+      <View style={styles.container}>
+        <VideoPlayer url={url} onPlay={this.onPlay}/>
+      </View>
+    )
+  }
+  
+  render2(){
     const { onEnd, onError, onLoad, onLoadStart, onProgress, onFullScreen, onPaused, onReplay, onSeek, onSeeking, onPlaybackRateChange} = this;
     const { paused, isFullScreen, duration, isLoading, playerState, currentTime } = this.state;
     const { showDuration, showSlider, url } = this.props;

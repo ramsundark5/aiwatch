@@ -3,6 +3,7 @@ package com.aiwatch;
 import android.app.Application;
 import android.content.Context;
 
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.bugsnag.android.Bugsnag;
 import com.facebook.react.ReactApplication;
 import com.brentvatne.react.ReactVideoPackage;
@@ -58,7 +59,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNSmartCamPackage(),
             new RNCWebViewPackage(),
             new OrientationPackage(),
-            new RNPermissionsPackage()
+            new RNPermissionsPackage(),
+            new LinearGradientPackage()
       );
     }
 
