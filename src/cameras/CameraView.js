@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { Button, Colors, FAB, Headline, Portal, Provider } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import { loadCameras, deleteCamera, updateMonitoringStatus, updateStatus } from '../store/CamerasStore';
@@ -10,7 +10,6 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import Theme from '../common/Theme';
 import testID from '../common/testID';
 import WatchCamera from './WatchCamera';
-import { ScrollView, Container } from '../videoplayer';
 
 class CameraView extends Component {
   
@@ -89,18 +88,18 @@ class CameraView extends Component {
 
   renderCameras(){
     const { cameras } = this.props;
-    return (
-      <ScrollView style={{flex: 1}}>
-          {cameras.map((cameraConfig, index) => (
-            this.renderSingleCamera(cameraConfig)
-          ))}
-      </ScrollView>
+    return(
+      <FlatList
+        spacing={5}
+        data={cameras}
+        keyExtractor={item => item.id}
+        renderItem={({ item, index }) => this.renderSingleCamera(item, index)}/>
     )
   }
 
   renderSingleCamera(cameraConfigProp){
     return(
-        <WatchCamera cameraConfig={cameraConfigProp} {...this.props}/>
+        <WatchCamera cameraConfig={cameraConfigProp} currentFSIndex= {...this.props}/>
     )
   }
 
