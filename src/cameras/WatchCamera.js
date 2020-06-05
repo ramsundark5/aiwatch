@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import RTSPVideoPlayer2 from './RTSPVideoPlayer2';
+import RTSPVideoPlayer from './RTSPVideoPlayer';
 import RNSmartCam from '../native/RNSmartCam';
 import CameraControl from './CameraControl';
 import { moderateScale, verticalScale } from 'react-native-size-matters';
@@ -60,7 +60,7 @@ class WatchCamera extends Component {
         return(
           <View style={[styles.container, {alignSelf: 'center', maxWidth: playerMaxWidth}]} key={cameraConfig.id}>
             <Text>{cameraConfig.name}</Text>
-            <RTSPVideoPlayer2
+            <RTSPVideoPlayer
                   style={{width:'100%', height: playerHeight}}
                   enableHLSLiveView={(paused) => this.enableHLSLiveView(paused, cameraConfig)}
                   key={cameraConfig.id}

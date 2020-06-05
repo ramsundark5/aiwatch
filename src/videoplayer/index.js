@@ -1,7 +1,7 @@
-import MediaControls from "./MediaControls";
-import { PLAYER_STATES } from "./constants/playerStates";
+import Video from './components/Video'
+export {
+  Container,
+  ScrollView
+} from './components'
 
-export { PLAYER_STATES };
-
-export default MediaControls;
-
+export default Video

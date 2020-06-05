@@ -12,7 +12,7 @@ import {
   Loading,
   TopBar,
   ProgressBar
-} from './'
+} from '.'
 
 const styles = StyleSheet.create({
   container: {
