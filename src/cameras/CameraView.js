@@ -22,7 +22,7 @@ class CameraView extends Component {
     const { state } = navigation
     // Setup the header and tabBarVisible status
     const header = null;
-    const tabBarVisible = state.params ? state.params.fullscreen : true
+    const tabBarVisible = false;
     return {
       // For stack navigators, you can hide the header bar like so
       header,
@@ -35,6 +35,8 @@ class CameraView extends Component {
     isFull: false,
     open: false,
     isLoading: false,
+    fullscreen: false, 
+    fullscreenCameraId: null
   }
 
   componentDidMount(){
@@ -68,6 +70,13 @@ class CameraView extends Component {
     this.props.navigation.navigate('ScanCamera');
   }
 
+  onFullScreen(status, cameraId){
+    this.setState({fullscreen: status, fullscreenCameraId: cameraId});
+    this.props.navigation.setParams({
+      fullscreen: status
+    })
+  }
+
   render() {
     const { isFull, isLoading } = this.state;
     return (
@@ -93,13 +102,19 @@ class CameraView extends Component {
         spacing={5}
         data={cameras}
         keyExtractor={item => item.id}
-        renderItem={({ item, index }) => this.renderSingleCamera(item, index)}/>
+        renderItem={({ item, index }) => this.renderSingleCamera(item)}/>
     )
   }
 
   renderSingleCamera(cameraConfigProp){
+    const { fullscreen, fullscreenCameraId } = this.state;
+    if(fullscreen && fullscreenCameraId != cameraConfigProp.id){
+      return null;
+    }
     return(
-        <WatchCamera cameraConfig={cameraConfigProp} currentFSIndex= {...this.props}/>
+        <WatchCamera cameraConfig={cameraConfigProp} 
+            onFullScreen={(status, cameraId) => this.onFullScreen(status, cameraId)}
+            {...this.props}/>
     )
   }
 

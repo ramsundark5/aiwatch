@@ -57,13 +57,13 @@ class WatchCamera extends Component {
         return(
           <View key={cameraConfig.id}>
             <RTSPVideoPlayer
+                  {...this.props}
                   enableHLSLiveView={(paused) => this.enableHLSLiveView(paused, cameraConfig)}
                   key={cameraConfig.id}
                   url={videUrlForView}
                   title={cameraConfig.name}
-                  showSlider={false}
-                  showDuration={false}
-                  onFullPress={(videoUrl) => this.onPlayVideoFullScreen(videoUrl)}/>
+                  hideScrubber={true}
+                  hideTime={true}/>
               <CameraControl {...this.props} cameraConfig={cameraConfig}/>
           </View>
         )
