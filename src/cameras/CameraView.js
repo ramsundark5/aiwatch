@@ -70,13 +70,14 @@ class CameraView extends Component {
 
   render() {
     const { fullscreen, isLoading } = this.state;
+    let containerStyle = fullscreen ? styles.fullscreencontainer : styles.container; 
     return (
       <Provider>
          <Portal>
             <LoadingSpinner 
               visible={isLoading}
               textContent={'Loading...'} />
-            <View {...testID('cameraHome')} style={[styles.container, { marginTop: fullscreen ? 0 : 20 }]}>
+            <View {...testID('cameraHome')} style={containerStyle}>
               {this.renderEmptyMessage()}
               {this.renderCameras()}
               {this.renderAddCameraButton()}
@@ -88,10 +89,17 @@ class CameraView extends Component {
 
   renderCameras(){
     const { cameras } = this.props;
+    const { fullscreen } = this.state;
+    let contentPaddingBottom = 60;
+    let itemSpacing = 5;
+    if(fullscreen){
+      contentPaddingBottom = 0;
+      itemSpacing = 0;
+    }
     return(
       <FlatList
-        contentContainerStyle={{ paddingBottom: 60 }}
-        spacing={5}
+        contentContainerStyle={{ paddingBottom: contentPaddingBottom }}
+        spacing={itemSpacing}
         data={cameras}
         keyExtractor={item => item.id}
         renderItem={({ item, index }) => this.renderSingleCamera(item)}/>
@@ -176,16 +184,15 @@ export default connect(
 )(CameraView);
 
 const styles = StyleSheet.create({
-  videoContainer: {
-    flex: 1
-  },
-  videoContainer: {
-    margin: 10
-  },
   container: {
     flex: 1,
-    width: '100%',
-    padding: 10,
+    padding: 3,
+    marginTop: 20
+  },
+  fullscreencontainer: {
+    flex: 1,
+    padding: 0,
+    marginTop: 0
   },
   footer: {
     width: '100%',
