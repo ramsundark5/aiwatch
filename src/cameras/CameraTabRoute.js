@@ -18,7 +18,8 @@ const CameraStack = createStackNavigator({
 CameraStack.navigationOptions = ({ navigation }) => {
     let tabBarVisible = true;
     let routeName = navigation.state.routes[navigation.state.index].routeName
-    if ( routeName == 'FullScreenVideo' ) {
+    let fullScreenStatus = navigation.state.params ? state.params.fullscreen : false
+    if ( routeName == 'FullScreenVideo' || fullScreenStatus) {
         tabBarVisible = false
     }
     return {

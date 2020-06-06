@@ -18,19 +18,10 @@ class CameraView extends Component {
     this.deviceType = null; 
   }
 
-  static navigationOptions = ({ navigation }) => {
-    const { state } = navigation
-    // Setup the header and tabBarVisible status
-    const header = null;
-    const tabBarVisible = false;
-    return {
-      // For stack navigators, you can hide the header bar like so
-      header,
-      // For the tab navigators, you can hide the tab bar like so
-      tabBarVisible,
-    }
-  }
-  
+  static navigationOptions = {
+    header: null,
+  };
+ 
   state = {
     isFull: false,
     open: false,
@@ -78,14 +69,14 @@ class CameraView extends Component {
   }
 
   render() {
-    const { isFull, isLoading } = this.state;
+    const { fullscreen, isLoading } = this.state;
     return (
       <Provider>
          <Portal>
             <LoadingSpinner 
               visible={isLoading}
               textContent={'Loading...'} />
-            <View {...testID('cameraHome')} style={[styles.container, { marginTop: isFull ? 0 : 20 }]}>
+            <View {...testID('cameraHome')} style={[styles.container, { marginTop: fullscreen ? 0 : 20 }]}>
               {this.renderEmptyMessage()}
               {this.renderCameras()}
               {this.renderAddCameraButton()}
@@ -99,6 +90,7 @@ class CameraView extends Component {
     const { cameras } = this.props;
     return(
       <FlatList
+        contentContainerStyle={{ paddingBottom: 60 }}
         spacing={5}
         data={cameras}
         keyExtractor={item => item.id}
@@ -132,7 +124,8 @@ class CameraView extends Component {
   }
 
   renderAddCameraButton(){
-    if(this.state.isFull){
+    const { fullscreen } = this.state;
+    if(fullscreen){
       return null;
     }
     const addCameraButton = { icon: 'video-plus', label: 'Add Camera', color: 'white', 
@@ -158,7 +151,8 @@ class CameraView extends Component {
   }
 
   renderAddCameraButtonForTest(){
-    if(this.state.isFull){
+    const { fullscreen } = this.state;
+    if(fullscreen){
       return null;
     }
     return(
