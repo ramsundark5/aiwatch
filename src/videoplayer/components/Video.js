@@ -209,9 +209,12 @@ class Video extends Component {
     if (this.state.paused) this.togglePlay()
   }
 
-  togglePlay() {
+  async togglePlay() {
+    this.setState({ loading: true });
+    await this.props.onPlay(this.state.paused)
+    this.setState({ loading: false });
     this.setState({ paused: !this.state.paused }, () => {
-      this.props.onPlay(!this.state.paused)
+      //this.props.onPlay(!this.state.paused)
       Orientation.getOrientation((e, orientation) => {
         if (this.props.inlineOnly) return
         if (!this.state.paused) {

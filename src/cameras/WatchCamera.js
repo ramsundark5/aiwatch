@@ -28,7 +28,7 @@ class WatchCamera extends Component {
                   await RNSmartCam.putCamera(camerConfigUpdate);
                   if(!isCameraRunning){
                       //sleep for 5 seconds so ffmpeg can init rtsp
-                      //await AiwatchUtl.sleep(5000);
+                      await AiwatchUtl.sleep(5000);
                   }
                 }
             }

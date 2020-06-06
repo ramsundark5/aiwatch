@@ -18,10 +18,6 @@ export default class CameraInfo extends Component {
     return (
       <List.Accordion title="Camera Info" expanded={state.expanded} onPress={this.toggleExpand}>
         <ConfigInput {...props} label="Camera Name" name="name" {...testID('CAMERA_NAME')}/>
-
-        <ConfigInput {...props} label="Camera Brand" name="brand" {...testID('CAMERA_BRAND')}/>
-
-        <ConfigInput {...props} label="Camera Model" name="model" {...testID('CAMERA_MODEL')}/>
       </List.Accordion>
     );
   }
