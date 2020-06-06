@@ -78,11 +78,11 @@ public class MainActivity extends ReactActivity {
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             List<CameraConfig> cameraConfigs = cameraConfigDao.getAllCameras();
             for(CameraConfig cameraConfig: cameraConfigs){
-                if(cameraConfig.isLiveHLSViewEnabled() &&
-                        !cameraConfig.isMonitoringEnabled() &&
-                        !cameraConfig.isCvrEnabled()){
+                if(cameraConfig.isLiveHLSViewEnabled() ){
                     cameraConfig.setLiveHLSViewEnabled(false);
                     cameraConfigDao.putCamera(cameraConfig);
+                }
+                if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled()) {
                     Intent intent = new Intent(getApplicationContext(), MonitoringService.class);
                     intent.putExtra(AppConstants.ACTION_EXTRA, AppConstants.DISCONNECT_CAMERA);
                     intent.putExtra(AppConstants.CAMERA_CONFIG_ID_EXTRA, cameraConfig.getId());
