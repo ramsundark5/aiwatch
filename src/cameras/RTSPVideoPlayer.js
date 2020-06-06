@@ -16,6 +16,18 @@ class RTSPVideoPlayer extends React.PureComponent{
     }
   };
 
+  onErrorRetry =  (err) => {
+    const { enableHLSLiveView } = this.props;
+    if(err & err.error && err.error.errorException){
+      if(err.error.errorException.startsWith('java.io.FileNotFoundException')){
+        console.log('error loading video '+ err.error.errorException);
+        if(enableHLSLiveView){
+            enableHLSLiveView(false);
+        }
+      }
+    }
+  };
+
   onFullScreenEvent(status) {
     const { onFullScreen, cameraConfig } = this.props;
     if(onFullScreen){
@@ -33,6 +45,8 @@ class RTSPVideoPlayer extends React.PureComponent{
         <VideoPlayer 
           url={url} 
           onPlay={this.onPlay}
+          error={false}
+          onError={this.onErrorRetry}
           title={title}
           hideFullScreenControl={false}
           hideScrubber={hideScrubber}

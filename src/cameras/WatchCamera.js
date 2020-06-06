@@ -18,13 +18,9 @@ class WatchCamera extends Component {
     }
 
     onPlayVideoFullScreen(videoUrl){
-        this.props.navigation.navigate('FullScreenVideo', {
-            videoUrl: videoUrl
-        });
-    }
-
-    onCloseFullScreen(){
-        this.setState({ isFull: false});
+      this.props.navigation.navigate('FullScreenVideo', {
+          videoUrl: videoUrl
+      });
     }
 
     async enableHLSLiveView(paused, cameraConfig){
