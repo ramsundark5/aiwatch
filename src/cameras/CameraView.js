@@ -113,6 +113,7 @@ class CameraView extends Component {
     }
     return(
         <WatchCamera cameraConfig={cameraConfigProp} 
+            fullscreen={fullscreen}
             onFullScreen={(status, cameraId) => this.onFullScreen(status, cameraId)}
             {...this.props}/>
     )

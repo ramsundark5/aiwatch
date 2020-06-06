@@ -48,7 +48,7 @@ class WatchCamera extends Component {
     }
 
     render(){
-        const cameraConfig = this.props.cameraConfig;
+        const { cameraConfig, fullscreen } = this.props;
         if(!cameraConfig){
           return null;
         }
@@ -66,7 +66,9 @@ class WatchCamera extends Component {
                   title={cameraConfig.name}
                   hideScrubber={true}
                   hideTime={true}/>
-              <CameraControl {...this.props} cameraConfig={cameraConfig}/>
+              { !fullscreen && 
+                <CameraControl {...this.props} cameraConfig={cameraConfig}/>
+              }
           </View>
         )
       }
