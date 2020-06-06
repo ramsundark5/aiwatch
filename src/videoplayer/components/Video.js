@@ -168,7 +168,7 @@ class Video extends Component {
   onError(msg) {
     this.props.onError(msg)
     const { error } = this.props
-    this.setState({ renderError: true }, () => {
+    this.setState({ renderError: true, loading: false, paused: true }, () => {
       let type
       switch (true) {
         case error === false:
@@ -431,7 +431,7 @@ class Video extends Component {
   }
 
   render() {
-    if (this.state.renderError) return this.renderError()
+    //if (this.state.renderError) return this.renderError()
     return this.renderPlayer()
   }
 }

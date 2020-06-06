@@ -17,23 +17,19 @@ class WatchCamera extends Component {
         baseHLSPath: null,
     }
 
-    onPlayVideoFullScreen(videoUrl){
-      this.props.navigation.navigate('FullScreenVideo', {
-          videoUrl: videoUrl
-      });
-    }
-
-    async enableHLSLiveView(paused, cameraConfig){
+    async enableHLSLiveView(errored, cameraConfig){
         try{
-            let camerConfigUpdate = Object.assign({}, cameraConfig);
-            camerConfigUpdate.liveHLSViewEnabled = false;
             if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
-                let isCameraRunning = await RNSmartCam.getCameraMonitoringStatus(cameraConfig.id);
-                camerConfigUpdate.liveHLSViewEnabled = true;
-                await RNSmartCam.putCamera(camerConfigUpdate);
-                if(!isCameraRunning){
-                    //sleep for 5 seconds so ffmpeg can init rtsp
-                    await AiwatchUtl.sleep(5000);
+                if(errored){
+                  this.updateHLSLiveViewStatus(cameraConfig, false);
+                }else{
+                  let isCameraRunning = await RNSmartCam.getCameraMonitoringStatus(cameraConfig.id);
+                  this.updateHLSLiveViewStatus(cameraConfig, true);
+                  await RNSmartCam.putCamera(camerConfigUpdate);
+                  if(!isCameraRunning){
+                      //sleep for 5 seconds so ffmpeg can init rtsp
+                      //await AiwatchUtl.sleep(5000);
+                  }
                 }
             }
         }catch(err){
@@ -41,6 +37,16 @@ class WatchCamera extends Component {
         }
     }
   
+    async updateHLSLiveViewStatus(cameraConfig, enable){
+      try{
+        let camerConfigUpdate = Object.assign({}, cameraConfig);
+        camerConfigUpdate.liveHLSViewEnabled = enable;
+        await RNSmartCam.putCamera(camerConfigUpdate);
+      }catch(err){
+        console.log('error updating hls status ' + err);
+      }
+    }
+
     render(){
         const cameraConfig = this.props.cameraConfig;
         if(!cameraConfig){
@@ -54,7 +60,7 @@ class WatchCamera extends Component {
           <View key={cameraConfig.id}>
             <RTSPVideoPlayer
                   {...this.props}
-                  enableHLSLiveView={(paused) => this.enableHLSLiveView(paused, cameraConfig)}
+                  enableHLSLiveView={(errored) => this.enableHLSLiveView(errored, cameraConfig)}
                   key={cameraConfig.id}
                   url={videUrlForView}
                   title={cameraConfig.name}
