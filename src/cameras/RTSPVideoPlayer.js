@@ -6,7 +6,30 @@ class RTSPVideoPlayer extends React.PureComponent{
 
   constructor(props){
     super(props);
-    this.videoPlayer = {};
+  }
+
+  componentDidMount(){
+    this.pauseVideoOnBlur();
+  }
+
+  componentWillUnmount(){
+    if(this.didBlurSubscription){
+      this.didBlurSubscription.remove();
+    }
+  }
+
+  pauseVideoOnBlur(){
+    const { navigation } = this.props;
+    if(!navigation){
+      return;
+    }
+    this.didBlurSubscription = navigation.addListener( 'didBlur',
+      () => {
+        if(this.videoRef){
+          this.videoRef.pause()
+        }
+      }
+    );
   }
 
   onPlay = async(playing) => {
@@ -39,6 +62,7 @@ class RTSPVideoPlayer extends React.PureComponent{
     const { autoplay, hideTime, hideScrubber, title, url } = this.props;
     return(
         <VideoPlayer 
+          ref={(ref) => { this.videoRef = ref }}
           url={url} 
           autoPlay={autoplay}
           onPlay={this.onPlay}

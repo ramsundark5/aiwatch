@@ -119,14 +119,16 @@ public class DetectionController {
     private boolean isHLSPlaylistRecent(CameraConfig cameraConfig){
         boolean isRecent = true;
         try{
-            File hlsPlayListFile = new File(cameraConfig.getRtspUrl());
-            if(hlsPlayListFile != null && hlsPlayListFile.exists()){
-                DateTime fileLastModifiedTime = new DateTime(hlsPlayListFile.lastModified());
-                DateTime currentTime = new DateTime();
-                DateTime endTime = currentTime.minusSeconds(6);
-                //if playlist file has not been updated for more than 6 seconds, its stale
-                if( fileLastModifiedTime.isBefore(endTime)){
-                    isRecent = false;
+            if(cameraConfig.getRtspUrl() !=  null){
+                File hlsPlayListFile = new File(cameraConfig.getRtspUrl());
+                if(hlsPlayListFile != null && hlsPlayListFile.exists()){
+                    DateTime fileLastModifiedTime = new DateTime(hlsPlayListFile.lastModified());
+                    DateTime currentTime = new DateTime();
+                    DateTime endTime = currentTime.minusSeconds(6);
+                    //if playlist file has not been updated for more than 6 seconds, its stale
+                    if( fileLastModifiedTime.isBefore(endTime)){
+                        isRecent = false;
+                    }
                 }
             }
         }catch (Exception e){

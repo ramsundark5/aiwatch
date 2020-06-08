@@ -11,7 +11,7 @@ import { store } from './src/store/Store';
 import { useScreens } from 'react-native-screens';
 import SplashScreen from 'react-native-splash-screen';
 import Logger from './src/common/Logger';
-//useScreens();
+useScreens();
 
 const AppContainer = createAppContainer(
   createMaterialBottomTabNavigator(
