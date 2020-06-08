@@ -18,6 +18,7 @@ class RTSPVideoPlayer extends React.PureComponent{
 
   onError = async(err) => {
     const { enableHLSLiveView } = this.props;
+    console.log('error loading video ' + err);
     if(enableHLSLiveView){
         await enableHLSLiveView(true);
     }

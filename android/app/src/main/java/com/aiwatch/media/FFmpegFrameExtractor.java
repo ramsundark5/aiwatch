@@ -9,6 +9,8 @@ import com.aiwatch.media.db.CameraConfigDao;
 import com.aiwatch.postprocess.NotificationManager;
 import java.io.File;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.arthenica.mobileffmpeg.FFmpeg;
 import com.arthenica.mobileffmpeg.util.AsyncSingleFFmpegExecuteTask;
@@ -87,7 +89,7 @@ public class FFmpegFrameExtractor {
             //String[] ffmpegCommand = command.split("\\s+");
 
             LOGGER.i("ffmpeg extraction starting. Thread is "+ Thread.currentThread().getName());
-            notifyAndUpdateCameraStatus(false, hlsIndexFileName);
+            notifyAndUpdateWithDelay(false, hlsIndexFileName, 2);
 
             final AsyncSingleFFmpegExecuteTask asyncCommandTask = new AsyncSingleFFmpegExecuteTask(command, new SingleExecuteCallback() {
                 @Override
@@ -97,10 +99,10 @@ public class FFmpegFrameExtractor {
                     } else if (returnCode == RETURN_CODE_CANCEL) {
                         LOGGER.i("Command execution cancelled by user.");
                     } else {
-                        LOGGER.i("ffmpeg extraction failed with response " + executeOutput);
+                        LOGGER.e("ffmpeg extraction failed with response " + executeOutput);
                     }
                     isfftaskCompleted = true;
-                    notifyAndUpdateCameraStatus(true, null);
+                    notifyAndUpdateWithDelay(true, null, 1);
                 }
             });
             asyncCommandTask.executeOnExecutor(Executors.newSingleThreadExecutor());
@@ -128,6 +130,15 @@ public class FFmpegFrameExtractor {
         String videoSegmentPrefix = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time " + recordingDuration + " -segment_format_options movflags=+faststart -reset_timestamps 1 ";
         String recordCommand =  videoSegmentPrefix + outputPath + "/" + cameraConfig.getId() +"-%Y%m%d_%H:%M:%S.mp4 ";
         return recordCommand;
+    }
+
+    public void notifyAndUpdateWithDelay(boolean disconnected, String rtspUrl, long delay){
+        ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                notifyAndUpdateCameraStatus(false, rtspUrl);
+            }}, delay, TimeUnit.SECONDS);
     }
 
     public void notifyAndUpdateCameraStatus(boolean disconnected, String rtspUrl){

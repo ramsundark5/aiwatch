@@ -209,12 +209,9 @@ class Video extends Component {
     if (this.state.paused) this.togglePlay()
   }
 
-  async togglePlay() {
-    this.setState({ loading: true });
-    await this.props.onPlay(this.state.paused)
-    this.setState({ loading: false });
+  togglePlay() {
     this.setState({ paused: !this.state.paused }, () => {
-      //this.props.onPlay(!this.state.paused)
+      this.props.onPlay(!this.state.paused)
       Orientation.getOrientation((e, orientation) => {
         if (this.props.inlineOnly) return
         if (!this.state.paused) {
@@ -388,6 +385,7 @@ class Video extends Component {
           paused={paused}
           resizeMode={resizeMode}
           repeat={loop}
+          key={url}
           style={fullScreen ? styles.fullScreen : inline}
           ref={(ref) => { this.player = ref }}
           rate={rate}

@@ -34,7 +34,7 @@ public class DetectionController {
     public synchronized boolean startDetection(CameraConfig cameraConfig, final Context context) {
         try {
             if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled() && !cameraConfig.isLiveHLSViewEnabled()){
-                LOGGER.d("camera monitoring not started because isMonitoringEnabled, isCvrEnabled and isLiveHLSViewEnabled flag is false");
+                LOGGER.d("camera monitoring not started for "+cameraConfig.getId() + " because isMonitoringEnabled, isCvrEnabled and isLiveHLSViewEnabled flag is false");
                 return false;
             }
             //stop the ffmpeg only if monitoring or cvr is enabled

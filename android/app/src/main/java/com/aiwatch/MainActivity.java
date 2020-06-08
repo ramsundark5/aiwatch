@@ -74,6 +74,17 @@ public class MainActivity extends ReactActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        stopMOnitoringDisabledCameras();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopMOnitoringDisabledCameras();
+    }
+
+    private void stopMOnitoringDisabledCameras(){
         try{
             CameraConfigDao cameraConfigDao = new CameraConfigDao();
             List<CameraConfig> cameraConfigs = cameraConfigDao.getAllCameras();
