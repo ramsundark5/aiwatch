@@ -3,6 +3,10 @@ package com.aiwatch.media;
 import android.content.Context;
 import com.aiwatch.Logger;
 import com.aiwatch.models.CameraConfig;
+
+import org.joda.time.DateTime;
+
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -43,7 +47,8 @@ public class DetectionController {
             }else if(cameraConfig.isLiveHLSViewEnabled()){
                 //only isLiveHLSViewEnabled. don't restart the service if its already running
                 boolean cameraRunning = isCameraRunning(cameraConfig.getId());
-                if(cameraRunning){
+                boolean isPlaylistFileRecent = isHLSPlaylistRecent(cameraConfig);
+                if(cameraRunning && isPlaylistFileRecent){
                     return false;
                 }
             }
@@ -51,7 +56,7 @@ public class DetectionController {
             MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
             cameraMap.put(cameraConfig.getId(), new RunningThreadInfo(cameraConfig, executorService, monitoringRunnable));
-            executorService.submit(monitoringRunnable);
+            executorService.schedule(monitoringRunnable, 1, TimeUnit.SECONDS);
             LOGGER.d("Monitoring started for camera "+ cameraConfig.getName() + cameraConfig.getId());
         } catch (Exception e) {
             LOGGER.e("Exception starting detection "+e.getMessage());
@@ -109,5 +114,24 @@ public class DetectionController {
         }else{
             cameraMap.remove(cameraId);
         }
+    }
+
+    private boolean isHLSPlaylistRecent(CameraConfig cameraConfig){
+        boolean isRecent = true;
+        try{
+            File hlsPlayListFile = new File(cameraConfig.getRtspUrl());
+            if(hlsPlayListFile != null && hlsPlayListFile.exists()){
+                DateTime fileLastModifiedTime = new DateTime(hlsPlayListFile.lastModified());
+                DateTime currentTime = new DateTime();
+                DateTime endTime = currentTime.minusSeconds(6);
+                //if playlist file has not been updated for more than 6 seconds, its stale
+                if( fileLastModifiedTime.isBefore(endTime)){
+                    isRecent = false;
+                }
+            }
+        }catch (Exception e){
+            LOGGER.e("Error checking if playlist file is recent "+e.getMessage());
+        }
+        return isRecent;
     }
 }
