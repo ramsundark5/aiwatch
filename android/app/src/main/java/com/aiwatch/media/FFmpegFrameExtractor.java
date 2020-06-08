@@ -71,8 +71,7 @@ public class FFmpegFrameExtractor {
                 String hlsSegmentFileName = videoPath + "/" + cameraConfig.getId() +"-%d.ts ";
                 //hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() + ".m3u8 ";
                 hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() + System.currentTimeMillis() +".m3u8";
-                liveViewCommand = " -f hls -vsync 0 -copyts -vcodec copy -acodec copy " +
-                        " -movflags frag_keyframe+empty_moov " +
+                liveViewCommand = " -f hls -codec copy " +
                         " -hls_flags delete_segments+append_list " +
                         " -hls_time 2 " +
                         " -hls_segment_filename " + hlsSegmentFileName +

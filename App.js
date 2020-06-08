@@ -8,10 +8,10 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import Theme from './src/common/Theme';
 import { Provider } from 'react-redux';
 import { store } from './src/store/Store';
-import { useScreens } from 'react-native-screens';
+import { enableScreens } from 'react-native-screens';
 import SplashScreen from 'react-native-splash-screen';
 import Logger from './src/common/Logger';
-useScreens();
+enableScreens();
 
 const AppContainer = createAppContainer(
   createMaterialBottomTabNavigator(
