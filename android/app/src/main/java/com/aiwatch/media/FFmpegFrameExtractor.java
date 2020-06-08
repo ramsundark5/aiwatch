@@ -89,7 +89,7 @@ public class FFmpegFrameExtractor {
             //String[] ffmpegCommand = command.split("\\s+");
 
             LOGGER.i("ffmpeg extraction starting. Thread is "+ Thread.currentThread().getName());
-            notifyAndUpdateWithDelay(false, hlsIndexFileName, 2);
+            notifyAndUpdateCameraStatus(false, hlsIndexFileName);
 
             final AsyncSingleFFmpegExecuteTask asyncCommandTask = new AsyncSingleFFmpegExecuteTask(command, new SingleExecuteCallback() {
                 @Override
@@ -102,7 +102,7 @@ public class FFmpegFrameExtractor {
                         LOGGER.e("ffmpeg extraction failed with response " + executeOutput);
                     }
                     isfftaskCompleted = true;
-                    notifyAndUpdateWithDelay(true, null, 1);
+                    notifyAndUpdateCameraStatus(true, null);
                 }
             });
             asyncCommandTask.executeOnExecutor(Executors.newSingleThreadExecutor());

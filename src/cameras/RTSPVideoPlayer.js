@@ -36,10 +36,11 @@ class RTSPVideoPlayer extends React.PureComponent{
   }
 
   render(){
-    const { hideTime, hideScrubber, title, url } = this.props;
+    const { autoplay, hideTime, hideScrubber, title, url } = this.props;
     return(
         <VideoPlayer 
           url={url} 
+          autoPlay={autoplay}
           onPlay={this.onPlay}
           onError={this.onError}
           error={false}

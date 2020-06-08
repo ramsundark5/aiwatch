@@ -3,9 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import RTSPVideoPlayer from './RTSPVideoPlayer';
 import RNSmartCam from '../native/RNSmartCam';
 import CameraControl from './CameraControl';
-import { moderateScale, verticalScale } from 'react-native-size-matters';
-import AiwatchUtl from '../common/AiwatchUtil';
-import ErrorBoundary from '../common/ErrorBoundary';
 
 class WatchCamera extends Component {
 
@@ -15,21 +12,18 @@ class WatchCamera extends Component {
 
     state = {
         baseHLSPath: null,
+        autoplay: false
     }
 
     async enableHLSLiveView(errored, cameraConfig){
         try{
             if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
                 if(errored){
-                  this.updateHLSLiveViewStatus(cameraConfig, false);
+                  await this.updateHLSLiveViewStatus(cameraConfig, false);
                 }else{
-                  let isCameraRunning = await RNSmartCam.getCameraMonitoringStatus(cameraConfig.id);
-                  this.updateHLSLiveViewStatus(cameraConfig, true);
-                  await RNSmartCam.putCamera(camerConfigUpdate);
-                  if(!isCameraRunning){
-                      //sleep for 5 seconds so ffmpeg can init rtsp
-                      await AiwatchUtl.sleep(5000);
-                  }
+                  //let isCameraRunning = await RNSmartCam.getCameraMonitoringStatus(cameraConfig.id);
+                  await this.updateHLSLiveViewStatus(cameraConfig, true);
+                  this.setState({autoplay: true});
                 }
             }
         }catch(err){
@@ -63,6 +57,7 @@ class WatchCamera extends Component {
                   enableHLSLiveView={(errored) => this.enableHLSLiveView(errored, cameraConfig)}
                   key={cameraConfig.id}
                   url={videUrlForView}
+                  autoplay={this.state.autoplay}
                   title={cameraConfig.name}
                   hideScrubber={true}
                   hideTime={true}/>
