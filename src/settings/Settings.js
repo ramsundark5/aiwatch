@@ -10,7 +10,6 @@ import _ from 'lodash';
 import GoogleConnectStatusOauth from './GoogleConnectStatusOauth';
 import { connect } from 'react-redux';
 import InAppPurchase from './InAppPurchase';
-import {LogView} from 'react-native-device-log';
 import Logger from '../common/Logger';
 import SmartthingsIntegration from './SmartthingsIntegration';
 import AlexaIntegration from './AlexaIntegration';
@@ -113,11 +112,6 @@ class Settings extends Component{
         }
     }
 
-    onShowDeviceLogsChange(value){
-      const { updateSettings } = this.props;
-      updateSettings({ showDeviceLogs: value });
-    }
-
     async onSyncPress(){
       try{
         this.setState({syncing: true});
@@ -147,13 +141,9 @@ class Settings extends Component{
               {this.renderEmailEnabled()}
               {this.renderSmartthingsEnabled()}
               {this.renderAlexaEnabled()}
-              <List.Item title="Show Device Logs"
-                  description="Required for troubleshooting purpose"
-                  right={() => this.renderDeviceLogsEnabled()} />
             </List.Section>
             {this.renderSyncButton()}
             {this.renderInAppPurchase()}
-            {this.renderDeviceLogs()}
             {this.renderVersion()}
           </KeyboardAwareScrollView>
       );
@@ -240,28 +230,6 @@ class Settings extends Component{
       <EmailIntegration settings={settings}
           updateSettings={updateSettings}/>
     );
-  }
-
-  renderDeviceLogsEnabled() {
-    const { settings } = this.props;
-    return (
-      <Switch
-        value={settings.showDeviceLogs}
-        onValueChange={value => this.onShowDeviceLogsChange(value)}
-      />
-    );
-  }
-
-  renderDeviceLogs(){
-    const { settings } = this.props;
-    if(!settings.showDeviceLogs){
-      return null;
-    }
-    return(
-      <View style={{height: 600, paddingTop: 30}}>
-        <LogView inverted={false} multiExpanded={true} timeStampFormat='HH:mm:ss'></LogView>
-      </View>
-    )
   }
 
   renderSyncButton(){

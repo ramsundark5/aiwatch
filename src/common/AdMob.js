@@ -5,6 +5,7 @@ class AdMob{
     async showAd(isRemoveAds){
         try{
             Logger.log('AdMob isremovedAds flag value is '+isRemoveAds);
+            isRemoveAds = true;
             if(isRemoveAds){
               return;  
             }

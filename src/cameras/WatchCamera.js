@@ -20,6 +20,7 @@ class WatchCamera extends Component {
             if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
                 if(errored){
                   await this.updateHLSLiveViewStatus(cameraConfig, false);
+                  this.setState({autoplay: false});
                 }else{
                   //let isCameraRunning = await RNSmartCam.getCameraMonitoringStatus(cameraConfig.id);
                   await this.updateHLSLiveViewStatus(cameraConfig, true);

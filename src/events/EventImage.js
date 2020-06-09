@@ -1,7 +1,8 @@
 import React, {PureComponent} from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
-import { Avatar, Colors, TouchableRipple } from 'react-native-paper';
+import { Colors } from 'react-native-paper';
 import { verticalScale } from 'react-native-size-matters';
+import RTSPVideoPlayer from '../cameras/RTSPVideoPlayer';
 export default class EventImage extends PureComponent{
     render(){
         const { event } = this.props;
@@ -13,40 +14,40 @@ export default class EventImage extends PureComponent{
     }
 
     renderEvent(event){
-        if(event.thumbnailPath || event.videoPath){
+        if(event.videoPath){
+          return this.renderVideoItem(event);
+        }else if(event.thumbnailPath){
           return this.renderImageItem(event);
         }else{
           return this.renderTextItem(event);
         }
     }
     
+    renderVideoItem(event){
+        return(
+            <RTSPVideoPlayer
+                {...this.props}
+                key={event.uuid}
+                style={styles.thumbnailStyle}
+                placeholder={event.thumbnailPath}
+                url={event.videoPath}
+                autoplay={false} />
+        )
+    }
+      
     renderImageItem(event){
         return(
             <ImageBackground
                 source={{isStatic:true, uri: 'file://'+event.thumbnailPath}}
                 style={styles.thumbnailStyle}>
-               <TouchableRipple rippleColor={Colors.white} onPress={() => this.onPlayVideo()}>
-                <Avatar.Icon size={48} 
-                    icon='play' color={Colors.red600}
-                    style={styles.avatarStyle}/>
-               </TouchableRipple>
             </ImageBackground>
         )
     }
-      
+
     renderTextItem(event){
         return(
           <Text>{event.message}</Text>
         )
-    }
-
-    onPlayVideo(){
-        const { event } = this.props;
-        const videoUri = event.videoPath;
-        console.log('play video pressed');
-        this.props.navigation.navigate('EventVideo', {
-            videoUrl: videoUri
-        });
     }
 }
 

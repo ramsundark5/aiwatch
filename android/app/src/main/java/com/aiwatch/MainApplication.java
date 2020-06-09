@@ -16,7 +16,6 @@ import com.dooboolab.RNIap.RNIapPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import org.wonday.orientation.OrientationPackage;
 
-import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.bugsnag.BugsnagReactNative;
 
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
@@ -50,7 +49,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNAdMobPackage(),
             new RNIapPackage(),
             new SplashScreenReactPackage(),
-            new ReactNativeConfigPackage(),
             BugsnagReactNative.getPackage(),
             new RNGoogleSigninPackage(),
             new RNScreensPackage(),

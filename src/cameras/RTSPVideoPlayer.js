@@ -59,19 +59,14 @@ class RTSPVideoPlayer extends React.PureComponent{
   }
 
   render(){
-    const { autoplay, hideTime, hideScrubber, title, url } = this.props;
     return(
         <VideoPlayer 
+          {...this.props}
           ref={(ref) => { this.videoRef = ref }}
-          url={url} 
-          autoPlay={autoplay}
           onPlay={this.onPlay}
           onError={this.onError}
           error={false}
-          title={title}
           hideFullScreenControl={false}
-          hideScrubber={hideScrubber}
-          hideTime={hideTime}
           onFullScreen={status => this.onFullScreenEvent(status)}
           rotateToFullScreen={true}
           lockPortraitOnFsExit={true}
