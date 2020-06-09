@@ -70,7 +70,7 @@ public class FFmpegFrameExtractor {
             if(cameraConfig.isLiveHLSViewEnabled()){
                 String hlsSegmentFileName = videoPath + "/" + cameraConfig.getId() +"-%d.ts ";
                 //hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() + ".m3u8 ";
-                hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() + System.currentTimeMillis() +".m3u8";
+                hlsIndexFileName = videoPath + "/camera" + cameraConfig.getId() + "-"+ System.currentTimeMillis() +".m3u8";
                 liveViewCommand = " -f hls -codec copy " +
                         " -hls_flags delete_segments+append_list " +
                         " -hls_time 2 " +
@@ -96,9 +96,9 @@ public class FFmpegFrameExtractor {
                     if (returnCode == RETURN_CODE_SUCCESS) {
                         LOGGER.i("ffmpeg extraction completed for camera "+cameraConfig.getId());
                     } else if (returnCode == RETURN_CODE_CANCEL) {
-                        LOGGER.i("Command execution cancelled by user.");
+                        LOGGER.i("Command execution cancelled by user for camera "+cameraConfig.getId());
                     } else {
-                        LOGGER.e("ffmpeg extraction failed with response " + executeOutput);
+                        LOGGER.e("ffmpeg extraction failed for camera " + cameraConfig.getId() + "with response " + executeOutput);
                     }
                     isfftaskCompleted = true;
                     notifyAndUpdateCameraStatus(true, null);

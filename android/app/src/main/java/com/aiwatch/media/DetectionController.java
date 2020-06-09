@@ -56,7 +56,7 @@ public class DetectionController {
             MonitoringRunnable monitoringRunnable = new MonitoringRunnable(cameraConfig, context);
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
             cameraMap.put(cameraConfig.getId(), new RunningThreadInfo(cameraConfig, executorService, monitoringRunnable));
-            executorService.schedule(monitoringRunnable, 1, TimeUnit.SECONDS);
+            executorService.schedule(monitoringRunnable, 2, TimeUnit.SECONDS);
             LOGGER.d("Monitoring started for camera "+ cameraConfig.getName() + cameraConfig.getId());
         } catch (Exception e) {
             LOGGER.e("Exception starting detection "+e.getMessage());
@@ -124,8 +124,8 @@ public class DetectionController {
                 if(hlsPlayListFile != null && hlsPlayListFile.exists()){
                     DateTime fileLastModifiedTime = new DateTime(hlsPlayListFile.lastModified());
                     DateTime currentTime = new DateTime();
-                    DateTime endTime = currentTime.minusSeconds(6);
-                    //if playlist file has not been updated for more than 6 seconds, its stale
+                    DateTime endTime = currentTime.minusSeconds(8);
+                    //if playlist file has not been updated for more than 8 seconds, its stale
                     if( fileLastModifiedTime.isBefore(endTime)){
                         isRecent = false;
                     }

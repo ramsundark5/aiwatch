@@ -33,10 +33,10 @@ public class FFMpegVideoMerger {
                     LOGGER.i("ffmpeg concat failed with response " + executeOutput);
                 }
                 LOGGER.i("ffmpeg concat completed for camera");
+                deleteInputFile(inputFilePath);
             }
         });
         asyncCommandTask.executeOnExecutor(Executors.newSingleThreadExecutor());
-        deleteInputFile(inputFilePath);
     }
 
     private void writeToFile(String[] videoUris, String filePath) {

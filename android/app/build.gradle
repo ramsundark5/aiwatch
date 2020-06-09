@@ -81,7 +81,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 24
-        versionName "1.2.9"
+        versionName "2.0.0"
         manifestPlaceholders = [
             appAuthRedirectScheme: "com.googleusercontent.apps.119466713568-8eiocl6rns75ab9sdno2r60psa03jdfk"
         ]

@@ -6,7 +6,7 @@ public class AppConstants {
     public static final int TF_OD_API_INPUT_SIZE                = 300;
 
     //public static final long WAIT_TIME_AFTER_DETECT           = 600000; //10 mins
-    public static final long WAIT_TIME_AFTER_DETECT             = 5 * 60; //5 mins
+    public static final long WAIT_TIME_AFTER_DETECT             = 1 * 60; //5 mins
     public static final String START_MONITORING                 = "start_monitoring";
     public static final String STOP_MONITORING                  = "stop_monitoring";
     public static final String CONNECT_CAMERA                   = "CONNECT_CAMERA";
