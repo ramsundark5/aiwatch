@@ -88,8 +88,10 @@ export default class EditableText extends Component {
     
     renderEditIcon(){
         return(
-            <IconButton icon='pencil-circle-outline' color={Colors.blue500} size={25} style={[styles.iconStyle, this.props.cancelIconStyle]}
-                onPress={() => this._showEditMode()}/>
+            <View style={[styles.editIconStyle]}>
+                <IconButton icon='pencil-circle-outline' color={Colors.blue500} size={25} style={[styles.iconStyle, this.props.cancelIconStyle]}
+                    onPress={() => this._showEditMode()}/>
+            </View>
         )
     }
 
@@ -129,6 +131,12 @@ const styles = StyleSheet.create({
     },
     iconStyle:{
         fontWeight: 'bold',
+    },
+    editIconStyle:{
+        flex: 1,
+        fontWeight: 'bold',
+        alignItems: 'flex-end',
+        right: -10
     },
     dummySpace:{
         margin: 10
