@@ -36,21 +36,19 @@ const styles = StyleSheet.create({
 const TopBar = (props) => {
   const {
     logo,
-    more,
     title,
     theme,
-    onMorePress
+    monitoring
   } = props
-  let monitorStatusColor = props.monitoring ? 'red' : 'green';
-  let monitorStatusMessage = props.monitoring ? 'Monitoring OFF' :  'Monitoring ON';
+  let monitorStatusColor = monitoring ? 'green' : 'red';
+  let monitorStatusMessage = monitoring ? 'Monitoring ON' : 'Monitoring OFF';
   return (
     <LinearGradient colors={['rgba(0,0,0,0.75)', 'rgba(0,0,0,0)']} style={styles.container}>
       <View style={styles.row}>
         <Text
           style={[styles.title, {padding: 8}]}
           numberOfLines={1}
-          ellipsizeMode="tail"
-        >
+          ellipsizeMode="tail">
           {title}
         </Text>
         <Icons.Button name="lens" size={15} color={monitorStatusColor} backgroundColor='transparent' solid>

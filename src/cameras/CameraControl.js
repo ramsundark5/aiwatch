@@ -98,8 +98,6 @@ export default class CameraControl extends Component {
         if(isFull){
             return null;
         }
-        const monitoringEnabled = cameraConfig.monitoringEnabled;//this.isMonitoringEnabled(cameraConfig);
-        const monitoringIcon = !cameraConfig.disconnected && monitoringEnabled ? 'eye' : 'eye-off';
         return(
             <View>
               <LoadingSpinner
@@ -108,7 +106,6 @@ export default class CameraControl extends Component {
                <Appbar style={styles.appBar}>
                 <Appbar.Action icon='settings' color={Theme.primary} onPress={() => this.editCamera()} />
                 <Appbar.Action icon='crop' color={Theme.primary} onPress={() => this.onPressROIButton()}/>
-                <Appbar.Action icon={monitoringIcon} color={Theme.primary} onPress={() => this.onPressToggleMonitorButton()}/>
                 <Appbar.Action icon='delete' color={Theme.primary} onPress={() => this.onPressDeleteButton()} />
               </Appbar>
               <View style={styles.divider} />

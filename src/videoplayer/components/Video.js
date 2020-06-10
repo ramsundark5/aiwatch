@@ -352,7 +352,8 @@ class Video extends Component {
       controlDuration,
       hideFullScreenControl,
       hideScrubber,
-      hideTime
+      hideTime,
+      monitoring
     } = this.props
 
     const inline = {
@@ -417,6 +418,7 @@ class Video extends Component {
           currentTime={currentTime}
           duration={duration}
           logo={logo}
+          monitoring={monitoring}
           title={title}
           more={!!onMorePress}
           onMorePress={() => onMorePress()}

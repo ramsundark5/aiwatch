@@ -130,7 +130,8 @@ class Controls extends Component {
       inlineOnly,
       hideFullScreenControl,
       hideScrubber,
-      hideTime
+      hideTime,
+      monitoring
     } = this.props
 
     const { center, ...controlBar } = theme
@@ -141,6 +142,7 @@ class Controls extends Component {
           <TopBar
             title={title}
             logo={logo}
+            monitoring={monitoring}
             more={more}
             onMorePress={() => onMorePress()}
             theme={{ title: theme.title, more: theme.more }}
