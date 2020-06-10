@@ -9,8 +9,7 @@ import {
 } from 'react-native'
 
 import LinearGradient from 'react-native-linear-gradient'
-import { ToggleIcon } from './'
-import { checkSource } from './utils'
+import Icons from 'react-native-vector-icons/MaterialIcons'
 
 const backgroundColor = 'transparent'
 
@@ -21,15 +20,11 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignSelf: 'center',
-    alignItems: 'center'
+    justifyContent: 'space-between'
   },
   title: {
-    flex: 1,
-    backgroundColor,
-    paddingLeft: 10,
-    paddingRight: 35,
-    fontSize: 16
+    fontSize: 16,
+    color: '#fff'
   },
   logo: {
     marginLeft: 5,
@@ -46,28 +41,23 @@ const TopBar = (props) => {
     theme,
     onMorePress
   } = props
+  let monitorStatusColor = props.monitoring ? 'red' : 'green';
+  let monitorStatusMessage = props.monitoring ? 'Monitoring OFF' :  'Monitoring ON';
   return (
     <LinearGradient colors={['rgba(0,0,0,0.75)', 'rgba(0,0,0,0)']} style={styles.container}>
       <View style={styles.row}>
-        { logo && <Image style={styles.logo} resizeMode="contain" {...checkSource(logo)} />}
         <Text
-          style={[styles.title, { color: theme.title }]}
+          style={[styles.title, {padding: 8}]}
           numberOfLines={1}
           ellipsizeMode="tail"
         >
           {title}
         </Text>
-        { more &&
-          <ToggleIcon
-            style={styles.more}
-            onPress={() => onMorePress()}
-            paddingRight
-            iconOff="more-horiz"
-            iconOn="more-horiz"
-            theme={theme.more}
-            size={25}
-          />
-        }
+        <Icons.Button name="lens" size={15} color={monitorStatusColor} backgroundColor='transparent' solid>
+          <Text style={styles.title}>
+            {monitorStatusMessage}
+          </Text>
+        </Icons.Button>
       </View>
     </LinearGradient>
   )

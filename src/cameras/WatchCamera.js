@@ -51,6 +51,7 @@ class WatchCamera extends Component {
         if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp') && cameraConfig.rtspUrl && cameraConfig.rtspUrl.length > 1){
           videUrlForView = "file://" + cameraConfig.rtspUrl;
         }
+        const monitoring = !cameraConfig.disconnected && cameraConfig.monitoringEnabled;
         return(
           <View key={cameraConfig.id}>
             <RTSPVideoPlayer
@@ -58,9 +59,11 @@ class WatchCamera extends Component {
                   enableHLSLiveView={(errored) => this.enableHLSLiveView(errored, cameraConfig)}
                   key={cameraConfig.id}
                   url={videUrlForView}
+                  monitoring={monitoring}
                   autoplay={this.state.autoplay}
                   title={cameraConfig.name}
                   hideScrubber={true}
+                  logo=''
                   hideTime={true}/>
               { !fullscreen && 
                 <CameraControl {...this.props} cameraConfig={cameraConfig}/>

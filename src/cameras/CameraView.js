@@ -101,7 +101,7 @@ class CameraView extends Component {
         contentContainerStyle={{ paddingBottom: contentPaddingBottom }}
         spacing={itemSpacing}
         data={cameras}
-        keyExtractor={item => item.id}
+        keyExtractor={item => 'key'+item.id}
         renderItem={({ item, index }) => this.renderSingleCamera(item)}/>
     )
   }
@@ -112,7 +112,7 @@ class CameraView extends Component {
       return null;
     }
     return(
-        <WatchCamera cameraConfig={cameraConfigProp} 
+        <WatchCamera cameraConfig={cameraConfigProp} key={cameraConfigProp.id}
             fullscreen={fullscreen}
             onFullScreen={(status, cameraId) => this.onFullScreen(status, cameraId)}
             {...this.props}/>
