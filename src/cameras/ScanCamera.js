@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Colors, Divider, IconButton, List, Title } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
-import { DeviceEventEmitter, InteractionManager, Linking, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native';
+import { BackHandler, DeviceEventEmitter, InteractionManager, Linking, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native';
 import Theme from '../common/Theme';
 import Logger from '../common/Logger';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -28,17 +28,34 @@ export default class ScanCamera extends Component {
     }
 
     componentDidMount(){
-        DeviceEventEmitter.addListener('DEVICE_DISCOVERY_PROGRESS_JS_EVENT', this.onNewProgressEvent);
-        DeviceEventEmitter.addListener('DEVICE_DISCOVERY_COMPLETED_JS_EVENT', this.handleDiscoveryResult);
+        this.progressSubscription = DeviceEventEmitter.addListener('DEVICE_DISCOVERY_PROGRESS_JS_EVENT', this.onNewProgressEvent);
+        this.discoverySubscription = DeviceEventEmitter.addListener('DEVICE_DISCOVERY_COMPLETED_JS_EVENT', this.handleDiscoveryResult);
+        this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.cancelScan);
         InteractionManager.runAfterInteractions(() => {
             this.onStartScan();
         });
     }
 
     componentDidCatch(error, info ){
-        // Display fallback UI
-        this.setState({ isLoading: false });
+        this.cancelScan();
         console.log(error);
+    }
+
+    componentWillUnmount(){
+        this.cancelScan();
+    }
+
+    cancelScan = () => {
+        if(this.progressSubscription){
+            this.progressSubscription.remove();
+        }
+        if(this.discoverySubscription){
+            this.discoverySubscription.remove();
+        }
+        if(this.backHandler){
+            this.backHandler.remove();
+        }
+        this.setState({ isLoading: false });
     }
 
     onNewProgressEvent = (event) => {
@@ -58,10 +75,6 @@ export default class ScanCamera extends Component {
         }catch(err){
             Logger.error(err);
         }
-        //to be safe, dismiss the spinner after 2 mins
-        setTimeout(() => {
-            this.setState({isLoading: false, loadingMessage: INITIAL_PROGRESS_MESSAGE});
-        }, 1000 * 120);
     }
 
     handleDiscoveryResult = (discoveryResult) => {
@@ -102,8 +115,8 @@ export default class ScanCamera extends Component {
         const { cameras, nonCameraDevices, isLoading } = this.state;
         return(
             <View style={{flex: 1}}>
+                {this.renderSpinner()}
                 <ScrollView style={styles.container}>
-                    {this.renderSpinner()}
                     {this.renderCameras(cameras)}
                     {this.renderNonCameraDevices(nonCameraDevices)}
                 </ScrollView>

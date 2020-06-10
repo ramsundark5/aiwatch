@@ -7,6 +7,7 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.bugsnag.android.Bugsnag;
 import com.facebook.react.ReactApplication;
 import com.brentvatne.react.ReactVideoPackage;
+import com.reactnativecommunity.art.ARTPackage;
 import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.rnappauth.RNAppAuthPackage;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new ARTPackage(),
             new ReactVideoPackage(),
             new RNAppAuthPackage(),
             new SvgPackage(),
