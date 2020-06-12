@@ -12,18 +12,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.arthenica.mobileffmpeg.FFmpeg;
-import com.arthenica.mobileffmpeg.util.AsyncSingleFFmpegExecuteTask;
-import com.arthenica.mobileffmpeg.util.SingleExecuteCallback;
-
-import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL;
-import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
+import nl.bravobit.ffmpeg.CustomFFcommandExecuteAsyncTask;
+import nl.bravobit.ffmpeg.CustomFFmpeg;
+import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
 
 public class FFmpegFrameExtractor {
 
     private static final Logger LOGGER = new Logger();
     private Context context;
     private CameraConfig cameraConfig;
+    private CustomFFcommandExecuteAsyncTask ffTask;
     private boolean isfftaskCompleted = false;
 
     public FFmpegFrameExtractor(Context context, CameraConfig cameraConfig){
@@ -32,6 +30,10 @@ public class FFmpegFrameExtractor {
     }
 
     public void start(String imageFilePath) {
+        if(ffTask != null && !ffTask.isProcessCompleted()){
+            LOGGER.d("Tried to start process when its already running. Skipping the restart for camera "+cameraConfig.getId());
+            return;
+        }
         if(!cameraConfig.isMonitoringEnabled() && !cameraConfig.isCvrEnabled() && !cameraConfig.isLiveHLSViewEnabled()){
             LOGGER.d("all monitoring flags are turned off. Skipping monitorinng for camera " + cameraConfig.getId());
             return;
@@ -39,6 +41,11 @@ public class FFmpegFrameExtractor {
         try{
             isfftaskCompleted = false;
             String videoUrl = cameraConfig.getVideoUrlWithAuth();
+
+            CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
+            boolean isffmpegSupported = ffmpeg.isSupported();
+            LOGGER.i("ffmpeg supported "+isffmpegSupported);
+
             File imageFile = new File(imageFilePath);
 
             //this is important. ffmpeg runs in separate process and do not have permission on files unless it creates it
@@ -85,45 +92,71 @@ public class FFmpegFrameExtractor {
                 //lowLatencyPrefix = "-fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 ";
             }
             String command = lowLatencyPrefix + rtspPrefix + "-i " + videoUrl + frameExtractCommand + preBufferRecordCommand + cvrCommand + liveViewCommand;
-            //String[] ffmpegCommand = command.split("\\s+");
 
-            LOGGER.i("ffmpeg extraction starting. Thread is "+ Thread.currentThread().getName());
-            notifyAndUpdateCameraStatus(false, hlsIndexFileName);
+            String[] ffmpegCommand = command.split("\\s+");
+            ffmpeg.setTimeout(AppConstants.FFMPEG_COMMAND_TIMEOUT * 1000); //80 seconds
+            String finalHlsIndexFileName = hlsIndexFileName;
 
-            final AsyncSingleFFmpegExecuteTask asyncCommandTask = new AsyncSingleFFmpegExecuteTask(command, new SingleExecuteCallback() {
+            ffTask = (CustomFFcommandExecuteAsyncTask) ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
                 @Override
-                public void apply(int returnCode, String executeOutput) {
-                    if (returnCode == RETURN_CODE_SUCCESS) {
-                        LOGGER.i("ffmpeg extraction completed for camera "+cameraConfig.getId());
-                    } else if (returnCode == RETURN_CODE_CANCEL) {
-                        LOGGER.i("Command execution cancelled by user for camera "+cameraConfig.getId());
-                    } else {
-                        LOGGER.e("ffmpeg extraction failed for camera " + cameraConfig.getId() + "with response " + executeOutput);
-                    }
-                    isfftaskCompleted = true;
+                public void onStart() {
+                    LOGGER.d("ffmpeg extraction started for camera "+cameraConfig.getId() + ". Thread is "+ Thread.currentThread().getName());
+                    notifyAndUpdateCameraStatus(false, finalHlsIndexFileName);
+                }
+
+                @Override
+                public void onFinish() {
+                    LOGGER.d("ffmpeg extraction finished for camera "+cameraConfig.getId());
                     notifyAndUpdateCameraStatus(true, null);
+                    ffTask.destroyProcess();
+                }
+
+                @Override
+                public void onSuccess(String message) {
+                    LOGGER.d("ffmpeg extraction success");
+                }
+
+                @Override
+                public void onProgress(String message) {
+                    LOGGER.v("ffmpeg extraction in progress. Thread is "+ Thread.currentThread().getName()+ " camera is "+cameraConfig.getId());
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    LOGGER.e("ffmpeg extraction failed for camera "+cameraConfig.getId() + " with error " + message);
                 }
             });
-            asyncCommandTask.executeOnExecutor(Executors.newSingleThreadExecutor());
-
         }catch(Exception e){
             LOGGER.e("Error starting ffmpeg extraction "+e);
         }
     }
 
-    public boolean isStopped(){
-        LOGGER.i("is ffmpeg process stopped ? "+isfftaskCompleted);
-        return isfftaskCompleted;
-    }
-
     public void stop(){
         try{
-           FFmpeg.cancel();
-           LOGGER.i("ffmpeg cancelled from camera ? "+cameraConfig.getId());
+            if(ffTask != null){
+                ffTask.sendQuitSignal();
+                //use sleep instead of timertask. timertask can kill a started process
+                //Thread.sleep(500);
+                //ffTask.killRunningProcess();
+            }
         }catch(Exception e){
             LOGGER.e(e, "Error stopping ffmpeg");
         }
     }
+
+    public boolean isStopped(){
+        if(ffTask == null){
+            return false;
+        }
+        boolean isfftaskCompleted = ffTask.isProcessCompleted();
+        LOGGER.d("is ffmpeg process stopped? "+isfftaskCompleted);
+        return isfftaskCompleted;
+    }
+
+    public boolean kill(){
+        return ffTask.killRunningProcess();
+    }
+
 
     private String getRecordCommand(String outputPath, int recordingDuration){
         String videoSegmentPrefix = " -codec copy -flags +global_header -f segment -strftime 1 -segment_time " + recordingDuration + " -segment_format_options movflags=+faststart -reset_timestamps 1 ";

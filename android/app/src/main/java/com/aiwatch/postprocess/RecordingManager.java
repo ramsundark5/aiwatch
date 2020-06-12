@@ -62,7 +62,7 @@ public class RecordingManager {
             //VideoMerger videoMerger = new VideoMerger();
             //videoMerger.appendVideo(inputVideoPaths, filePath);
             FFMpegVideoMerger ffMpegVideoMerger = new FFMpegVideoMerger();
-            ffMpegVideoMerger.mergeVideos(inputVideoPaths, filePath);
+            ffMpegVideoMerger.mergeVideos(frameEvent.getContext(), inputVideoPaths, filePath);
             File outpuFile = new File(filePath);
             if(outpuFile == null || !outpuFile.exists() || outpuFile.length() < 1){
                 filePath = null;

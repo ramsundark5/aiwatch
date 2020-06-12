@@ -192,7 +192,7 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
 
     //ffmpeg
-    implementation 'com.arthenica:mobile-ffmpeg-https:4.3.2'
+    implementation 'com.github.ramsundark5:FFmpeg-Android:e90de6380c596dbd64179a249c7991748966bc76'
 
     //firebase
     implementation 'com.google.firebase:firebase-core:17.2.1'

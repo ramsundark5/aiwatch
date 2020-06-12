@@ -1,42 +1,54 @@
 package com.aiwatch.postprocess;
 
-import com.aiwatch.Logger;
-import com.arthenica.mobileffmpeg.util.AsyncSingleFFmpegExecuteTask;
-import com.arthenica.mobileffmpeg.util.SingleExecuteCallback;
+import android.content.Context;
 
+import com.aiwatch.Logger;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.util.concurrent.Executors;
-
-import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL;
-import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
+import nl.bravobit.ffmpeg.CustomFFmpeg;
+import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
 
 public class FFMpegVideoMerger {
 
     private static final Logger LOGGER = new Logger();
 
-    public void mergeVideos(String[] videoUris, String outputFilePath){
+    public void mergeVideos(Context context, String[] videoUris, String outputFilePath){
 
         String inputFilePath = outputFilePath.replace(".mp4", ".txt");
         writeToFile(videoUris, inputFilePath);
+
+        CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         String command = "-f concat -safe 0 -i " + inputFilePath +" -c copy "+outputFilePath;
         LOGGER.i("starting merge of video files "+videoUris.length);
-        final AsyncSingleFFmpegExecuteTask asyncCommandTask = new AsyncSingleFFmpegExecuteTask(command, new SingleExecuteCallback() {
-            @Override
-            public void apply(int returnCode, String executeOutput) {
-                if (returnCode == RETURN_CODE_SUCCESS) {
+        String[] ffmpegCommand = command.split("\\s+");
 
-                } else if (returnCode == RETURN_CODE_CANCEL) {
-                    LOGGER.i("Command execution cancelled by user.");
-                } else {
-                    LOGGER.i("ffmpeg concat failed with response " + executeOutput);
-                }
-                LOGGER.i("ffmpeg concat completed for camera");
-                deleteInputFile(inputFilePath);
+        ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onSuccess(String message) {
+                LOGGER.d("ffmpeg concat success");
+            }
+
+            @Override
+            public void onProgress(String message) {
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+                LOGGER.e("ffmpeg concat failed with response " + message);
             }
         });
-        asyncCommandTask.executeOnExecutor(Executors.newSingleThreadExecutor());
     }
 
     private void writeToFile(String[] videoUris, String filePath) {
