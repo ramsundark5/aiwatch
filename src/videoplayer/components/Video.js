@@ -10,7 +10,7 @@ import {
   Image,
   Alert
 } from 'react-native'
-import VideoPlayer from 'react-native-video'
+import VideoPlayer from '../nativevideo/Video'
 import Orientation from 'react-native-orientation-locker'
 import Icons from 'react-native-vector-icons/MaterialIcons'
 import { Controls } from './'

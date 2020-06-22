@@ -19,11 +19,10 @@ class WatchCamera extends Component {
         try{
             if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp')){
                 if(errored){
-                  await this.updateHLSLiveViewStatus(cameraConfig, false);
-                  this.setState({autoplay: false});
+                  //await this.updateHLSLiveViewStatus(cameraConfig, false);
                 }else{
                   //let isCameraRunning = await RNSmartCam.getCameraMonitoringStatus(cameraConfig.id);
-                  await this.updateHLSLiveViewStatus(cameraConfig, true);
+                  //await this.updateHLSLiveViewStatus(cameraConfig, true);
                   this.setState({autoplay: true});
                 }
             }
@@ -48,9 +47,6 @@ class WatchCamera extends Component {
           return null;
         }
         let videUrlForView = cameraConfig.videoUrl;
-        if(cameraConfig.videoUrl && cameraConfig.videoUrl.startsWith('rtsp') && cameraConfig.rtspUrl && cameraConfig.rtspUrl.length > 1){
-          videUrlForView = "file://" + cameraConfig.rtspUrl;
-        }
         const monitoring = !cameraConfig.disconnected && cameraConfig.monitoringEnabled;
         return(
           <View key={cameraConfig.id}>
