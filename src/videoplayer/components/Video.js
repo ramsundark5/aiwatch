@@ -392,6 +392,7 @@ class Video extends Component {
           rate={rate}
           volume={volume}
           muted={muted}
+          useTextureView={false}
           playInBackground={playInBackground} // Audio continues to play when app entering background.
           playWhenInactive={playWhenInactive} // [iOS] Video continues to play when control or notification center are shown.
           // progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)

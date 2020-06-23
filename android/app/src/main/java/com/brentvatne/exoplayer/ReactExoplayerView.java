@@ -50,6 +50,7 @@ import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.source.rtsp.RtspDefaultClient;
 import com.google.android.exoplayer2.source.rtsp.RtspMediaSource;
+import com.google.android.exoplayer2.source.rtsp.core.Client;
 import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
@@ -422,8 +423,11 @@ class ReactExoplayerView extends FrameLayout implements
                         new DefaultLoadErrorHandlingPolicy(minLoadRetryCount)
                 ).createMediaSource(uri, mainHandler, null);
             case C.TYPE_RTSP:
-                return new RtspMediaSource.Factory(RtspDefaultClient.factory(player))
-                        .createMediaSource(uri, mainHandler, null);
+                return new RtspMediaSource.Factory(RtspDefaultClient.factory(player)
+                        //.setFlags(Client.FLAG_TRY_TCP_FIRST)
+                        //.setFlags(Client.FLAG_ENABLE_RTCP_SUPPORT)
+                        //.setNatMethod(Client.RTSP_NAT_DUMMY)
+                        ).createMediaSource(uri, mainHandler, null);
             case C.TYPE_OTHER:
                 return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
                         mainHandler, null);
