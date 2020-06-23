@@ -427,7 +427,9 @@ class ReactExoplayerView extends FrameLayout implements
                         //.setFlags(Client.FLAG_TRY_TCP_FIRST)
                         //.setFlags(Client.FLAG_ENABLE_RTCP_SUPPORT)
                         //.setNatMethod(Client.RTSP_NAT_DUMMY)
-                        ).createMediaSource(uri, mainHandler, null);
+                        )
+                        .setIsLive(true)
+                        .createMediaSource(uri, mainHandler, null);
             case C.TYPE_OTHER:
                 return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(),
                         mainHandler, null);
