@@ -7,6 +7,7 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.bugsnag.android.Bugsnag;
 import com.facebook.react.ReactApplication;
 import com.brentvatne.react.ReactVideoPackage;
+import com.ghondar.vlc.VlcPlayerPackage;
 import com.reactnativecommunity.art.ARTPackage;
 import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
@@ -60,7 +61,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNCWebViewPackage(),
             new OrientationPackage(),
             new RNPermissionsPackage(),
-            new LinearGradientPackage()
+            new LinearGradientPackage(),
+            new VlcPlayerPackage()
       );
     }
 

@@ -15,6 +15,7 @@ import Orientation from 'react-native-orientation-locker'
 import Icons from 'react-native-vector-icons/MaterialIcons'
 import { Controls } from './'
 import { checkSource } from './utils'
+import NativeVlcPlayer from 'react-native-vlc-player/src/NativeVlcPlayer'
 const Win = Dimensions.get('window')
 const backgroundColor = '#000'
 
@@ -79,18 +80,24 @@ class Video extends Component {
   componentWillUnmount() {
     Dimensions.removeEventListener('change', this.onRotated)
     BackHandler.removeEventListener('hardwareBackPress', this.BackHandler)
+    this.player._onStopped()
   }
 
   onLoadStart() {
     this.setState({ paused: true, loading: true })
   }
 
+  onBuffering(){
+    this.setState({ loading: true })
+  }
+
   onLoad(data) {
     if (!this.state.loading) return
-    this.props.onLoad(data)
-    const { height, width } = data.naturalSize
-    const ratio = height === 'undefined' && width === 'undefined' ?
-      (9 / 16) : (height / width)
+    //this.props.onLoad(data)
+    //const { height, width } = data.naturalSize
+    //const ratio = height === 'undefined' && width === 'undefined' ?
+      //(9 / 16) : (height / width)
+    const ratio = (9 / 16) ;
     const inlineHeight = this.props.lockRatio ?
       (Win.width / this.props.lockRatio)
       : (Win.width * ratio)
@@ -119,8 +126,8 @@ class Video extends Component {
   //   this.setState({ loading: true, paused: true })
   // }
 
-  onEnd() {
-    this.props.onEnd()
+  onEnd(e) {
+    this.props.onEnd(e)
     const { loop } = this.props
     if (!loop) this.pause()
     this.onSeekRelease(0)
@@ -289,14 +296,21 @@ class Video extends Component {
     return this.onSeekRelease(percent)
   }
 
-  progress(time) {
-    const { currentTime } = time
-    const progress = currentTime / this.state.duration
+  progress(event) {
+    const { currentTime } = event
+    if (currentTime > 0 || this.state.duration > 0) {
+      if(this.state.loading){
+        this.setState({ loading: false, duration: event.duration })
+      }
+    }else{
+      this.setState({ loading: true })
+    }
+    /* const progress = currentTime / this.state.duration
     if (!this.state.seeking) {
       this.setState({ progress, currentTime }, () => {
-        this.props.onProgress(time)
+        this.props.onProgress(event)
       })
-    }
+    } */
   }
 
   renderError() {
@@ -381,7 +395,7 @@ class Video extends Component {
           ((loading && placeholder) || currentTime < 0.01) &&
           <Image resizeMode="cover" style={styles.image} {...checkSource(placeholder)} />
         }
-        <VideoPlayer
+       {/*  <VideoPlayer
           {...checkSource(url)}
           paused={paused}
           resizeMode={resizeMode}
@@ -402,7 +416,20 @@ class Video extends Component {
           onError={e => this.onError(e)}
           // onBuffer={() => this.onBuffer()} // Callback when remote video is buffering
           onTimedMetadata={e => onTimedMetadata(e)} // Callback when the stream receive some metadata
-        />
+        /> */}
+         <NativeVlcPlayer
+           {...this.props}
+           ref={(ref) => { this.player = ref }}
+           style={fullScreen ? styles.fullScreen : inline}
+           paused={paused}
+           autoplay={false}
+           source={{ uri: url}}
+           onVLCEnded={(e) => this.onEnd(e)}
+           onVLCBuffering={(event) => this.onBuffering(event)} 
+           onVLCError={e => this.onError(e)}
+           onVLCStopped={(e) => this.onEnd(e)}
+           onVLCPlaying={(e) => this.onLoad(e)}
+       />
         <Controls
           ref={(ref) => { this.controls = ref }}
           toggleMute={() => this.toggleMute()}

@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import VideoPlayer from '../videoplayer';
+import VlcPlayer from 'react-native-vlc-player';
 
 class RTSPVideoPlayer extends React.PureComponent{
 
@@ -63,14 +64,29 @@ class RTSPVideoPlayer extends React.PureComponent{
         <VideoPlayer 
           {...this.props}
           ref={(ref) => { this.videoRef = ref }}
-          onPlay={this.onPlay}
           onError={this.onError}
-          error={false}
           hideFullScreenControl={false}
           onFullScreen={status => this.onFullScreenEvent(status)}
           rotateToFullScreen={true}
           lockPortraitOnFsExit={true}
           scrollBounce={true}/>
+    )
+  }
+
+  render2(){
+    return(
+      <VlcPlayer
+        ref={(ref) => { this.player = ref }}
+        style={{
+          width: '100%',
+          height: 220,
+        }}
+        onFullScreen={status => this.onFullScreenEvent(status)}
+        autoplay={false}
+        source={{
+          uri: this.props.url,
+          autoplay: false,
+        }} />
     )
   }
 }
