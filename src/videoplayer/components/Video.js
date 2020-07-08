@@ -91,14 +91,19 @@ class Video extends Component {
   }
 
   onLoadProgress(event) {
-    const { currentTime } = event
-    console.log('on load progress called '+ currentTime)
+    const { currentTime, duration } = event
     if (currentTime > 0 || this.state.duration > 0) {
       if(this.state.loading){
-        this.setState({ loading: false, duration: event.duration, paused: true })
+        //add timeout to seek to first frame of the video
+        setTimeout(() => {
+          this.setState({ loading: false, duration: duration })
+          this.pause()
+        }, 1500)
       }
     }else{
-      this.setState({ loading: true })
+      if(!this.state.loading){
+        this.setState({ loading: true })
+      }
     }
   }
 
@@ -349,6 +354,7 @@ class Video extends Component {
       ...theme
     }
 
+    console.log('inside render vlcplayer')
     return (
       <Animated.View
         style={[

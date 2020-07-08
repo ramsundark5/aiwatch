@@ -64,7 +64,10 @@ class Controls extends Component {
           // do nothing
           break
         case this.props.paused:
-          if (this.state.seconds > 0) this.setState({ seconds: 0 })
+          if (this.state.seconds > 0) {
+            this.setState({ seconds: 0 })
+          }
+          this.showControls()
           break
         case this.state.hideControls:
           break
