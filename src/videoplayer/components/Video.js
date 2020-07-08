@@ -10,7 +10,6 @@ import {
   Image,
   Alert
 } from 'react-native'
-import VideoPlayer from 'react-native-video'
 import Orientation from 'react-native-orientation-locker'
 import Icons from 'react-native-vector-icons/MaterialIcons'
 import { Controls } from './'
@@ -55,7 +54,7 @@ class Video extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      paused: !props.autoPlay,
+      paused: false,
       muted: false,
       fullScreen: false,
       inlineHeight: Win.width * 0.5625,
@@ -83,48 +82,35 @@ class Video extends Component {
     this.player._onStopped()
   }
 
-  onLoadStart() {
-    this.setState({ paused: true, loading: true })
-  }
-
   onBuffering(){
     this.setState({ loading: true })
   }
 
   onLoad(data) {
-    if (!this.state.loading) return
-    //this.props.onLoad(data)
-    //const { height, width } = data.naturalSize
-    //const ratio = height === 'undefined' && width === 'undefined' ?
-      //(9 / 16) : (height / width)
-    const ratio = (9 / 16) ;
-    const inlineHeight = this.props.lockRatio ?
-      (Win.width / this.props.lockRatio)
-      : (Win.width * ratio)
-    this.setState({
-      paused: !this.props.autoPlay,
-      loading: false,
-      inlineHeight,
-      duration: data.duration
-    }, () => {
-      Animated.timing(this.animInline, { toValue: inlineHeight, duration: 200 }).start()
-      this.props.onPlay(!this.state.paused)
-      if (!this.state.paused) {
-        if (this.props.fullScreenOnly) {
-          this.setState({ fullScreen: true }, () => {
-            this.props.onFullScreen(this.state.fullScreen)
-            this.animToFullscreen(Win.height)
-            if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
-          })
-        }
-      }
-    })
+    console.log('onplaying called')
   }
 
-  // onBuffer() {
-  //   // console.log('buffering')
-  //   this.setState({ loading: true, paused: true })
-  // }
+  onLoadProgress(event) {
+    const { currentTime } = event
+    console.log('on load progress called '+ currentTime)
+    if (currentTime > 0 || this.state.duration > 0) {
+      if(this.state.loading){
+        this.setState({ loading: false, duration: event.duration, paused: true })
+      }
+    }else{
+      this.setState({ loading: true })
+    }
+  }
+
+  progress(event) {
+    const { currentTime } = event
+    const progress = currentTime / this.state.duration
+    if (!this.state.seeking) {
+      this.setState({ progress, currentTime }, () => {
+        this.props.onProgress(event)
+      })
+    }
+  }
 
   onEnd(e) {
     this.props.onEnd(e)
@@ -173,7 +159,7 @@ class Video extends Component {
   }
 
   onError(msg) {
-    this.props.onError(msg)
+    //this.props.onError(msg)
     const { error } = this.props
     this.setState({ renderError: true, loading: false, paused: true }, () => {
       let type
@@ -296,23 +282,6 @@ class Video extends Component {
     return this.onSeekRelease(percent)
   }
 
-  progress(event) {
-    const { currentTime } = event
-    if (currentTime > 0 || this.state.duration > 0) {
-      if(this.state.loading){
-        this.setState({ loading: false, duration: event.duration })
-      }
-    }else{
-      this.setState({ loading: true })
-    }
-    /* const progress = currentTime / this.state.duration
-    if (!this.state.seeking) {
-      this.setState({ progress, currentTime }, () => {
-        this.props.onProgress(event)
-      })
-    } */
-  }
-
   renderError() {
     const { fullScreen } = this.state
     const inline = {
@@ -395,40 +364,18 @@ class Video extends Component {
           ((loading && placeholder) || currentTime < 0.01) &&
           <Image resizeMode="cover" style={styles.image} {...checkSource(placeholder)} />
         }
-       {/*  <VideoPlayer
-          {...checkSource(url)}
-          paused={paused}
-          resizeMode={resizeMode}
-          repeat={loop}
-          key={url}
-          style={fullScreen ? styles.fullScreen : inline}
-          ref={(ref) => { this.player = ref }}
-          rate={rate}
-          volume={volume}
-          muted={muted}
-          playInBackground={playInBackground} // Audio continues to play when app entering background.
-          playWhenInactive={playWhenInactive} // [iOS] Video continues to play when control or notification center are shown.
-          // progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
-          onLoadStart={() => this.onLoadStart()} // Callback when video starts to load
-          onLoad={e => this.onLoad(e)} // Callback when video loads
-          onProgress={e => this.progress(e)} // Callback every ~250ms with currentTime
-          onEnd={() => this.onEnd()}
-          onError={e => this.onError(e)}
-          // onBuffer={() => this.onBuffer()} // Callback when remote video is buffering
-          onTimedMetadata={e => onTimedMetadata(e)} // Callback when the stream receive some metadata
-        /> */}
          <NativeVlcPlayer
            {...this.props}
            ref={(ref) => { this.player = ref }}
            style={fullScreen ? styles.fullScreen : inline}
            paused={paused}
-           autoplay={false}
+           autoplay={true}
            source={{ uri: url}}
            onVLCEnded={(e) => this.onEnd(e)}
            onVLCBuffering={(event) => this.onBuffering(event)} 
+           onVLCProgress={(event) => this.onLoadProgress(event)}
            onVLCError={e => this.onError(e)}
            onVLCStopped={(e) => this.onEnd(e)}
-           onVLCPlaying={(e) => this.onLoad(e)}
        />
         <Controls
           ref={(ref) => { this.controls = ref }}
