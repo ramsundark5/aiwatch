@@ -6947,11 +6947,6 @@ react-native-vector-icons@^6.6.0:
     prop-types "^15.6.2"
     yargs "^13.2.2"
 
-react-native-vlc-player@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/react-native-vlc-player/-/react-native-vlc-player-0.2.3.tgz#0a34fe02a0366648bdd1709eb8e53fc96c1582cc"
-  integrity sha512-HsJBSR8/PBGl9lmppuOQxeseya5hi0rJLClxgXQII3Bn0KlrxQTYzOdABSsFO4I1JQcW7ValBx0PpM/GsNiHfg==
-
 react-native-webview@^10.2.3:
   version "10.2.3"
   resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-10.2.3.tgz#78aef542deaa8f97f581743c205e6a6ada73559c"

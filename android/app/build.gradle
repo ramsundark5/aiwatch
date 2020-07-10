@@ -190,6 +190,9 @@ dependencies {
     //tflite
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
 
+    //vlc
+    implementation 'de.mrmaffen:vlc-android-sdk:1.9.8'
+
     //ffmpeg
     implementation 'com.github.ramsundark5:FFmpeg-Android:e90de6380c596dbd64179a249c7991748966bc76'
 

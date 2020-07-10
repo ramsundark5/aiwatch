@@ -14,7 +14,7 @@ import Orientation from 'react-native-orientation-locker'
 import Icons from 'react-native-vector-icons/MaterialIcons'
 import { Controls } from './'
 import { checkSource } from './utils'
-import NativeVlcPlayer from 'react-native-vlc-player/src/NativeVlcPlayer'
+import NativeVlcPlayer from './NativeVlcPlayer'
 const Win = Dimensions.get('window')
 const backgroundColor = '#000'
 
