@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -98,6 +99,7 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
         mThemedReactContext = context;
         mEventEmitter = mThemedReactContext.getJSModule(RCTEventEmitter.class);
         mThemedReactContext.addLifecycleEventListener(this);
+        this.addOnLayoutChangeListener(onLayoutChangeListener);
         init();
     }
 
@@ -338,6 +340,25 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
         if(mMediaPlayer == null) return;
         mMediaPlayer.setVolume(volume);
     }
+
+    private View.OnLayoutChangeListener onLayoutChangeListener = new View.OnLayoutChangeListener() {
+
+        @Override
+        public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+            if (view.getWidth() > 0 && view.getHeight() > 0) {
+                mVideoWidth = view.getWidth();
+                mVideoHeight = view.getHeight();
+                if (mMediaPlayer != null) {
+                    //IVLCVout vlcOut = mMediaPlayer.getVLCVout();
+                    //vlcOut.setWindowSize(mVideoWidth, mVideoHeight);
+                    /*if (autoAspectRatio) {
+                        mMediaPlayer.setAspectRatio(mVideoWidth + ":" + mVideoHeight);
+                    }*/
+                    changeSurfaceLayout(mVideoWidth, mVideoHeight);
+                }
+            }
+        }
+    };
 
     @Override
     //public void onNewVideoLayout(IVLCVout vout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
