@@ -6,45 +6,49 @@ class RTSPVideoPlayer extends React.PureComponent{
 
   constructor(props){
     super(props);
+    this.state = {
+      loadPlayer: true
+    }
   }
 
   componentDidMount(){
-    this.pauseVideoOnBlur();
+    this.initListeners();
   }
 
   componentWillUnmount(){
+    this.removeListeners();
+  }
+
+  initListeners(){
+    const { navigation } = this.props;
+    if(!navigation){
+      console.log('no navigation prop found');
+      return;
+    }
+    this.didFocusSubscription = navigation.addListener( 'willFocus',
+      () => {
+        this.setState({loadPlayer: true});
+      }
+    );
+    this.didBlurSubscription = navigation.addListener( 'willBlur',
+      () => {
+        this.setState({loadPlayer: false});
+      }
+    );
+  }
+
+  removeListeners(){
+    if(this.didFocusSubscription){
+      this.didFocusSubscription.remove();
+    }
     if(this.didBlurSubscription){
       this.didBlurSubscription.remove();
     }
   }
 
-  pauseVideoOnBlur(){
-    const { navigation } = this.props;
-    if(!navigation){
-      return;
-    }
-    this.didBlurSubscription = navigation.addListener( 'didBlur',
-      () => {
-        if(this.videoRef){
-          this.videoRef.pause()
-        }
-      }
-    );
-  }
-
-  onPlay = async(playing) => {
-    const { enableHLSLiveView } = this.props;
-    if(playing && enableHLSLiveView){
-        await enableHLSLiveView(false);
-    }
-  };
-
   onError = async(err) => {
     const { enableHLSLiveView } = this.props;
     console.log('error loading video ' + JSON.stringify(err));
-    if(enableHLSLiveView){
-        await enableHLSLiveView(true);
-    }
   };
 
   onFullScreenEvent(status) {
@@ -59,6 +63,9 @@ class RTSPVideoPlayer extends React.PureComponent{
   }
 
   render(){
+    if(!this.state.loadPlayer){
+      return null;
+    }
     return(
         <VideoPlayer 
           {...this.props}

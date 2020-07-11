@@ -188,16 +188,19 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
 
     private void releasePlayer() {
         if (libvlc == null) return;
-        mMediaPlayer.stop();
-        final IVLCVout vout = mMediaPlayer.getVLCVout();
-        vout.removeCallback(this);
-        vout.detachViews();
-        holder = null;
-        libvlc.release();
-        libvlc = null;
-
-        mVideoWidth = 0;
-        mVideoHeight = 0;
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            final IVLCVout vout = mMediaPlayer.getVLCVout();
+            vout.removeCallback(this);
+            vout.detachViews();
+            holder = null;
+            libvlc.release();
+            libvlc = null;
+            
+            mVideoWidth = 0;
+            mVideoHeight = 0;
+            //mMediaPlayer = null;
+        }
     }
 
     private void changeSurfaceSize(int width, int height) {
@@ -307,6 +310,7 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
      */
     public void setPaused(boolean paused) {
         pausedState = paused;
+        if(mMediaPlayer == null) return;
         if (paused) {
             if (mMediaPlayer.isPlaying()) {
                 mMediaPlayer.pause();
@@ -323,6 +327,7 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
     }
 
     public void seek(float seek) {
+        if(mMediaPlayer == null) return;
         WritableMap event = Arguments.createMap();
         event.putDouble(EVENT_PROP_CURRENT_TIME, mMediaPlayer.getTime());
         event.putDouble(EVENT_PROP_SEEK_TIME, seek);
@@ -331,6 +336,7 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
     }
 
     public void setVolume(int volume) {
+        if(mMediaPlayer == null) return;
         mMediaPlayer.setVolume(volume);
     }
 
@@ -347,12 +353,12 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
 
     @Override
     public void onSurfacesCreated(IVLCVout vout) {
-
+        //initializePlayerIfNeeded();
     }
 
     @Override
     public void onSurfacesDestroyed(IVLCVout vout) {
-
+        //releasePlayer();
     }
 
     @Override
@@ -380,7 +386,7 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
 
     @Override
     public void onHostDestroy() {
-
+        //releasePlayer();
     }
 
     @Override
@@ -396,8 +402,10 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
                 mEventEmitter.receiveEvent(getId(), Events.EVENT_STOPPED.toString(), null);
                 break;
             case MediaPlayer.Event.Playing:
-                eventMap.putDouble(EVENT_PROP_DURATION, mMediaPlayer.getLength());
-                mEventEmitter.receiveEvent(getId(), Events.EVENT_PLAYING.toString(), eventMap);
+                if(mMediaPlayer != null){
+                    eventMap.putDouble(EVENT_PROP_DURATION, mMediaPlayer.getLength());
+                    mEventEmitter.receiveEvent(getId(), Events.EVENT_PLAYING.toString(), eventMap);
+                }
                 break;
 //            case MediaPlayer.Event.Buffering:
 //                mEventEmitter.receiveEvent(getId(), Events.EVENT_PLAYING.toString(), null);
@@ -409,10 +417,12 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
                 mEventEmitter.receiveEvent(getId(), Events.EVENT_ERROR.toString(), null);
                 break;
             case MediaPlayer.Event.TimeChanged:
-                eventMap.putDouble(EVENT_PROP_CURRENT_TIME, mMediaPlayer.getTime());
-                eventMap.putDouble(EVENT_PROP_DURATION, mMediaPlayer.getLength());
-                eventMap.putDouble(EVENT_PROP_POSITION, mMediaPlayer.getPosition());
-                mEventEmitter.receiveEvent(getId(), Events.EVENT_PROGRESS.toString(), eventMap);
+                if(mMediaPlayer != null){
+                    eventMap.putDouble(EVENT_PROP_CURRENT_TIME, mMediaPlayer.getTime());
+                    eventMap.putDouble(EVENT_PROP_DURATION, mMediaPlayer.getLength());
+                    eventMap.putDouble(EVENT_PROP_POSITION, mMediaPlayer.getPosition());
+                    mEventEmitter.receiveEvent(getId(), Events.EVENT_PROGRESS.toString(), eventMap);
+                }
                 break;
         }
     }
