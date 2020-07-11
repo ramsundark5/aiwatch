@@ -83,7 +83,7 @@ class Video extends Component {
   }
 
   onBuffering(){
-    this.setState({ loading: true })
+    //this.setState({ loading: true })
   }
 
   onLoad(data) {

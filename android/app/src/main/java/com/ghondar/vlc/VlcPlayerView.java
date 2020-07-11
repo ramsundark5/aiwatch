@@ -119,7 +119,6 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
             int networkCaching = pref.getInt("network_caching_value", 0);
             if (networkCaching > 60000) networkCaching = 60000;
             else if (networkCaching < 0) networkCaching = 0;
-            options.add("--audio-time-stretch");
             options.add("--avcodec-skiploopfilter");
             options.add("" + deblocking);
             options.add("--avcodec-skip-frame");
@@ -134,8 +133,8 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
 
             options.add("-vv");
 
-            //libvlc = new LibVLC(getContext(), options);
-            libvlc = new LibVLC(options);
+            libvlc = new LibVLC(getContext(), options);
+            //libvlc = new LibVLC(options);
 
             holder.setKeepScreenOn(true);
 
@@ -407,9 +406,9 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
                     mEventEmitter.receiveEvent(getId(), Events.EVENT_PLAYING.toString(), eventMap);
                 }
                 break;
-//            case MediaPlayer.Event.Buffering:
-//                mEventEmitter.receiveEvent(getId(), Events.EVENT_PLAYING.toString(), null);
-//                break;
+            case MediaPlayer.Event.Buffering:
+                mEventEmitter.receiveEvent(getId(), Events.EVENT_BUFFERING.toString(), null);
+                break;
             case MediaPlayer.Event.Paused:
                 mEventEmitter.receiveEvent(getId(), Events.EVENT_PAUSED.toString(), null);
                 break;
