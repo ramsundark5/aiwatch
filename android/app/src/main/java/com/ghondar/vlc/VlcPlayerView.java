@@ -90,7 +90,7 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
     private static final int SURFACE_4_3 = 5;
     private static final int SURFACE_ORIGINAL = 6;
 
-    private int mCurrentSize = SURFACE_BEST_FIT;
+    private int mCurrentSize = SURFACE_FILL;
     private Media media;
     private boolean autoPlay;
 
@@ -368,7 +368,7 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
         // store video size
         mSarNum = sarNum;
         mSarDen = sarDen;
-        changeSurfaceLayout(width, height);
+        //changeSurfaceLayout(width, height);
     }
 
     @Override
