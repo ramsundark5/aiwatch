@@ -6,48 +6,9 @@ class RTSPVideoPlayer extends React.PureComponent{
 
   constructor(props){
     super(props);
-    this.state = {
-      loadPlayer: true
-    }
-  }
-
-  componentDidMount(){
-    this.initListeners();
-  }
-
-  componentWillUnmount(){
-    this.removeListeners();
-  }
-
-  initListeners(){
-    const { navigation } = this.props;
-    if(!navigation){
-      console.log('no navigation prop found');
-      return;
-    }
-    this.didFocusSubscription = navigation.addListener( 'willFocus',
-      () => {
-        this.setState({loadPlayer: true});
-      }
-    );
-    this.didBlurSubscription = navigation.addListener( 'willBlur',
-      () => {
-        this.setState({loadPlayer: false});
-      }
-    );
-  }
-
-  removeListeners(){
-    if(this.didFocusSubscription){
-      this.didFocusSubscription.remove();
-    }
-    if(this.didBlurSubscription){
-      this.didBlurSubscription.remove();
-    }
   }
 
   onError = async(err) => {
-    const { enableHLSLiveView } = this.props;
     console.log('error loading video ' + JSON.stringify(err));
   };
 
@@ -63,9 +24,6 @@ class RTSPVideoPlayer extends React.PureComponent{
   }
 
   render(){
-    if(!this.state.loadPlayer){
-      return null;
-    }
     return(
         <VideoPlayer 
           {...this.props}

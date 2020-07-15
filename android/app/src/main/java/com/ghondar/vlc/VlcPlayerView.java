@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, LifecycleEventListener, MediaPlayer.EventListener {
 
     private boolean pausedState;
-
+    private boolean isSurfaceViewDestory;
     public enum Events {
         EVENT_PROGRESS("onVLCProgress"),
         EVENT_ENDED("onVLCEnded"),
@@ -318,6 +318,9 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
             }
         } else {
             if (!mMediaPlayer.isPlaying()) {
+                if (mMediaPlayer != null && isSurfaceViewDestory) {
+                    setMedia(mSrcString);
+                }
                 mMediaPlayer.play();
             }
         }
@@ -372,13 +375,13 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
     }
 
     @Override
-    public void onSurfacesCreated(IVLCVout vout) {
-        //initializePlayerIfNeeded();
+    public void onSurfacesCreated(IVLCVout ivlcVout) {
+        isSurfaceViewDestory = false;
     }
 
     @Override
-    public void onSurfacesDestroyed(IVLCVout vout) {
-        //releasePlayer();
+    public void onSurfacesDestroyed(IVLCVout ivlcVout) {
+        isSurfaceViewDestory = true;
     }
 
     @Override
@@ -395,6 +398,9 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
             public void run() {
                 // Restore original state
                 setPaused(pausedState);
+                /*if (mMediaPlayer != null && isSurfaceViewDestory) {
+                    setMedia(mSrcString);
+                }*/
             }
         });
     }
@@ -406,8 +412,30 @@ public class VlcPlayerView extends FrameLayout implements IVLCVout.Callback, Lif
 
     @Override
     public void onHostDestroy() {
-        //releasePlayer();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                releasePlayer();
+            }
+        }); 
     }
+
+
+   /* @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+    }*/
+
+    /* @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                releasePlayer();
+            }
+        });
+    } */
 
     @Override
     public void onEvent(MediaPlayer.Event event) {

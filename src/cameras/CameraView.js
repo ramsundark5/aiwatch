@@ -11,7 +11,7 @@ import Theme from '../common/Theme';
 import testID from '../common/testID';
 import WatchCamera from './WatchCamera';
 
-class CameraView extends Component {
+class CameraView extends React.PureComponent {
   
   constructor(props) {
     super(props);
@@ -25,13 +25,47 @@ class CameraView extends Component {
   state = {
     isFull: false,
     open: false,
+    loadPlayer: true,
     isLoading: false,
     fullscreen: false, 
     fullscreenCameraId: null
   }
 
   componentDidMount(){
+    //this.initListeners();
     this.loadAllCameras();
+  }
+
+  componentWillUnmount(){
+    //this.removeListeners();
+  }
+
+  initListeners(){
+    const { navigation } = this.props;
+    if(!navigation){
+      console.log('no navigation prop found');
+      return;
+    }
+    this.didFocusSubscription = navigation.addListener( 'didFocus',
+      () => {
+        this.setState({loadPlayer: true});
+      }
+    );
+    this.didBlurSubscription = navigation.addListener( 'willBlur',
+      () => {
+        console.log('will blur is called');
+        this.setState({loadPlayer: false});
+      }
+    );
+  }
+
+  removeListeners(){
+    if(this.didFocusSubscription){
+      this.didFocusSubscription.remove();
+    }
+    if(this.didBlurSubscription){
+      this.didBlurSubscription.remove();
+    }
   }
 
   async loadAllCameras(){
@@ -71,6 +105,11 @@ class CameraView extends Component {
   render() {
     const { fullscreen, isLoading } = this.state;
     let containerStyle = fullscreen ? styles.fullscreencontainer : styles.container; 
+    if(!this.state.loadPlayer){
+      return <LoadingSpinner 
+          visible={true}
+          textContent={'Loading...'} />;
+    }
     return (
       <Provider>
          <Portal>
