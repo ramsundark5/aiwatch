@@ -14,7 +14,7 @@ import Orientation from 'react-native-orientation-locker'
 import Icons from 'react-native-vector-icons/MaterialIcons'
 import { Controls } from './'
 import { checkSource } from './utils'
-import NativeVlcPlayer from './NativeVlcPlayer'
+import { VLCPlayer } from 'react-native-vlc-media-player';
 const Win = Dimensions.get('window')
 const backgroundColor = '#000'
 
@@ -122,7 +122,7 @@ class Video extends Component {
     const { loop } = this.props
     if (!loop) this.pause()
     this.onSeekRelease(0)
-    this.setState({ currentTime: 0 }, () => {
+    this.setState({ currentTime: 0, loading: false }, () => {
       if (!loop) this.controls.showControls()
     })
   }
@@ -370,18 +370,18 @@ class Video extends Component {
           ((loading && placeholder) || currentTime < 0.01) &&
           <Image resizeMode="cover" style={styles.image} {...checkSource(placeholder)} />
         }
-         <NativeVlcPlayer
+         <VLCPlayer
            {...this.props}
            ref={(ref) => { this.player = ref }}
            style={fullScreen ? styles.fullScreen : inline}
            paused={paused}
-           autoplay={true}
            source={{ uri: url}}
-           onVLCEnded={(e) => this.onEnd(e)}
-           onVLCBuffering={(event) => this.onBuffering(event)} 
-           onVLCProgress={(event) => this.onLoadProgress(event)}
-           onVLCError={e => this.onError(e)}
-           onVLCStopped={(e) => this.onEnd(e)}
+           autoplay={true}
+           onProgress={(event) => this.onLoadProgress(event)}
+           onEnd={(e) => this.onEnd(e)}
+           onBuffering={(event) => this.onBuffering(event)} 
+           onError={e => this.onError(e)}
+           onStopped={(e) => this.onEnd(e)}
        />
         <Controls
           ref={(ref) => { this.controls = ref }}

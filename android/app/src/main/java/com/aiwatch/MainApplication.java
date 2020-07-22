@@ -4,9 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.BV.LinearGradient.LinearGradientPackage;
-import com.bugsnag.android.Bugsnag;
 import com.facebook.react.ReactApplication;
-import com.ghondar.vlc.VlcPlayerPackage;
 import com.reactnativecommunity.art.ARTPackage;
 import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
@@ -29,6 +27,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.yuanzhou.vlc.ReactVlcPlayerPackage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -60,7 +59,7 @@ public class MainApplication extends Application implements ReactApplication {
             new OrientationPackage(),
             new RNPermissionsPackage(),
             new LinearGradientPackage(),
-            new VlcPlayerPackage()
+            new ReactVlcPlayerPackage()
       );
     }
 

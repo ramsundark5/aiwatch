@@ -191,7 +191,7 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
 
     //vlc
-    implementation 'de.mrmaffen:vlc-android-sdk:2.0.6'
+    //implementation 'de.mrmaffen:vlc-android-sdk:2.0.6'
     //implementation 'org.videolan.android:libvlc-all:3.1.12'
 
     //ffmpeg
