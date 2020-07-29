@@ -167,7 +167,9 @@ class Video extends Component {
   }
 
   onError(msg) {
-    //this.props.onError(msg)
+    if(this.props.onError){
+      this.props.onError(msg)
+    }
     const { error } = this.props
     this.setState({ renderError: true, loading: false, paused: true }, () => {
       let type
@@ -301,7 +303,7 @@ class Video extends Component {
       <Animated.View
         style={[styles.background, fullScreen ? styles.fullScreen : inline]}
       >
-        <Text style={textStyle}>Retry</Text>
+        <Text style={textStyle}>Error playing the video. Retry</Text>
         <Icons
           name="replay"
           size={60}
@@ -417,7 +419,7 @@ class Video extends Component {
   }
 
   render() {
-    //if (this.state.renderError) return this.renderError()
+    if (this.state.renderError) return this.renderError()
     return this.renderPlayer()
   }
 }
