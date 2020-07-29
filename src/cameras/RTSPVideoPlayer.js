@@ -1,8 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import VideoPlayer from '../videoplayer';
-import { VLCPlayer, VlCPlayerView } from 'react-native-vlc-media-player';
-import Orientation from 'react-native-orientation-locker'
+import { VlCPlayerView } from 'react-native-vlc-media-player';
 
 class RTSPVideoPlayer extends React.PureComponent{
 
@@ -30,7 +29,7 @@ class RTSPVideoPlayer extends React.PureComponent{
     }
   }
 
-  render2(){
+  render(){
     return(
         <VideoPlayer 
           {...this.props}
@@ -43,20 +42,6 @@ class RTSPVideoPlayer extends React.PureComponent{
           rotateToFullScreen={true}
           lockPortraitOnFsExit={true}
           scrollBounce={true}/>
-    )
-  }
-
-  render(){
-    const {fullScreen} = this.state;
-    return(
-      <VlCPlayerView
-          autoplay={false}
-          url={this.props.url}
-          Orientation={Orientation}
-          style={fullScreen ? styles.fullScreen : null}
-          //BackHandle={BackHandle}
-          onVLCError={this.onError}
-      />
     )
   }
 }

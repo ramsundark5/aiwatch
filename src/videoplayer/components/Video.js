@@ -26,7 +26,9 @@ const styles = StyleSheet.create({
     zIndex: 98
   },
   fullScreen: {
-    ...StyleSheet.absoluteFillObject
+    //...StyleSheet.absoluteFillObject
+    height: '100%',
+    width: '100%'
   },
   image: {
     ...StyleSheet.absoluteFillObject,
@@ -92,7 +94,8 @@ class Video extends Component {
 
   onLoadProgress(event) {
     const { currentTime, duration } = event
-    if (currentTime > 0 || this.state.duration > 0) {
+    //if (currentTime > 0 || this.state.duration > 0) {
+    if (currentTime > 0) {
       if(this.state.loading){
         //add timeout to seek to first frame of the video
         setTimeout(() => {
