@@ -56,7 +56,7 @@ class Video extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      paused: false,
+      paused: !props.autoPlay,
       muted: false,
       fullScreen: false,
       inlineHeight: Win.width * 0.5625,
@@ -349,9 +349,13 @@ class Video extends Component {
       monitoring
     } = this.props
 
-    const inline = {
+    let inline = {
       height: inlineHeight,
       alignSelf: 'stretch'
+    }
+
+    if(this.props.videoStyle){
+      inline = this.props.videoStyle
     }
 
     const setTheme = {
@@ -381,7 +385,6 @@ class Video extends Component {
            style={fullScreen ? styles.fullScreen : inline}
            paused={paused}
            source={{ uri: url}}
-           autoplay={true}
            onProgress={(event) => this.onLoadProgress(event)}
            onEnd={(e) => this.onEnd(e)}
            onBuffering={(event) => this.onBuffering(event)} 

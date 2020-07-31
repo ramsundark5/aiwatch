@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { IconButton, Colors } from 'react-native-paper';
 import RTSPVideoPlayer from '../cameras/RTSPVideoPlayer';
+import Orientation from 'react-native-orientation-locker'
 
 export default class FullScreenVideoPlayer extends PureComponent{
 
@@ -10,6 +11,10 @@ export default class FullScreenVideoPlayer extends PureComponent{
         tabBarVisible: false,
     };
       
+    componentDidMount(){
+        Orientation.lockToLandscapeLeft()
+    }
+
     render(){
         const videoUrl = this.props.navigation.getParam('videoUrl', '');
         return(
@@ -19,12 +24,13 @@ export default class FullScreenVideoPlayer extends PureComponent{
                     style={styles.dismissButton}
                     onPress={() => this.props.navigation.goBack()}/>
                 <RTSPVideoPlayer
-                    initWithFull={true}
-                    showFullScreen={true}
+                    monitoring=''
+                    autoPlay={true}
                     onLeftPress={() => this.props.navigation.goBack()}
-                    autoplay={false}
-                    showReload={true}
                     style={{flex: 1}}
+                    autoAspectRatio={true}
+                    hideScrubber={false}
+                    hideFullScreenControl={true}
                     url={videoUrl}/>
             </View>
         )

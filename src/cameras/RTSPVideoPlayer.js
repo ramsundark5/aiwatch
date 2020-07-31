@@ -38,7 +38,6 @@ class RTSPVideoPlayer extends React.PureComponent{
           onError={this.onError}
           showBack={true}
           autoAspectRatio={true}
-          hideFullScreenControl={false}
           onFullScreen={status => this.onFullScreenEvent(status)}
           rotateToFullScreen={true}
           lockPortraitOnFsExit={true}

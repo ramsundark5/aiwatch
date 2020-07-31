@@ -34,6 +34,7 @@
     "react-native-calendars": "^1.300.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-iap": "4.4.9",
+    "react-native-image-overlay": "^0.1.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-loading-spinner-overlay": "^1.1.0",

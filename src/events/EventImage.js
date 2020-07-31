@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
-import { Colors } from 'react-native-paper';
+import { StyleSheet, Text, View } from 'react-native';
+import ImageOverlay from 'react-native-image-overlay';
+import { Avatar, Colors, TouchableRipple } from 'react-native-paper';
 import { verticalScale } from 'react-native-size-matters';
-import RTSPVideoPlayer from '../cameras/RTSPVideoPlayer';
 export default class EventImage extends PureComponent{
     render(){
         const { event } = this.props;
@@ -14,40 +14,44 @@ export default class EventImage extends PureComponent{
     }
 
     renderEvent(event){
-        if(event.videoPath){
-          return this.renderVideoItem(event);
-        }else if(event.thumbnailPath){
+        if(event.thumbnailPath || event.videoPath){
           return this.renderImageItem(event);
         }else{
           return this.renderTextItem(event);
         }
     }
     
-    renderVideoItem(event){
+    renderImageItem(event){
+        let playerHeight = verticalScale(120);
         return(
-            <RTSPVideoPlayer
-                {...this.props}
-                key={event.uuid}
-                style={styles.thumbnailStyle}
-                placeholder={event.thumbnailPath}
-                url={event.videoPath}
-                autoplay={false} />
+            <ImageOverlay
+                source={{isStatic:true, uri: 'file://'+event.thumbnailPath}}
+                height={playerHeight}
+                overlayAlpha={0}
+                containerStyle={{width: '100%', maxWidth: 400}} 
+                contentPosition='center'>
+               <TouchableRipple rippleColor={Colors.white} onPress={() => this.onPlayVideo()}>
+                <Avatar.Icon size={48} 
+                    icon='play' color={Colors.red600}
+                    style={styles.avatarStyle}/>
+               </TouchableRipple>
+            </ImageOverlay>
         )
     }
       
-    renderImageItem(event){
-        return(
-            <ImageBackground
-                source={{isStatic:true, uri: 'file://'+event.thumbnailPath}}
-                style={styles.thumbnailStyle}>
-            </ImageBackground>
-        )
-    }
-
     renderTextItem(event){
         return(
           <Text>{event.message}</Text>
         )
+    }
+
+    onPlayVideo(){
+        const { event } = this.props;
+        const videoUri = event.videoPath;
+        console.log('play video pressed');
+        this.props.navigation.navigate('EventVideo', {
+            videoUrl: videoUri
+        });
     }
 }
 
@@ -60,12 +64,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent', 
         borderColor: Colors.white, 
         borderWidth: 1
-    },
-    thumbnailStyle: {
-        width: '100%', 
-        height: verticalScale(120),
-        maxWidth: 400, 
-        justifyContent: 'center', 
-        alignItems: 'center', 
     }
 });
