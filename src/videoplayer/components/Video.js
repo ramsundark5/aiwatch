@@ -93,16 +93,19 @@ class Video extends Component {
   }
 
   onLoadProgress(event) {
-    const { currentTime, duration } = event
+    const { currentTime, duration, position } = event
+    console.log(JSON.stringify(event))
     //if (currentTime > 0 || this.state.duration > 0) {
     if (currentTime > 0) {
       if(this.state.loading){
         //add timeout to seek to first frame of the video
         setTimeout(() => {
-          this.setState({ loading: false, duration: duration })
+          this.setState({ loading: false })
           this.pause()
         }, 1500)
       }
+      const progress = currentTime / duration
+      this.setState({ duration: duration/1000, currentTime: currentTime/1000, progress: position })
     }else{
       if(!this.state.loading){
         this.setState({ loading: true })
@@ -292,7 +295,7 @@ class Video extends Component {
     return this.onSeekRelease(percent)
   }
 
-  renderError() {
+  renderError(msg) {
     const { fullScreen } = this.state
     const inline = {
       height: this.animInline,
@@ -303,7 +306,7 @@ class Video extends Component {
       <Animated.View
         style={[styles.background, fullScreen ? styles.fullScreen : inline]}
       >
-        <Text style={textStyle}>Error playing the video. Retry</Text>
+        <Text style={textStyle}>{msg}</Text>
         <Icons
           name="replay"
           size={60}
@@ -422,7 +425,7 @@ class Video extends Component {
   }
 
   render() {
-    if (this.state.renderError) return this.renderError()
+    if (this.state.renderError) return this.renderError('Error playing the video. Retry')
     return this.renderPlayer()
   }
 }
