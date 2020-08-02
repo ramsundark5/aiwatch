@@ -71,6 +71,7 @@ class Video extends Component {
     this.animFullscreen = new Animated.Value(Win.width * 0.5625)
     this.BackHandler = this.BackHandler.bind(this)
     this.onRotated = this.onRotated.bind(this)
+    this.isEnding = false
   }
 
   componentDidMount() {
@@ -88,15 +89,18 @@ class Video extends Component {
     //this.setState({ loading: true })
   }
 
-  onLoad(data) {
-    console.log('onplaying called')
+  onLoadStart(event) {
+    if(!this.state.loading &&!this.isEnding){
+      this.setState({ loading: true })
+    }
+    console.log('onloadstart called')
   }
 
   onLoadProgress(event) {
     const { currentTime, duration, position } = event
     console.log(JSON.stringify(event))
     //if (currentTime > 0 || this.state.duration > 0) {
-    if (currentTime > 0) {
+    if (currentTime > 0 || this.state.currentTime > 0 ) {
       if(this.state.loading){
         //add timeout to seek to first frame of the video
         setTimeout(() => {
@@ -106,10 +110,6 @@ class Video extends Component {
       }
       const progress = currentTime / duration
       this.setState({ duration: duration/1000, currentTime: currentTime/1000, progress: position })
-    }else{
-      if(!this.state.loading){
-        this.setState({ loading: true })
-      }
     }
   }
 
@@ -124,13 +124,25 @@ class Video extends Component {
   }
 
   onEnd(e) {
-    this.props.onEnd(e)
     const { loop } = this.props
+    if(this.props.onEnd){
+      this.props.onEnd(e)
+    }
     if (!loop) this.pause()
-    this.onSeekRelease(0)
-    this.setState({ currentTime: 0, loading: false }, () => {
-      if (!loop) this.controls.showControls()
-    })
+    if (!this.isEnding) {
+      //this.onSeekRelease(0)
+      this.player.resume && this.player.resume(false)
+      this.isEnding = true
+      this.setState({ progress: 0, currentTime: 0, loading: false }, () => {
+        if (!loop) this.controls.showControls()
+      }) 
+    }
+    console.log('on end is called')
+  }
+
+  onPlaying(event) {
+    this.isEnding = false;
+    console.log('onPlaying');
   }
 
   onRotated({ window: { width, height } }) {
@@ -388,8 +400,10 @@ class Video extends Component {
            style={fullScreen ? styles.fullScreen : inline}
            paused={paused}
            source={{ uri: url}}
+           onPlaying={(event) => this.onPlaying(event)}
            onProgress={(event) => this.onLoadProgress(event)}
            onEnd={(e) => this.onEnd(e)}
+           onLoadStart={(e) => this.onLoadStart(e)}
            onBuffering={(event) => this.onBuffering(event)} 
            onError={e => this.onError(e)}
            onStopped={(e) => this.onEnd(e)}

@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import VideoPlayer from '../videoplayer';
-import { VlCPlayerView } from 'react-native-vlc-media-player';
 
 class RTSPVideoPlayer extends React.PureComponent{
 

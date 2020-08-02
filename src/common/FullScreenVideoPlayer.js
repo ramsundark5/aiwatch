@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { IconButton, Colors } from 'react-native-paper';
 import RTSPVideoPlayer from '../cameras/RTSPVideoPlayer';
 import Orientation from 'react-native-orientation-locker'
-
+import { VlCPlayerView } from 'react-native-vlc-media-player';
 export default class FullScreenVideoPlayer extends PureComponent{
 
     static navigationOptions = {
@@ -13,6 +13,10 @@ export default class FullScreenVideoPlayer extends PureComponent{
       
     componentDidMount(){
         Orientation.lockToLandscapeLeft()
+    }
+    
+    onBackPress(){
+        this.props.navigation.goBack()
     }
 
     render(){
@@ -33,6 +37,26 @@ export default class FullScreenVideoPlayer extends PureComponent{
                     hideFullScreenControl={true}
                     url={videoUrl}/>
             </View>
+        )
+    }
+
+    render2(){
+        const videoUrl = this.props.navigation.getParam('videoUrl', '');
+        return(
+            <VlCPlayerView
+                autoplay={false}
+                url={videoUrl}
+                Orientation={Orientation}
+                closeFullScreen={() => this.onBackPress()}
+                //BackHandle={BackHandle}
+                isFull={true}
+                showLeftButton={false}
+                showRightButton={false}
+                ggUrl=""
+                showGG={false}
+                title=""
+                showBack={true}
+            />
         )
     }
 }
