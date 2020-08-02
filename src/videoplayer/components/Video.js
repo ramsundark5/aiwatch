@@ -218,7 +218,13 @@ class Video extends Component {
           if (!this.props.lockPortraitOnFsExit) Orientation.unlockAllOrientations()
         }, 1500)
       })
+      if(this.props.onBackPress){
+        this.props.onBackPress()
+      }
       return true
+    }
+    if(this.props.onBackPress){
+      this.props.onBackPress()
     }
     return false
   }
