@@ -26,6 +26,7 @@ class WatchCamera extends Component {
                   autoPlay={true}
                   title={cameraConfig.name}
                   hideScrubber={true}
+                  seekFirstFrame={true}
                   hideFullScreenControl={false}
                   logo=''
                   hideTime={true}/>

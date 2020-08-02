@@ -34,6 +34,7 @@ class RTSPVideoPlayer extends React.PureComponent{
           {...this.props}
           ref={(ref) => { this.videoRef = ref }}
           error={false}
+          logo=''
           onError={this.onError}
           showBack={true}
           autoAspectRatio={true}

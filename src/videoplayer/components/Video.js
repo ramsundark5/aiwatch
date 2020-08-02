@@ -98,15 +98,19 @@ class Video extends Component {
 
   onLoadProgress(event) {
     const { currentTime, duration, position } = event
+    const {seekFirstFrame} = this.props
     console.log(JSON.stringify(event))
     //if (currentTime > 0 || this.state.duration > 0) {
     if (currentTime > 0 || this.state.currentTime > 0 ) {
       if(this.state.loading){
         //add timeout to seek to first frame of the video
+        let seekTimeout = seekFirstFrame ? 1500 : 0
         setTimeout(() => {
           this.setState({ loading: false })
-          this.pause()
-        }, 1500)
+          if(seekFirstFrame){
+            this.pause()
+          }
+        }, seekTimeout)
       }
       const progress = currentTime / duration
       this.setState({ duration: duration/1000, currentTime: currentTime/1000, progress: position })
