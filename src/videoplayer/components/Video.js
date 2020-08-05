@@ -99,7 +99,7 @@ class Video extends Component {
   onLoadProgress(event) {
     const { currentTime, duration, position } = event
     const {seekFirstFrame} = this.props
-    console.log(JSON.stringify(event))
+    //console.log(JSON.stringify(event))
     //if (currentTime > 0 || this.state.duration > 0) {
     if (currentTime > 0 || this.state.currentTime > 0 ) {
       if(this.state.loading){
@@ -388,7 +388,6 @@ class Video extends Component {
       ...theme
     }
 
-    console.log('inside render vlcplayer')
     return (
       <Animated.View
         style={[
