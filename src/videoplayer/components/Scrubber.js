@@ -43,7 +43,7 @@ const Scrubber = (props) => {
           trackClickable
         />
       :
-        <RNSlider
+        <Slider
           style={styles.slider}
           onValueChange={val => onSeek(val)}
           onSlidingComplete={val => onSeekRelease(val)}

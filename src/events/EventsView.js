@@ -145,7 +145,7 @@ class EventsView extends React.Component {
                     // agenda theme
                     theme={{
                         'stylesheet.calendar.header': { monthText: { paddingTop: 12} },
-                        agendaKnobColor: Colors.grey100,
+                        agendaKnobColor: Colors.cyan100,
                         dotColor: Colors.deepOrange800
                     }}/>
                     {this.renderDeleteButton()}

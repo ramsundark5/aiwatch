@@ -6826,10 +6826,9 @@ react-native-base64@0.0.2:
   resolved "https://registry.yarnpkg.com/react-native-base64/-/react-native-base64-0.0.2.tgz#c28463c2c6779ac3ec5fdd12979ebc8c5f9b410a"
   integrity sha512-Fu/J1a2y0X22EJDWqJR2oEa1fpP4gTFjYxk8ElJdt1Yak3HOXmFJ7EohLVHU2DaQkgmKfw8qb7u/48gpzveRbg==
 
-react-native-calendars@^1.300.0:
-  version "1.300.0"
-  resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.300.0.tgz#ddd3941a0e01c9256a5aa0c44f615161bb9e664f"
-  integrity sha512-GOSaF+I24+cK5uxUfw85LEwskCj6Cpi5Cnm3OXdXexMer9hg0FlJ6AYlDrvu0ck0b9yAFdQTxExt64u1wkh+gw==
+"react-native-calendars@git+https://github.com/ramsundark5/react-native-calendars":
+  version "1.22.0"
+  resolved "git+https://github.com/ramsundark5/react-native-calendars#b7f40290a6d8522af21a700372795e97a7238f8a"
   dependencies:
     hoist-non-react-statics "^3.3.1"
     immutable "^4.0.0-rc.12"
@@ -6973,9 +6972,9 @@ react-native-vector-icons@^6.6.0:
     prop-types "^15.6.2"
     yargs "^13.2.2"
 
-"react-native-vlc-media-player@git+https://github.com/razorRun/react-native-vlc-media-player":
-  version "1.0.22"
-  resolved "git+https://github.com/razorRun/react-native-vlc-media-player#8ac094db9f81c7d59706ca7a25649a34ca54f55e"
+"react-native-vlc-media-player@git+https://github.com/ramsundark5/react-native-vlc-media-player":
+  version "1.0.24"
+  resolved "git+https://github.com/ramsundark5/react-native-vlc-media-player#f3d3e742d029d62e6aa89bf6f2855cb0ff840e34"
   dependencies:
     react-native-slider "^0.11.0"
     react-native-vector-icons "^6.6.0"

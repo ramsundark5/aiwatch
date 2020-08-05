@@ -31,7 +31,7 @@
     "react-native": "0.61.5",
     "react-native-admob": "git+https://github.com/ramsundark5/react-native-admob",
     "react-native-app-auth": "^5.1.2",
-    "react-native-calendars": "^1.300.0",
+    "react-native-calendars": "git+https://github.com/ramsundark5/react-native-calendars",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-iap": "4.4.9",
     "react-native-image-overlay": "^0.1.2",
