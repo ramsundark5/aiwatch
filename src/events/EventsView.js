@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { InteractionManager, View, StyleSheet, Text } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import EventCard from './EventCard';
 import RNSmartCam from '../native/RNSmartCam';
@@ -30,8 +30,8 @@ class EventsView extends React.Component {
 
     async componentDidMount(){
         const { navigation } = this.props;
-        this.loadInitialEvents();
         this.focusListener = navigation.addListener('didFocus', () => this.showAd());
+        this.loadInitialEvents();
     }
     
     UNSAFE_componentWillUnmount() {
@@ -41,9 +41,11 @@ class EventsView extends React.Component {
 
     async showAd(){
         const { isNoAdsPurchased } = this.props;
-        this._addSpinner('ads');
-        await AdMob.showAd(isNoAdsPurchased);
-        this._removeSpinner('ads');
+        if( !isNoAdsPurchased ){
+            this._addSpinner('ads');
+            await AdMob.showAd(isNoAdsPurchased);
+            this._removeSpinner('ads');
+        }
     }
 
     loadInitialEvents(){
