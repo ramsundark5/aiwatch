@@ -27,7 +27,7 @@ export default class FullScreenVideoPlayer extends PureComponent{
                     style={styles.dismissButton}
                     onPress={() => this.props.navigation.goBack()}/>
                 <RTSPVideoPlayer
-                    monitoring=''
+                    monitoring='hide'
                     autoPlay={true}
                     onBackPress={() => this.props.navigation.goBack()}
                     style={{flex: 1}}

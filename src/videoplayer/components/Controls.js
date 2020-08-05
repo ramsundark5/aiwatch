@@ -109,9 +109,25 @@ class Controls extends Component {
   }
 
   loading() {
+    const {
+      logo,
+      more,
+      onMorePress,
+      title,
+      theme,
+      monitoring
+    } = this.props
     return (
       <View style={styles.container}>
-        <Loading theme={this.props.theme.loading} />
+        <TopBar
+            title={title}
+            logo={logo}
+            monitoring={monitoring}
+            more={more}
+            onMorePress={() => onMorePress()}
+            theme={{ title: theme.title, more: theme.more }}
+          />
+          <Loading theme={theme.loading} />
       </View>
     )
   }

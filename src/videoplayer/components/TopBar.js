@@ -40,7 +40,7 @@ const TopBar = (props) => {
     theme,
     monitoring
   } = props
-  if(monitoring == ''){
+  if(monitoring == 'hide'){
     return null
   }
   let monitorStatusColor = monitoring ? 'green' : 'red';
