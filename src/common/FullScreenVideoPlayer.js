@@ -11,7 +11,7 @@ export default class FullScreenVideoPlayer extends PureComponent{
     };
       
     componentDidMount(){
-        Orientation.lockToLandscapeLeft()
+        Orientation.unlockAllOrientations()
     }
     
     onBackPress(){
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         top: 10,
         right: 10,
         marginRight: 30,
-        zIndex: 1,
+        zIndex: 100,
         position: 'absolute',
     }
 });
