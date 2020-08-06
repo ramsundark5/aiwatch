@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, StyleSheet, ToastAndroid, View } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { Colors, Appbar } from 'react-native-paper';
 import RNSmartCam from '../native/RNSmartCam';
 import Theme from '../common/Theme';
 import Logger from '../common/Logger';
@@ -104,9 +104,9 @@ export default class CameraControl extends Component {
                 visible={this.state.isLoading}
                 textContent={'Updating...'} />
                <Appbar style={styles.appBar}>
-                <Appbar.Action icon='settings' color={Theme.primary} onPress={() => this.editCamera()} />
-                <Appbar.Action icon='crop' color={Theme.primary} onPress={() => this.onPressROIButton()}/>
-                <Appbar.Action icon='delete' color={Theme.primary} onPress={() => this.onPressDeleteButton()} />
+                <Appbar.Action icon='settings' color={Colors.grey600} onPress={() => this.editCamera()} />
+                <Appbar.Action icon='crop' color={Colors.grey700} onPress={() => this.onPressROIButton()}/>
+                <Appbar.Action icon='delete' color={Colors.red300} onPress={() => this.onPressDeleteButton()} />
               </Appbar>
               <View style={styles.divider} />
             </View>

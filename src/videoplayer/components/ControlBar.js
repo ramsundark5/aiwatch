@@ -42,7 +42,7 @@ const ControlBar = (props) => {
           theme={{ scrubberThumb: theme.scrubberThumb, scrubberBar: theme.scrubberBar }}
         />
       }
-        <ToggleIcon
+       {/*  <ToggleIcon
           paddingLeft
           theme={theme.volume}
           onPress={() => props.toggleMute()}
@@ -50,7 +50,7 @@ const ControlBar = (props) => {
           iconOff="volume-up"
           iconOn="volume-mute"
           size={20}
-        />
+        /> */}
       { !hideTime &&
         <Time time={duration} theme={theme.duration} />
       }
