@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import {
   View,
   Platform,
-  StyleSheet,
-  Slider as RNSlider
+  StyleSheet
 } from 'react-native'
 import Slider from '@react-native-community/slider'
 
@@ -30,20 +29,7 @@ const Scrubber = (props) => {
   const { progress, theme, onSeek, onSeekRelease } = props
   return (
     <View style={styles.container}>
-      { Platform.OS === 'ios' ?
-        <Slider
-          onValueChange={val => onSeek(val)}
-          onSlidingComplete={val => onSeekRelease(val)}
-          value={progress === Number.POSITIVE_INFINITY ? 0 : progress}
-          thumbTintColor={theme.scrubberThumb}
-          thumbStyle={styles.thumbStyle}
-          trackStyle={styles.trackStyle}
-          minimumTrackTintColor={theme.scrubberBar}
-          maximumTrackTintColor={trackColor}
-          trackClickable
-        />
-      :
-        <Slider
+      <Slider
           style={styles.slider}
           onValueChange={val => onSeek(val)}
           onSlidingComplete={val => onSeekRelease(val)}
@@ -52,7 +38,6 @@ const Scrubber = (props) => {
           minimumTrackTintColor={theme.scrubberBar}
           maximumTrackTintColor={trackColor}
         />
-      }
     </View>
   )
 }
