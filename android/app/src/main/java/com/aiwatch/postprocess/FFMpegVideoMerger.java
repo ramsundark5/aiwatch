@@ -1,52 +1,36 @@
 package com.aiwatch.postprocess;
 
 import android.content.Context;
-
 import com.aiwatch.Logger;
+import com.arthenica.mobileffmpeg.Config;
+import com.arthenica.mobileffmpeg.ExecuteCallback;
+import com.arthenica.mobileffmpeg.FFmpeg;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import nl.bravobit.ffmpeg.CustomFFmpeg;
-import nl.bravobit.ffmpeg.FFcommandExecuteResponseHandler;
+import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
 
 public class FFMpegVideoMerger {
 
     private static final Logger LOGGER = new Logger();
 
     public void mergeVideos(Context context, String[] videoUris, String outputFilePath){
-
         String inputFilePath = outputFilePath.replace(".mp4", ".txt");
         writeToFile(videoUris, inputFilePath);
-
-        CustomFFmpeg ffmpeg = CustomFFmpeg.getInstance(context);
         String command = "-f concat -safe 0 -i " + inputFilePath +" -c copy "+outputFilePath;
         LOGGER.i("starting merge of video files "+videoUris.length);
-        String[] ffmpegCommand = command.split("\\s+");
 
-        ffmpeg.execute(ffmpegCommand, new FFcommandExecuteResponseHandler() {
-            @Override
-            public void onStart() {
-
-            }
+        FFmpeg.executeAsync(command, new ExecuteCallback() {
 
             @Override
-            public void onFinish() {
-
-            }
-
-            @Override
-            public void onSuccess(String message) {
-                LOGGER.d("ffmpeg concat success");
-            }
-
-            @Override
-            public void onProgress(String message) {
-
-            }
-
-            @Override
-            public void onFailure(String message) {
-                LOGGER.e("ffmpeg concat failed with response " + message);
+            public void apply(final long executionId, final int returnCode) {
+                if (returnCode == RETURN_CODE_SUCCESS) {
+                    LOGGER.i("ffmpeg merge completed");
+                } else {
+                    LOGGER.e("ffmpeg extraction failed with response " + Config.getLastCommandOutput());
+                }
+                deleteInputFile(inputFilePath);
             }
         });
     }

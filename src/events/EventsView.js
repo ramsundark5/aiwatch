@@ -155,7 +155,6 @@ class EventsView extends React.Component {
 
     renderEventCard(event, firstEventInDay){
         const eventStyle = firstEventInDay ? styles.firstEventPadding : styles.emptyStyle;
-        console.log('render eventcard is called' + this.state);
         return(
             <View style={[eventStyle]}>
                 <EventCard 
