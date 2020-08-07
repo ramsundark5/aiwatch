@@ -14,7 +14,7 @@ class WatchCamera extends Component {
         if(!cameraConfig){
           return null;
         }
-        let videUrlForView = cameraConfig.videoUrl;
+        let videUrlForView = cameraConfig.videoUrlWithAuth;
         const monitoring = !cameraConfig.disconnected && cameraConfig.monitoringEnabled;
         return(
           <View key={cameraConfig.id}>
